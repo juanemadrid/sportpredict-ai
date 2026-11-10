@@ -77,7 +77,11 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
-        return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+        origins = [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+        for default_origin in ["http://localhost:3000", "https://juanemadrid.github.io"]:
+            if default_origin not in origins:
+                origins.append(default_origin)
+        return origins
 
     @property
     def admin_emails_set(self) -> set:
