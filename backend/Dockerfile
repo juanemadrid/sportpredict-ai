@@ -48,5 +48,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:8000/health || exit 1
 
-# Script de arranque: corre migraciones y arranca Gunicorn con workers Uvicorn
-CMD ["sh", "-c", "python -m alembic upgrade head && gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w 2 -b 0.0.0.0:8000 --access-logfile - --error-logfile -"]
+# Script de arranque: corre migraciones, inicializa catálogos y arranca Gunicorn con workers Uvicorn
+CMD ["sh", "-c", "python -m alembic upgrade head && python -m app.db.ensure_db && gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w ${WEB_CONCURRENCY:-1} -b 0.0.0.0:8000 --access-logfile - --error-logfile -"]

@@ -34,12 +34,15 @@ async def lifespan(_app: FastAPI):
             logger.critical("Configuración inválida para producción: %s", err)
         raise RuntimeError("Configuración de producción inválida: " + " | ".join(config_errors))
 
-    db = db_session.SessionLocal()
     try:
-        init_database(db)
-        phase4_market_service.ensure_phase4_tables_and_triggers(db)
-    finally:
-        db.close()
+        db = db_session.SessionLocal()
+        try:
+            init_database(db)
+            phase4_market_service.ensure_phase4_tables_and_triggers(db)
+        finally:
+            db.close()
+    except Exception as exc:
+        logger.warning("Inicialización en lifespan completada previamente o advertencia menor: %s", exc)
     logger.info(
         "SPORTPREDICT AI %s iniciado (env=%s, db=%s, auth=%s)",
         settings.VERSION,
@@ -91,7 +94,19 @@ app.include_router(ingestion_router, dependencies=protected)
 app.include_router(phase4_market_router, dependencies=protected)
 
 
+@app.get("/")
+@app.head("/")
+def root_check():
+    """Endpoint raíz para sondas de Render y orquestadores."""
+    return {
+        "status": "ok",
+        "service": settings.PROJECT_NAME,
+        "version": settings.VERSION,
+    }
+
+
 @app.get("/health")
+@app.head("/health")
 def health_check():
     """Liveness: el proceso responde."""
     return {
