@@ -9,7 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     ENVIRONMENT=production \
-    BACKEND_PORT=8000
+    BACKEND_PORT=8000 \
+    HOME=/app
 
 WORKDIR /app
 
@@ -36,7 +37,8 @@ COPY data ./data
 
 # Usuario no privilegiado por seguridad
 RUN addgroup --system --gid 1001 appgroup && \
-    adduser --system --uid 1001 --ingroup appgroup appuser && \
+    adduser --system --uid 1001 --ingroup appgroup --home /app appuser && \
+    mkdir -p /app/data /app/artifacts/models /app/.cache && \
     chown -R appuser:appgroup /app
 
 USER appuser

@@ -25,8 +25,7 @@ def init_database(db: Session) -> None:
     En producción el esquema lo gestiona exclusivamente Alembic (`alembic upgrade head`);
     `create_all` solo se usa en desarrollo/pruebas.
     """
-    if not settings.is_production:
-        Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     _seed_data_sources(db)
     _seed_market_catalog(db)
 
