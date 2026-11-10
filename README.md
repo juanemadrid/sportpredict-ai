@@ -1,13 +1,15 @@
 # SPORTPREDICT AI
-**Plataforma SaaS de Análisis Estadístico y Predicción Deportiva mediante Machine Learning**
+**Plataforma SaaS de Análisis Estadístico y Predicción Deportiva mediante Machine Learning (Calibrado, Inmutable y Listo para Producción)**
 
 ---
 
-## 1. Principios de Ingeniería y Gobernanza
-- **Aislamiento total:** Todo el proyecto reside en `f:\Proyectos\Predicciones` sin modificar ningún otro proyecto, plataforma o base de datos existente.
-- **Sin claves API ficticias ni conexiones simuladas:** Las variables de entorno en `.env.example` están limpias. Si `API_FOOTBALL_KEY` o `DATABASE_URL` (Supabase) no están configuradas aún, el sistema reporta con transparencia su estado real (`NOT_CONFIGURED` / `SQLITE_LOCAL_ISOLATED`).
-- **Trazabilidad explícita `DEMO` vs `REAL`:** Cada registro en base de datos incorpora `is_demo`, `source_name`, `source_license` y `captured_at`.
-- **Cero fuga de información futura (*Zero Data Leakage*):** Todas las variables pre-partido (`PointInTimeFeatureBuilder`) y las calificaciones dinámicas Elo se calculan utilizando exclusivamente encuentros con `kickoff_utc < target_match.kickoff_utc`.
+## 1. Principios de Ingeniería, Seguridad y Gobernanza
+- **Aislamiento Total y Sin Claves Ficticias:** Variables de entorno limpias en `.env.example` y `.env.production.example`. Sin conexiones simuladas.
+- **Autenticación Robusta en Producción:** Verificación criptográfica de JWT de **Supabase Auth** (JWKS asimétrico RS256/ES256 y simétrico HS256). Perfiles locales protegidos y roles gestionados por administradores.
+- **Inmutabilidad Criptográfica SHA-256:** Las predicciones prospectivas se firman antes del kickoff (`predicted_at < kickoff_utc`). Triggers a nivel de base de datos (**PostgreSQL y SQLite**) impiden `DELETE`, `TRUNCATE` o `UPDATE` retroactivo sobre los atributos pre-partido.
+- **Cero Fuga Temporal (*Zero Data Leakage*):** Toda variable y rating Elo dinámico se calcula estrictamente con partidos finalizados antes de la fecha objetivo.
+- **Gobernanza de Datos DEMO vs REAL:** Trazabilidad explícita (`is_demo`, `source_name`, `source_license`) con separación contable en base de datos e interfaz.
+- **Control de Cuotas y Rate Limiting:** Limitador por IP con ventana deslizante (120 req/min) y límites diarios por plan SaaS (`FREE`: 3, `PREMIUM`: 50, `PRO`: 9999).
 
 ---
 
@@ -15,46 +17,81 @@
 
 ```text
 f:\Proyectos\Predicciones\
-├── README.md
-├── .env.example
-├── .gitignore
+├── docker-compose.yml                          # Orquestación de contenedores (backend, frontend, postgres, scheduler)
+├── .env.example                                # Plantilla de variables para desarrollo local
+├── .env.production.example                     # Plantilla de variables para producción
+├── .github/workflows/ci.yml                    # Pipeline CI/CD automatizado en GitHub Actions
 ├── docs/
-│   ├── 00_DIAGNOSTICO_Y_PLAN.md               # Diagnóstico Fase 0 y Plan Fases 0-6
-│   ├── 01_ARQUITECTURA_DECISIONES.md          # Separación de capas A-F y ADRs
-│   ├── 02_PROTOCOLO_VALIDACION_ML.md          # Partición temporal, Brier, LogLoss, ECE, EV
-│   └── 03_CUMPLIMIENTO_Y_JUEGO_RESPONSABLE.md # Marco informativo (+18) y regulación Colombia
+│   ├── 00_DIAGNOSTICO_Y_PLAN.md               # Diagnóstico Fase 0 y Plan de Fases
+│   ├── 01_ARQUITECTURA_DECISIONES.md          # Decisiones de Arquitectura (ADRs)
+│   ├── 02_PROTOCOLO_VALIDACION_ML.md          # Protocolo de Validación ML
+│   ├── 03_CUMPLIMIENTO_Y_JUEGO_RESPONSABLE.md # Marco normativo (+18) y regulación Colombia
+│   ├── ... (Informes Fases 2, 3, 4)
+│   ├── 11_PLAN_TECNICO_FASE5.md               # Plan Técnico de Fase 5
+│   ├── 14_AUDITORIA_FINAL_HASH_Y_ESTADISTICA.md # Auditoría de potencia y hashes
+│   └── 15_MANUAL_DESPLIEGUE_PRODUCCION.md     # Manual completo de despliegue productivo
 ├── database/
-│   ├── schema.sql                             # DDL PostgreSQL / Supabase (12 tablas e índices)
-│   └── seed_reference.sql                     # Catálogo de planes SaaS, fuentes y mercados Niveles 1-3
+│   ├── schema.sql                             # DDL PostgreSQL / Supabase
+│   └── seed_reference.sql                     # Catálogo de planes SaaS y fuentes
 ├── backend/
-│   ├── pyproject.toml
-│   ├── requirements.txt
+│   ├── Dockerfile                             # Imagen optimizada Python 3.12 + Gunicorn + Uvicorn
+│   ├── alembic.ini & alembic/                 # Migraciones de base de datos versionadas
+│   ├── pyproject.toml & requirements.txt
 │   ├── app/
-│   │   ├── main.py                            # Servidor FastAPI (Capa B)
-│   │   ├── core/                              # Configuración (.env) y seguridad RBAC / Planes SaaS
-│   │   ├── db/                                # Modelos SQLAlchemy e inicializador verificable
-│   │   ├── ingestion/                         # Capa D: Adaptadores CSV, API-Football (100/día + caché), StatsBomb
-│   │   ├── ml/                                # Capas E y F: Variables Point-in-Time, Modelos A-E, Backtesting
-│   │   ├── services/                          # Capa C: Servicio de Predicción y Registro Inmutable
-│   │   └── api/                               # Rutas REST para los 12 módulos
-│   └── tests/
-│       └── test_mvp_phase1.py                 # Suite de pruebas reproducibles (pytest)
-├── notebooks/
-│   └── sportpredict_colab_training.ipynb      # Cuaderno experimental para Google Colab
+│   │   ├── main.py                            # Servidor FastAPI con observabilidad y CORS estricto
+│   │   ├── core/                              # Configuración (.env), seguridad (JWT/RBAC) y observabilidad
+│   │   ├── db/                                # Modelos SQLAlchemy, sesiones y triggers
+│   │   ├── ingestion/                         # Adaptadores OpenFootball CC0, API-Football y CSV
+│   │   ├── ml/                                # Poisson/Dixon-Coles, Elo, RF, XGBoost y Ensamble
+│   │   ├── services/                          # Valuación Fase 4, predicción y scheduler Fase 5
+│   │   └── api/                               # Rutas REST (Sistema, Usuarios, Partidos, Modelos, Fase 4)
+│   └── tests/                                 # 27 pruebas automatizadas (100% aprobadas)
 └── frontend/
+    ├── Dockerfile                             # Imagen multi-stage Alpine Next.js 15 Standalone
     ├── package.json                           # Next.js 15, React 19, TypeScript, Tailwind CSS
-    └── src/                                   # Capa A: Interfaz Azul Oscuro con los 12 módulos SaaS
+    └── src/                                   # Interfaz SaaS institucional Azul Oscuro (12 módulos)
 ```
 
 ---
 
-## 3. Cómo Reentrenar y Evaluar los Modelos
-1. **Desde la API o el Panel Administrativo (Módulo 10):**
-   - Importar un archivo CSV autorizado (`POST /api/v1/ingestion/csv`).
-   - Ejecutar `POST /api/v1/models/train` con `{"calibration_method": "sigmoid"}` o `"isotonic"`.
-   - El sistema genera un artefacto versionado en `backend/artifacts/models/sportpredict_models_<version>.joblib` y registra las métricas científicas en `backtest_runs`.
-2. **Desde Línea de Comandos (Pruebas Reproducibles):**
-   ```powershell
-   cd f:\Proyectos\Predicciones\backend
-   .\.venv\Scripts\pytest -v
+## 3. Despliegue Rápido en Producción (Docker Compose)
+
+1. **Configurar el entorno:**
+   ```bash
+   cp .env.production.example .env
+   # Configura DATABASE_URL, SUPABASE_URL, SUPABASE_ANON_KEY y CORS_ORIGINS
    ```
+
+2. **Levantar el stack multi-servicio:**
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. **Verificar estado de salud:**
+   ```bash
+   docker compose ps
+   curl http://localhost:8000/health
+   curl http://localhost:8000/ready
+   ```
+
+---
+
+## 4. Ejecución Local de Pruebas Automatizadas
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe -m pytest -v
+```
+
+Las 27 pruebas cubren:
+- Integridad temporal y cero fuga de información futura.
+- Backtesting científico, Brier Score y calibración de probabilidades.
+- Sello SHA-256 e inmutabilidad de predicciones pre-kickoff.
+- Validación de configuración de producción y rechazo de cabeceras de depuración.
+- Validación de tokens JWT y control de cuotas por plan SaaS.
+- Rutas administrativas protegidas (401 para anónimos, 403 para no-admin, 200 para admin).
+
+---
+
+## 5. Manuales y Referencias de Operación
+- Consulta el documento [`docs/15_MANUAL_DESPLIEGUE_PRODUCCION.md`](docs/15_MANUAL_DESPLIEGUE_PRODUCCION.md) para la guía paso a paso de aprovisionamiento de Supabase, gestión de certificados SSL y despliegue en VPS o plataformas Cloud (Railway, Render, Fly).
