@@ -31,6 +31,10 @@ def isolated_test_environment(tmp_path_factory: pytest.TempPathFactory):
             src_conn.backup(dst_conn)
         dst_conn.close()
         src_conn.close()
+    else:
+        # Fallback para entornos limpios sin base local: crea las tablas mínimas requeridas
+        from app.db.session import Base
+        Base.metadata.create_all(bind=test_engine)
 
     # Copiar artefactos existentes al directorio aislado para lectura/verificación sin tocar los originales
     if app_config.ARTIFACTS_DIR.exists():
