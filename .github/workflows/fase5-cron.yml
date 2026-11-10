@@ -1,0 +1,22 @@
+name: Sincronización Automática Diaria (Fase 5)
+
+on:
+  schedule:
+    # Corre 3 veces al día: 06:00, 14:00 y 22:00 UTC
+    - cron: '0 6,14,22 * * *'
+  workflow_dispatch: # Permite ejecución manual con un botón en GitHub
+
+jobs:
+  run-daily-cycle:
+    name: Ejecutar Ciclo Diario de Fase 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Invocar Endpoint de Automatización
+        run: |
+          if [ -z "${{ secrets.BACKEND_API_URL }}" ] || [ -z "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "Secrets BACKEND_API_URL o SUPABASE_SERVICE_ROLE_KEY no configurados. Omitiendo."
+            exit 0
+          fi
+          curl -f -X POST "${{ secrets.BACKEND_API_URL }}/api/v1/phase4/automation/run-daily-cycle" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json"

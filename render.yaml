@@ -1,0 +1,69 @@
+# =============================================================================
+# SPORTPREDICT AI - RENDER BLUEPRINT (DESPLIEGUE EN LA NUBE SIN VPS)
+# =============================================================================
+# Render aprovisiona el backend como Web Service y ejecuta el ciclo diario de Fase 5.
+# La base de datos y la autenticación residen en Supabase (plan gratuito).
+# El frontend se despliega gratuitamente en Vercel.
+
+services:
+  # Backend API FastAPI
+  - type: web
+    name: sportpredict-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free # o starter para mantener activo 24/7 sin sleep
+    region: oregon # o frankfurt / ohio
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false # Configurar en el dashboard de Render con tu cadena de Supabase
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false # ej: https://sportpredict.vercel.app
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: AUTH_ALLOW_DEV_HEADERS
+        value: "false"
+      - key: SEED_DEMO_DATA
+        value: "false"
+      - key: LOG_JSON
+        value: "true"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "120"
+      - key: TRUSTED_PROXY_HEADERS
+        value: "true"
+      - key: ENABLE_API_DOCS
+        value: "false"
+      - key: API_FOOTBALL_KEY
+        sync: false
+
+  # Cron Job de Fase 5 (Ejecución cada 6 horas)
+  - type: cron
+    name: sportpredict-fase5-scheduler
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    schedule: "0 */6 * * *"
+    command: "python -m app.services.scheduler_cron --once"
+    region: oregon
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        fromService:
+          name: sportpredict-backend
+          type: web
+          envVarKey: DATABASE_URL
+      - key: API_FOOTBALL_KEY
+        fromService:
+          name: sportpredict-backend
+          type: web
+          envVarKey: API_FOOTBALL_KEY
