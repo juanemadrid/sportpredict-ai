@@ -1,0 +1,3191 @@
+{
+  "executed_at_utc": "2026-11-09T17:41:35.641929+00:00",
+  "read_only_guarantee": {
+    "db_sha256_before": "54bd5ca6e647947ca44951c8a5bc7ed669235f5da3a0098e86fbb84640f13188",
+    "db_sha256_after": "54bd5ca6e647947ca44951c8a5bc7ed669235f5da3a0098e86fbb84640f13188",
+    "database_unmodified": true
+  },
+  "section_1_exhaustive_leakage_audit": {
+    "total_matches_audited": 4338,
+    "test_matches_exhaustively_recomputed": 868,
+    "train_max_kickoff_utc": "2023-04-22T15:00:00+00:00",
+    "val_min_kickoff_utc": "2023-04-22T15:30:00+00:00",
+    "val_max_kickoff_utc": "2023-12-10T12:30:00+00:00",
+    "test_min_kickoff_utc": "2023-12-10T14:00:00+00:00",
+    "test_max_kickoff_utc": "2024-06-02T18:00:00+00:00",
+    "strict_boundary_inequality_train_lt_val": true,
+    "strict_boundary_inequality_val_lt_test": true,
+    "future_timestamp_violations": 0,
+    "self_inclusion_violations": 0,
+    "test_868_feature_mismatches_across_all_29_columns": 0,
+    "test_868_standings_mismatches": 0,
+    "test_868_elo_mismatches": 0,
+    "train_val_elo_mismatches": 0,
+    "methodological_observations": [
+      {
+        "id": "OBS-1A",
+        "component": "DynamicEloModel.calibrate_competition_parameters",
+        "status": "SIN FUGA HACIA VAL/TEST (leve acoplamiento in-sample en Train)",
+        "detail": "Los 4 escalares de ventaja de localía (comp_home_advantage) y 4 de empate (comp_draw_nu) se estiman usando las medias de T_train (2,605 partidos) antes de recorrer T_train. Esto NO filtra ninguna información de T_val ni de T_test, pero dentro de T_train usa la tasa media de victorias locales del bloque de entrenamiento."
+      },
+      {
+        "id": "OBS-1B",
+        "component": "CalibratedClassifierCV(cv=3) en Random Forest y XGBoost",
+        "status": "SIN FUGA HACIA VAL/TEST (validación cruzada no temporal interna en Train)",
+        "detail": "CalibratedClassifierCV(cv=3) divide T_train mediante StratifiedKFold(3) estándar. Aunque T_val (865) y T_test (868) están 100% fuera de muestra, dentro de T_train los pliegues 1 y 2 son calibrados contra árboles que vieron el pliegue 3 de T_train. Además, el train_brier reportado se evalúa sobre el propio T_train."
+      }
+    ]
+  },
+  "section_2_ensemble_and_stacking_audit": {
+    "ensemble_1x2_audit": {
+      "uses_poisson_meta_features": false,
+      "trained_on_partition": "T_val (865 partidos, 100% fuera de muestra respecto a T_train)",
+      "in_sample_leakage_detected_in_1x2": false,
+      "note": "En 1X2, los modelos base (Poisson, Elo, RF, XGBoost) se ajustan en T_train y generan predicciones 100% fuera de muestra sobre T_val. El optimizador SLSQP del Ensamble calcula los pesos (0.7569 XGB, 0.1589 RF, 0.0842 Poisson, 0.0 Elo) exclusivamente sobre T_val."
+    },
+    "goal_markets_meta_feature_audit": {
+      "in_sample_stacking_detected_on_train": true,
+      "affected_features": [
+        "poisson_market_prob",
+        "poisson_lambda_total",
+        "poisson_lambda_home",
+        "poisson_lambda_away"
+      ],
+      "mechanism": "En run_phase3_scientific_audit.py (líneas 571-576), las 4 variables de Poisson para X_tr_mkt (2,605 partidos de Train) se generaron evaluando p3_poisson_val_model sobre el propio train_records con el que fue ajustado (predicciones in-sample en Train), mientras que en Val y Test las predicciones de Poisson eran out-of-sample.",
+      "train_lambda_total_rmse_insample": 1.5887,
+      "train_lambda_total_rmse_oof_temporal": 1.7021,
+      "train_lambda_total_corr_insample": 0.3376,
+      "train_lambda_total_corr_oof_temporal": 0.1387,
+      "impact_by_market": {
+        "OVER_1_5": {
+          "poisson_feature_importance_share_in_rf_insample": 0.5577,
+          "poisson_feature_importance_share_in_rf_oof": 0.2412,
+          "regime_1_insample_train_poisson": {
+            "val_weights": {
+              "POISSON": 1.0,
+              "RF_GOALS": 0.0,
+              "XGB_GOALS": 0.0
+            },
+            "test_brier_rf": 0.16056,
+            "test_brier_xgb": 0.16124,
+            "test_brier_ensemble": 0.15973
+          },
+          "regime_2_oof_expanding_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.7,
+              "RF_GOALS": 0.1377,
+              "XGB_GOALS": 0.1623
+            },
+            "test_brier_rf": 0.16324,
+            "test_brier_xgb": 0.16409,
+            "test_brier_ensemble": 0.15998
+          },
+          "regime_3_trees_without_poisson_features": {
+            "val_weights": {
+              "POISSON": 0.7134,
+              "RF_GOALS": 0.2866,
+              "XGB_GOALS": 0.0
+            },
+            "test_brier_rf": 0.16487,
+            "test_brier_xgb": 0.16483,
+            "test_brier_ensemble": 0.16008
+          },
+          "test_brier_pure_poisson": 0.15973
+        },
+        "OVER_2_5": {
+          "poisson_feature_importance_share_in_rf_insample": 0.6222,
+          "poisson_feature_importance_share_in_rf_oof": 0.3219,
+          "regime_1_insample_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.5519,
+              "RF_GOALS": 0.4481,
+              "XGB_GOALS": 0.0
+            },
+            "test_brier_rf": 0.23362,
+            "test_brier_xgb": 0.23469,
+            "test_brier_ensemble": 0.23352
+          },
+          "regime_2_oof_expanding_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.742,
+              "RF_GOALS": 0.1723,
+              "XGB_GOALS": 0.0857
+            },
+            "test_brier_rf": 0.23999,
+            "test_brier_xgb": 0.24185,
+            "test_brier_ensemble": 0.23432
+          },
+          "regime_3_trees_without_poisson_features": {
+            "val_weights": {
+              "POISSON": 0.7404,
+              "RF_GOALS": 0.1839,
+              "XGB_GOALS": 0.0758
+            },
+            "test_brier_rf": 0.24268,
+            "test_brier_xgb": 0.24467,
+            "test_brier_ensemble": 0.23454
+          },
+          "test_brier_pure_poisson": 0.23396
+        },
+        "UNDER_2_5": {
+          "poisson_feature_importance_share_in_rf_insample": 0.6197,
+          "poisson_feature_importance_share_in_rf_oof": 0.313,
+          "regime_1_insample_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.5784,
+              "RF_GOALS": 0.4216,
+              "XGB_GOALS": 0.0
+            },
+            "test_brier_rf": 0.23375,
+            "test_brier_xgb": 0.23465,
+            "test_brier_ensemble": 0.23359
+          },
+          "regime_2_oof_expanding_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.7415,
+              "RF_GOALS": 0.1681,
+              "XGB_GOALS": 0.0905
+            },
+            "test_brier_rf": 0.24023,
+            "test_brier_xgb": 0.24162,
+            "test_brier_ensemble": 0.23433
+          },
+          "regime_3_trees_without_poisson_features": {
+            "val_weights": {
+              "POISSON": 0.7403,
+              "RF_GOALS": 0.1839,
+              "XGB_GOALS": 0.0758
+            },
+            "test_brier_rf": 0.24268,
+            "test_brier_xgb": 0.24467,
+            "test_brier_ensemble": 0.23454
+          },
+          "test_brier_pure_poisson": 0.23396
+        },
+        "OVER_3_5": {
+          "poisson_feature_importance_share_in_rf_insample": 0.6236,
+          "poisson_feature_importance_share_in_rf_oof": 0.2915,
+          "regime_1_insample_train_poisson": {
+            "val_weights": {
+              "POISSON": 1.0,
+              "RF_GOALS": 0.0,
+              "XGB_GOALS": 0.0
+            },
+            "test_brier_rf": 0.21812,
+            "test_brier_xgb": 0.21916,
+            "test_brier_ensemble": 0.21648
+          },
+          "regime_2_oof_expanding_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.4688,
+              "RF_GOALS": 0.2789,
+              "XGB_GOALS": 0.2523
+            },
+            "test_brier_rf": 0.21832,
+            "test_brier_xgb": 0.21933,
+            "test_brier_ensemble": 0.21632
+          },
+          "regime_3_trees_without_poisson_features": {
+            "val_weights": {
+              "POISSON": 0.5233,
+              "RF_GOALS": 0.2623,
+              "XGB_GOALS": 0.2144
+            },
+            "test_brier_rf": 0.22036,
+            "test_brier_xgb": 0.22125,
+            "test_brier_ensemble": 0.21647
+          },
+          "test_brier_pure_poisson": 0.21648
+        },
+        "BTTS": {
+          "poisson_feature_importance_share_in_rf_insample": 0.5038,
+          "poisson_feature_importance_share_in_rf_oof": 0.1953,
+          "regime_1_insample_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.3333,
+              "RF_GOALS": 0.3333,
+              "XGB_GOALS": 0.3333
+            },
+            "test_brier_rf": 0.24219,
+            "test_brier_xgb": 0.24266,
+            "test_brier_ensemble": 0.2422
+          },
+          "regime_2_oof_expanding_train_poisson": {
+            "val_weights": {
+              "POISSON": 0.5,
+              "RF_GOALS": 0.5,
+              "XGB_GOALS": 0.0
+            },
+            "test_brier_rf": 0.24698,
+            "test_brier_xgb": 0.24789,
+            "test_brier_ensemble": 0.24336
+          },
+          "regime_3_trees_without_poisson_features": {
+            "val_weights": {
+              "POISSON": 0.5,
+              "RF_GOALS": 0.5,
+              "XGB_GOALS": 0.0
+            },
+            "test_brier_rf": 0.2474,
+            "test_brier_xgb": 0.24807,
+            "test_brier_ensemble": 0.24343
+          },
+          "test_brier_pure_poisson": 0.24283
+        }
+      }
+    }
+  },
+  "section_3_statistical_audit": {
+    "block_size_20_justification": "Con 4 ligas simultáneas (39 partidos por fin de semana completo: 10 EPL + 10 LaLiga + 10 Serie A + 9 Bundesliga), un bloque de 20 partidos equivale a medio fin de semana multicompetición o 2 jornadas de una liga individual. El análisis de sensibilidad demuestra que variar L entre 10, 20, 39 (jornada completa de 4 ligas) y 50, o estratificar bloques de 10 partidos por liga, mantiene inalteradas todas las conclusiones estadísticas.",
+    "boundary_bias_and_p_zero_observation": "El Moving Block Bootstrap no circular pondera ligeramente menos los primeros y últimos L-1 partidos de la serie (desplazamiento medio < 0.00025 en Brier). Asimismo, cuando ninguna de las B=1000 réplicas supera el estadístico (|Z| > 4), el p-valor empírico debe reportarse como p < 0.001 (1/(B+1)) en lugar de 0.0 exacto.",
+    "block_sensitivity_and_stratification": {
+      "ENSEMBLE_vs_RANDOM_FOREST": {
+        "circular_by_block_size": {
+          "L_10": {
+            "block_size": 10,
+            "obs_diff": 0.00093,
+            "boot_mean_of_means": 0.00088,
+            "ci_95_circular": [
+              -0.00242,
+              0.0041
+            ],
+            "std_error": 0.00165,
+            "z_statistic": 0.5642,
+            "p_value_normal": 0.57264,
+            "p_value_empirical_plus1": 0.58371,
+            "significant_95": false
+          },
+          "L_20": {
+            "block_size": 20,
+            "obs_diff": 0.00093,
+            "boot_mean_of_means": 0.00098,
+            "ci_95_circular": [
+              -0.00239,
+              0.00425
+            ],
+            "std_error": 0.00172,
+            "z_statistic": 0.541,
+            "p_value_normal": 0.58849,
+            "p_value_empirical_plus1": 0.58871,
+            "significant_95": false
+          },
+          "L_39": {
+            "block_size": 39,
+            "obs_diff": 0.00093,
+            "boot_mean_of_means": 0.00091,
+            "ci_95_circular": [
+              -0.0022,
+              0.00413
+            ],
+            "std_error": 0.00167,
+            "z_statistic": 0.556,
+            "p_value_normal": 0.57819,
+            "p_value_empirical_plus1": 0.58421,
+            "significant_95": false
+          },
+          "L_50": {
+            "block_size": 50,
+            "obs_diff": 0.00093,
+            "boot_mean_of_means": 0.00095,
+            "ci_95_circular": [
+              -0.00228,
+              0.00414
+            ],
+            "std_error": 0.00166,
+            "z_statistic": 0.5591,
+            "p_value_normal": 0.57612,
+            "p_value_empirical_plus1": 0.57421,
+            "significant_95": false
+          }
+        },
+        "competition_stratified_L10": {
+          "block_size_per_league": 10,
+          "obs_diff": 0.00093,
+          "ci_95": [
+            -0.00263,
+            0.00422
+          ],
+          "std_error": 0.00173,
+          "z_statistic": 0.5381,
+          "p_value_normal": 0.5905,
+          "significant_95": false
+        }
+      },
+      "ENSEMBLE_vs_XGBOOST": {
+        "circular_by_block_size": {
+          "L_10": {
+            "block_size": 10,
+            "obs_diff": -0.00126,
+            "boot_mean_of_means": -0.00126,
+            "ci_95_circular": [
+              -0.00232,
+              -0.00014
+            ],
+            "std_error": 0.00055,
+            "z_statistic": -2.3051,
+            "p_value_normal": 0.02116,
+            "p_value_empirical_plus1": 0.02549,
+            "significant_95": true
+          },
+          "L_20": {
+            "block_size": 20,
+            "obs_diff": -0.00126,
+            "boot_mean_of_means": -0.00128,
+            "ci_95_circular": [
+              -0.00236,
+              -0.00019
+            ],
+            "std_error": 0.00056,
+            "z_statistic": -2.249,
+            "p_value_normal": 0.02451,
+            "p_value_empirical_plus1": 0.01949,
+            "significant_95": true
+          },
+          "L_39": {
+            "block_size": 39,
+            "obs_diff": -0.00126,
+            "boot_mean_of_means": -0.00127,
+            "ci_95_circular": [
+              -0.00226,
+              -0.00023
+            ],
+            "std_error": 0.00052,
+            "z_statistic": -2.4297,
+            "p_value_normal": 0.01511,
+            "p_value_empirical_plus1": 0.01549,
+            "significant_95": true
+          },
+          "L_50": {
+            "block_size": 50,
+            "obs_diff": -0.00126,
+            "boot_mean_of_means": -0.00126,
+            "ci_95_circular": [
+              -0.00223,
+              -0.00029
+            ],
+            "std_error": 0.0005,
+            "z_statistic": -2.5254,
+            "p_value_normal": 0.01156,
+            "p_value_empirical_plus1": 0.01,
+            "significant_95": true
+          }
+        },
+        "competition_stratified_L10": {
+          "block_size_per_league": 10,
+          "obs_diff": -0.00126,
+          "ci_95": [
+            -0.0024,
+            -0.00016
+          ],
+          "std_error": 0.00058,
+          "z_statistic": -2.1851,
+          "p_value_normal": 0.02888,
+          "significant_95": true
+        }
+      },
+      "ENSEMBLE_vs_POISSON": {
+        "circular_by_block_size": {
+          "L_10": {
+            "block_size": 10,
+            "obs_diff": -0.01203,
+            "boot_mean_of_means": -0.01201,
+            "ci_95_circular": [
+              -0.02034,
+              -0.00309
+            ],
+            "std_error": 0.00443,
+            "z_statistic": -2.7139,
+            "p_value_normal": 0.00665,
+            "p_value_empirical_plus1": 0.01099,
+            "significant_95": true
+          },
+          "L_20": {
+            "block_size": 20,
+            "obs_diff": -0.01203,
+            "boot_mean_of_means": -0.01198,
+            "ci_95_circular": [
+              -0.02033,
+              -0.00302
+            ],
+            "std_error": 0.00442,
+            "z_statistic": -2.721,
+            "p_value_normal": 0.00651,
+            "p_value_empirical_plus1": 0.006,
+            "significant_95": true
+          },
+          "L_39": {
+            "block_size": 39,
+            "obs_diff": -0.01203,
+            "boot_mean_of_means": -0.01197,
+            "ci_95_circular": [
+              -0.01946,
+              -0.00415
+            ],
+            "std_error": 0.00397,
+            "z_statistic": -3.0335,
+            "p_value_normal": 0.00242,
+            "p_value_empirical_plus1": 0.003,
+            "significant_95": true
+          },
+          "L_50": {
+            "block_size": 50,
+            "obs_diff": -0.01203,
+            "boot_mean_of_means": -0.01211,
+            "ci_95_circular": [
+              -0.01929,
+              -0.0046
+            ],
+            "std_error": 0.00383,
+            "z_statistic": -3.1386,
+            "p_value_normal": 0.0017,
+            "p_value_empirical_plus1": 0.0025,
+            "significant_95": true
+          }
+        },
+        "competition_stratified_L10": {
+          "block_size_per_league": 10,
+          "obs_diff": -0.01203,
+          "ci_95": [
+            -0.02103,
+            -0.00262
+          ],
+          "std_error": 0.00467,
+          "z_statistic": -2.5772,
+          "p_value_normal": 0.00996,
+          "significant_95": true
+        }
+      },
+      "ENSEMBLE_vs_ELO": {
+        "circular_by_block_size": {
+          "L_10": {
+            "block_size": 10,
+            "obs_diff": -0.00296,
+            "boot_mean_of_means": -0.00296,
+            "ci_95_circular": [
+              -0.00881,
+              0.00329
+            ],
+            "std_error": 0.0031,
+            "z_statistic": -0.9555,
+            "p_value_normal": 0.3393,
+            "p_value_empirical_plus1": 0.33983,
+            "significant_95": false
+          },
+          "L_20": {
+            "block_size": 20,
+            "obs_diff": -0.00296,
+            "boot_mean_of_means": -0.00298,
+            "ci_95_circular": [
+              -0.0093,
+              0.0034
+            ],
+            "std_error": 0.00319,
+            "z_statistic": -0.9272,
+            "p_value_normal": 0.35383,
+            "p_value_empirical_plus1": 0.34483,
+            "significant_95": false
+          },
+          "L_39": {
+            "block_size": 39,
+            "obs_diff": -0.00296,
+            "boot_mean_of_means": -0.0029,
+            "ci_95_circular": [
+              -0.00902,
+              0.00358
+            ],
+            "std_error": 0.0032,
+            "z_statistic": -0.9244,
+            "p_value_normal": 0.35526,
+            "p_value_empirical_plus1": 0.34833,
+            "significant_95": false
+          },
+          "L_50": {
+            "block_size": 50,
+            "obs_diff": -0.00296,
+            "boot_mean_of_means": -0.00289,
+            "ci_95_circular": [
+              -0.00897,
+              0.00312
+            ],
+            "std_error": 0.00308,
+            "z_statistic": -0.9618,
+            "p_value_normal": 0.33615,
+            "p_value_empirical_plus1": 0.34083,
+            "significant_95": false
+          }
+        },
+        "competition_stratified_L10": {
+          "block_size_per_league": 10,
+          "obs_diff": -0.00296,
+          "ci_95": [
+            -0.00947,
+            0.00369
+          ],
+          "std_error": 0.00334,
+          "z_statistic": -0.8852,
+          "p_value_normal": 0.37603,
+          "significant_95": false
+        }
+      },
+      "RANDOM_FOREST_vs_BASELINE": {
+        "circular_by_block_size": {
+          "L_10": {
+            "block_size": 10,
+            "obs_diff": -0.07388,
+            "boot_mean_of_means": -0.07378,
+            "ci_95_circular": [
+              -0.09068,
+              -0.05598
+            ],
+            "std_error": 0.00895,
+            "z_statistic": -8.2548,
+            "p_value_normal": 0.0,
+            "p_value_empirical_plus1": 0.0005,
+            "significant_95": true
+          },
+          "L_20": {
+            "block_size": 20,
+            "obs_diff": -0.07388,
+            "boot_mean_of_means": -0.07369,
+            "ci_95_circular": [
+              -0.08981,
+              -0.0555
+            ],
+            "std_error": 0.00879,
+            "z_statistic": -8.4038,
+            "p_value_normal": 0.0,
+            "p_value_empirical_plus1": 0.0005,
+            "significant_95": true
+          },
+          "L_39": {
+            "block_size": 39,
+            "obs_diff": -0.07388,
+            "boot_mean_of_means": -0.0736,
+            "ci_95_circular": [
+              -0.09022,
+              -0.0563
+            ],
+            "std_error": 0.00868,
+            "z_statistic": -8.5117,
+            "p_value_normal": 0.0,
+            "p_value_empirical_plus1": 0.0005,
+            "significant_95": true
+          },
+          "L_50": {
+            "block_size": 50,
+            "obs_diff": -0.07388,
+            "boot_mean_of_means": -0.0738,
+            "ci_95_circular": [
+              -0.09044,
+              -0.05604
+            ],
+            "std_error": 0.00872,
+            "z_statistic": -8.4773,
+            "p_value_normal": 0.0,
+            "p_value_empirical_plus1": 0.0005,
+            "significant_95": true
+          }
+        },
+        "competition_stratified_L10": {
+          "block_size_per_league": 10,
+          "obs_diff": -0.07388,
+          "ci_95": [
+            -0.09361,
+            -0.05463
+          ],
+          "std_error": 0.00993,
+          "z_statistic": -7.4386,
+          "p_value_normal": 0.0,
+          "significant_95": true
+        }
+      }
+    },
+    "holm_bonferroni_families": {
+      "family_1_confirmatory_1x2_vs_baseline_m5": {
+        "POISSON_vs_BASELINE": {
+          "rank": 1,
+          "family_size_m": 5,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.01,
+          "holm_adjusted_p_value": 0.0005,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "ELO_vs_BASELINE": {
+          "rank": 2,
+          "family_size_m": 5,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.0125,
+          "holm_adjusted_p_value": 0.0005,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "RANDOM_FOREST_vs_BASELINE": {
+          "rank": 3,
+          "family_size_m": 5,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.01667,
+          "holm_adjusted_p_value": 0.0005,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "XGBOOST_vs_BASELINE": {
+          "rank": 4,
+          "family_size_m": 5,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.025,
+          "holm_adjusted_p_value": 0.0005,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "ENSEMBLE_vs_BASELINE": {
+          "rank": 5,
+          "family_size_m": 5,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.05,
+          "holm_adjusted_p_value": 0.0005,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        }
+      },
+      "family_2_inter_model_1x2_comparisons_m9": {
+        "ENSEMBLE_P3_vs_POISSON_P3": {
+          "rank": 1,
+          "family_size_m": 9,
+          "raw_p_value": 0.006,
+          "holm_threshold_alpha": 0.00556,
+          "holm_adjusted_p_value": 0.054,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "ENSEMBLE_P3_vs_XGBOOST_P3": {
+          "rank": 2,
+          "family_size_m": 9,
+          "raw_p_value": 0.019,
+          "holm_threshold_alpha": 0.00625,
+          "holm_adjusted_p_value": 0.152,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "RF_P3_vs_P2": {
+          "rank": 3,
+          "family_size_m": 9,
+          "raw_p_value": 0.062,
+          "holm_threshold_alpha": 0.00714,
+          "holm_adjusted_p_value": 0.434,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "ENSEMBLE_P3_vs_ELO_P3": {
+          "rank": 4,
+          "family_size_m": 9,
+          "raw_p_value": 0.329,
+          "holm_threshold_alpha": 0.00833,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "POISSON_P3_vs_P2": {
+          "rank": 5,
+          "family_size_m": 9,
+          "raw_p_value": 0.369,
+          "holm_threshold_alpha": 0.01,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "ENSEMBLE_P3_vs_P2": {
+          "rank": 6,
+          "family_size_m": 9,
+          "raw_p_value": 0.454,
+          "holm_threshold_alpha": 0.0125,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "ENSEMBLE_P3_vs_RF_P3": {
+          "rank": 7,
+          "family_size_m": 9,
+          "raw_p_value": 0.572,
+          "holm_threshold_alpha": 0.01667,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "ELO_P3_vs_P2": {
+          "rank": 8,
+          "family_size_m": 9,
+          "raw_p_value": 0.621,
+          "holm_threshold_alpha": 0.025,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "XGBOOST_P3_vs_P2": {
+          "rank": 9,
+          "family_size_m": 9,
+          "raw_p_value": 0.669,
+          "holm_threshold_alpha": 0.05,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        }
+      },
+      "family_3_goal_markets_vs_baseline_m20": {
+        "OVER_2_5_POISSON_vs_BASELINE": {
+          "rank": 1,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.0025,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "OVER_2_5_RF_GOALS_vs_BASELINE": {
+          "rank": 2,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.00263,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "OVER_2_5_XGB_GOALS_vs_BASELINE": {
+          "rank": 3,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.00278,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "OVER_2_5_ENSEMBLE_GOALS_vs_BASELINE": {
+          "rank": 4,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.00294,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "UNDER_2_5_POISSON_vs_BASELINE": {
+          "rank": 5,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.00313,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "UNDER_2_5_RF_GOALS_vs_BASELINE": {
+          "rank": 6,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.00333,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "UNDER_2_5_XGB_GOALS_vs_BASELINE": {
+          "rank": 7,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.00357,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "UNDER_2_5_ENSEMBLE_GOALS_vs_BASELINE": {
+          "rank": 8,
+          "family_size_m": 20,
+          "raw_p_value": 0.0001,
+          "holm_threshold_alpha": 0.00385,
+          "holm_adjusted_p_value": 0.002,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "OVER_3_5_POISSON_vs_BASELINE": {
+          "rank": 9,
+          "family_size_m": 20,
+          "raw_p_value": 0.002,
+          "holm_threshold_alpha": 0.00417,
+          "holm_adjusted_p_value": 0.024,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "OVER_3_5_ENSEMBLE_GOALS_vs_BASELINE": {
+          "rank": 10,
+          "family_size_m": 20,
+          "raw_p_value": 0.002,
+          "holm_threshold_alpha": 0.00455,
+          "holm_adjusted_p_value": 0.024,
+          "significant_raw_005": true,
+          "significant_holm_005": true
+        },
+        "OVER_1_5_POISSON_vs_BASELINE": {
+          "rank": 11,
+          "family_size_m": 20,
+          "raw_p_value": 0.01,
+          "holm_threshold_alpha": 0.005,
+          "holm_adjusted_p_value": 0.1,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "OVER_1_5_ENSEMBLE_GOALS_vs_BASELINE": {
+          "rank": 12,
+          "family_size_m": 20,
+          "raw_p_value": 0.01,
+          "holm_threshold_alpha": 0.00556,
+          "holm_adjusted_p_value": 0.1,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "OVER_3_5_RF_GOALS_vs_BASELINE": {
+          "rank": 13,
+          "family_size_m": 20,
+          "raw_p_value": 0.013,
+          "holm_threshold_alpha": 0.00625,
+          "holm_adjusted_p_value": 0.104,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "BTTS_ENSEMBLE_GOALS_vs_BASELINE": {
+          "rank": 14,
+          "family_size_m": 20,
+          "raw_p_value": 0.017,
+          "holm_threshold_alpha": 0.00714,
+          "holm_adjusted_p_value": 0.119,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "OVER_3_5_XGB_GOALS_vs_BASELINE": {
+          "rank": 15,
+          "family_size_m": 20,
+          "raw_p_value": 0.019,
+          "holm_threshold_alpha": 0.00833,
+          "holm_adjusted_p_value": 0.119,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "BTTS_RF_GOALS_vs_BASELINE": {
+          "rank": 16,
+          "family_size_m": 20,
+          "raw_p_value": 0.021,
+          "holm_threshold_alpha": 0.01,
+          "holm_adjusted_p_value": 0.119,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "BTTS_XGB_GOALS_vs_BASELINE": {
+          "rank": 17,
+          "family_size_m": 20,
+          "raw_p_value": 0.025,
+          "holm_threshold_alpha": 0.0125,
+          "holm_adjusted_p_value": 0.119,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "OVER_1_5_RF_GOALS_vs_BASELINE": {
+          "rank": 18,
+          "family_size_m": 20,
+          "raw_p_value": 0.038,
+          "holm_threshold_alpha": 0.01667,
+          "holm_adjusted_p_value": 0.119,
+          "significant_raw_005": true,
+          "significant_holm_005": false
+        },
+        "BTTS_POISSON_vs_BASELINE": {
+          "rank": 19,
+          "family_size_m": 20,
+          "raw_p_value": 0.055,
+          "holm_threshold_alpha": 0.025,
+          "holm_adjusted_p_value": 0.119,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "OVER_1_5_XGB_GOALS_vs_BASELINE": {
+          "rank": 20,
+          "family_size_m": 20,
+          "raw_p_value": 0.077,
+          "holm_threshold_alpha": 0.05,
+          "holm_adjusted_p_value": 0.119,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        }
+      },
+      "family_4_goal_markets_trees_vs_poisson_m10": {
+        "OVER_3_5_XGB_GOALS_vs_POISSON": {
+          "rank": 1,
+          "family_size_m": 10,
+          "raw_p_value": 0.085,
+          "holm_threshold_alpha": 0.005,
+          "holm_adjusted_p_value": 0.85,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "OVER_1_5_XGB_GOALS_vs_POISSON": {
+          "rank": 2,
+          "family_size_m": 10,
+          "raw_p_value": 0.22,
+          "holm_threshold_alpha": 0.00556,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "OVER_3_5_RF_GOALS_vs_POISSON": {
+          "rank": 3,
+          "family_size_m": 10,
+          "raw_p_value": 0.238,
+          "holm_threshold_alpha": 0.00625,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "OVER_1_5_RF_GOALS_vs_POISSON": {
+          "rank": 4,
+          "family_size_m": 10,
+          "raw_p_value": 0.383,
+          "holm_threshold_alpha": 0.00714,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "BTTS_RF_GOALS_vs_POISSON": {
+          "rank": 5,
+          "family_size_m": 10,
+          "raw_p_value": 0.547,
+          "holm_threshold_alpha": 0.00833,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "OVER_2_5_XGB_GOALS_vs_POISSON": {
+          "rank": 6,
+          "family_size_m": 10,
+          "raw_p_value": 0.563,
+          "holm_threshold_alpha": 0.01,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "UNDER_2_5_XGB_GOALS_vs_POISSON": {
+          "rank": 7,
+          "family_size_m": 10,
+          "raw_p_value": 0.595,
+          "holm_threshold_alpha": 0.0125,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "OVER_2_5_RF_GOALS_vs_POISSON": {
+          "rank": 8,
+          "family_size_m": 10,
+          "raw_p_value": 0.742,
+          "holm_threshold_alpha": 0.01667,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "UNDER_2_5_RF_GOALS_vs_POISSON": {
+          "rank": 9,
+          "family_size_m": 10,
+          "raw_p_value": 0.842,
+          "holm_threshold_alpha": 0.025,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        },
+        "BTTS_XGB_GOALS_vs_POISSON": {
+          "rank": 10,
+          "family_size_m": 10,
+          "raw_p_value": 0.898,
+          "holm_threshold_alpha": 0.05,
+          "holm_adjusted_p_value": 1.0,
+          "significant_raw_005": false,
+          "significant_holm_005": false
+        }
+      }
+    }
+  },
+  "section_4_calibration_review": {
+    "multiclass_1x2_calibration": {
+      "POISSON": {
+        "multiclass_brier": 0.59239,
+        "brier_skill_score_vs_baseline": 0.0932,
+        "log_loss": 0.99028,
+        "ece_5_bins": 0.00486,
+        "ece_10_bins": 0.01316,
+        "accuracy": 0.523,
+        "reliability_diagram_5_bins": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 370,
+            "mean_predicted_prob": 0.1506,
+            "empirical_win_rate": 0.1351,
+            "calibration_gap": 0.0155
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1502,
+            "mean_predicted_prob": 0.2787,
+            "empirical_win_rate": 0.2783,
+            "calibration_gap": 0.0004
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 549,
+            "mean_predicted_prob": 0.4892,
+            "empirical_win_rate": 0.4918,
+            "calibration_gap": 0.0026
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 168,
+            "mean_predicted_prob": 0.671,
+            "empirical_win_rate": 0.6964,
+            "calibration_gap": 0.0254
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 15,
+            "mean_predicted_prob": 0.8255,
+            "empirical_win_rate": 0.8667,
+            "calibration_gap": 0.0411
+          }
+        ],
+        "per_class_calibration": {
+          "HOME": {
+            "empirical_freq": 0.4286,
+            "mean_predicted_prob": 0.444,
+            "bias": 0.0154,
+            "binary_brier": 0.21497,
+            "ece_5bins": 0.03264,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 48,
+                "mean_predicted_prob": 0.1604,
+                "empirical_rate": 0.2083,
+                "calibration_gap": 0.0479
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 315,
+                "mean_predicted_prob": 0.3119,
+                "empirical_rate": 0.2857,
+                "calibration_gap": 0.0262
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 353,
+                "mean_predicted_prob": 0.4946,
+                "empirical_rate": 0.4589,
+                "calibration_gap": 0.0357
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 137,
+                "mean_predicted_prob": 0.6747,
+                "empirical_rate": 0.708,
+                "calibration_gap": 0.0334
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 15,
+                "mean_predicted_prob": 0.8255,
+                "empirical_rate": 0.8667,
+                "calibration_gap": 0.0411
+              }
+            ]
+          },
+          "DRAW": {
+            "empirical_freq": 0.273,
+            "mean_predicted_prob": 0.2471,
+            "bias": -0.0259,
+            "binary_brier": 0.19758,
+            "ece_5bins": 0.02591,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 107,
+                "mean_predicted_prob": 0.1664,
+                "empirical_rate": 0.1682,
+                "calibration_gap": 0.0018
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 761,
+                "mean_predicted_prob": 0.2585,
+                "empirical_rate": 0.2878,
+                "calibration_gap": 0.0293
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 0,
+                "mean_predicted_prob": 0.5,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 0,
+                "mean_predicted_prob": 0.7,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          },
+          "AWAY": {
+            "empirical_freq": 0.2984,
+            "mean_predicted_prob": 0.3089,
+            "bias": 0.0105,
+            "binary_brier": 0.17984,
+            "ece_5bins": 0.04289,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 215,
+                "mean_predicted_prob": 0.1405,
+                "empirical_rate": 0.1023,
+                "calibration_gap": 0.0382
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 426,
+                "mean_predicted_prob": 0.2903,
+                "empirical_rate": 0.2559,
+                "calibration_gap": 0.0344
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 196,
+                "mean_predicted_prob": 0.4793,
+                "empirical_rate": 0.551,
+                "calibration_gap": 0.0717
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 31,
+                "mean_predicted_prob": 0.6549,
+                "empirical_rate": 0.6452,
+                "calibration_gap": 0.0097
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          }
+        }
+      },
+      "ELO": {
+        "multiclass_brier": 0.58332,
+        "brier_skill_score_vs_baseline": 0.1071,
+        "log_loss": 0.97939,
+        "ece_5_bins": 0.0154,
+        "ece_10_bins": 0.02692,
+        "accuracy": 0.5357,
+        "reliability_diagram_5_bins": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 345,
+            "mean_predicted_prob": 0.1538,
+            "empirical_win_rate": 0.0957,
+            "calibration_gap": 0.0581
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1502,
+            "mean_predicted_prob": 0.2716,
+            "empirical_win_rate": 0.2743,
+            "calibration_gap": 0.0027
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 559,
+            "mean_predicted_prob": 0.4913,
+            "empirical_win_rate": 0.5027,
+            "calibration_gap": 0.0114
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 198,
+            "mean_predicted_prob": 0.669,
+            "empirical_win_rate": 0.7172,
+            "calibration_gap": 0.0482
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "per_class_calibration": {
+          "HOME": {
+            "empirical_freq": 0.4286,
+            "mean_predicted_prob": 0.4251,
+            "bias": -0.0034,
+            "binary_brier": 0.20957,
+            "ece_5bins": 0.02607,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 76,
+                "mean_predicted_prob": 0.1552,
+                "empirical_rate": 0.0921,
+                "calibration_gap": 0.0631
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 318,
+                "mean_predicted_prob": 0.3083,
+                "empirical_rate": 0.2925,
+                "calibration_gap": 0.0158
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 333,
+                "mean_predicted_prob": 0.4921,
+                "empirical_rate": 0.5105,
+                "calibration_gap": 0.0184
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 141,
+                "mean_predicted_prob": 0.676,
+                "empirical_rate": 0.7234,
+                "calibration_gap": 0.0474
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          },
+          "DRAW": {
+            "empirical_freq": 0.273,
+            "mean_predicted_prob": 0.2347,
+            "bias": -0.0384,
+            "binary_brier": 0.19853,
+            "ece_5bins": 0.04412,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 92,
+                "mean_predicted_prob": 0.1792,
+                "empirical_rate": 0.1522,
+                "calibration_gap": 0.0271
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 776,
+                "mean_predicted_prob": 0.2412,
+                "empirical_rate": 0.2874,
+                "calibration_gap": 0.0461
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 0,
+                "mean_predicted_prob": 0.5,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 0,
+                "mean_predicted_prob": 0.7,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          },
+          "AWAY": {
+            "empirical_freq": 0.2984,
+            "mean_predicted_prob": 0.3402,
+            "bias": 0.0418,
+            "binary_brier": 0.17521,
+            "ece_5bins": 0.049,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 177,
+                "mean_predicted_prob": 0.1399,
+                "empirical_rate": 0.0678,
+                "calibration_gap": 0.0721
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 408,
+                "mean_predicted_prob": 0.3006,
+                "empirical_rate": 0.2353,
+                "calibration_gap": 0.0653
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 226,
+                "mean_predicted_prob": 0.49,
+                "empirical_rate": 0.4912,
+                "calibration_gap": 0.0011
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 57,
+                "mean_predicted_prob": 0.6515,
+                "empirical_rate": 0.7018,
+                "calibration_gap": 0.0503
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          }
+        }
+      },
+      "RANDOM_FOREST": {
+        "multiclass_brier": 0.57943,
+        "brier_skill_score_vs_baseline": 0.1131,
+        "log_loss": 0.96989,
+        "ece_5_bins": 0.023,
+        "ece_10_bins": 0.023,
+        "accuracy": 0.5265,
+        "reliability_diagram_5_bins": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 483,
+            "mean_predicted_prob": 0.1453,
+            "empirical_win_rate": 0.1242,
+            "calibration_gap": 0.0211
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1304,
+            "mean_predicted_prob": 0.2616,
+            "empirical_win_rate": 0.2799,
+            "calibration_gap": 0.0183
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 565,
+            "mean_predicted_prob": 0.5023,
+            "empirical_win_rate": 0.4673,
+            "calibration_gap": 0.035
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 240,
+            "mean_predicted_prob": 0.6792,
+            "empirical_win_rate": 0.7042,
+            "calibration_gap": 0.0249
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 12,
+            "mean_predicted_prob": 0.8271,
+            "empirical_win_rate": 0.8333,
+            "calibration_gap": 0.0062
+          }
+        ],
+        "per_class_calibration": {
+          "HOME": {
+            "empirical_freq": 0.4286,
+            "mean_predicted_prob": 0.4384,
+            "bias": 0.0099,
+            "binary_brier": 0.2098,
+            "ece_5bins": 0.01941,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 105,
+                "mean_predicted_prob": 0.1532,
+                "empirical_rate": 0.1238,
+                "calibration_gap": 0.0294
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 247,
+                "mean_predicted_prob": 0.2847,
+                "empirical_rate": 0.2915,
+                "calibration_gap": 0.0068
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 319,
+                "mean_predicted_prob": 0.4995,
+                "empirical_rate": 0.4702,
+                "calibration_gap": 0.0293
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 193,
+                "mean_predicted_prob": 0.6815,
+                "empirical_rate": 0.6943,
+                "calibration_gap": 0.0128
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 4,
+                "mean_predicted_prob": 0.8149,
+                "empirical_rate": 0.75,
+                "calibration_gap": 0.0649
+              }
+            ]
+          },
+          "DRAW": {
+            "empirical_freq": 0.273,
+            "mean_predicted_prob": 0.243,
+            "bias": -0.03,
+            "binary_brier": 0.19702,
+            "ece_5bins": 0.03244,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 107,
+                "mean_predicted_prob": 0.1743,
+                "empirical_rate": 0.1682,
+                "calibration_gap": 0.0061
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 760,
+                "mean_predicted_prob": 0.2525,
+                "empirical_rate": 0.2882,
+                "calibration_gap": 0.0357
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 1,
+                "mean_predicted_prob": 0.405,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.405
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 0,
+                "mean_predicted_prob": 0.7,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          },
+          "AWAY": {
+            "empirical_freq": 0.2984,
+            "mean_predicted_prob": 0.3185,
+            "bias": 0.0202,
+            "binary_brier": 0.17261,
+            "ece_5bins": 0.02903,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 271,
+                "mean_predicted_prob": 0.1308,
+                "empirical_rate": 0.107,
+                "calibration_gap": 0.0237
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 297,
+                "mean_predicted_prob": 0.2656,
+                "empirical_rate": 0.2492,
+                "calibration_gap": 0.0165
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 245,
+                "mean_predicted_prob": 0.5062,
+                "empirical_rate": 0.4653,
+                "calibration_gap": 0.0409
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 47,
+                "mean_predicted_prob": 0.6699,
+                "empirical_rate": 0.7447,
+                "calibration_gap": 0.0748
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 8,
+                "mean_predicted_prob": 0.8333,
+                "empirical_rate": 0.875,
+                "calibration_gap": 0.0417
+              }
+            ]
+          }
+        }
+      },
+      "XGBOOST": {
+        "multiclass_brier": 0.58162,
+        "brier_skill_score_vs_baseline": 0.1097,
+        "log_loss": 0.97254,
+        "ece_5_bins": 0.03524,
+        "ece_10_bins": 0.04232,
+        "accuracy": 0.5253,
+        "reliability_diagram_5_bins": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 472,
+            "mean_predicted_prob": 0.1372,
+            "empirical_win_rate": 0.1038,
+            "calibration_gap": 0.0334
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1322,
+            "mean_predicted_prob": 0.2606,
+            "empirical_win_rate": 0.2874,
+            "calibration_gap": 0.0268
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 559,
+            "mean_predicted_prob": 0.5117,
+            "empirical_win_rate": 0.458,
+            "calibration_gap": 0.0537
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 229,
+            "mean_predicted_prob": 0.675,
+            "empirical_win_rate": 0.7205,
+            "calibration_gap": 0.0455
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 22,
+            "mean_predicted_prob": 0.8214,
+            "empirical_win_rate": 0.8182,
+            "calibration_gap": 0.0032
+          }
+        ],
+        "per_class_calibration": {
+          "HOME": {
+            "empirical_freq": 0.4286,
+            "mean_predicted_prob": 0.4409,
+            "bias": 0.0123,
+            "binary_brier": 0.21145,
+            "ece_5bins": 0.02563,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 107,
+                "mean_predicted_prob": 0.1545,
+                "empirical_rate": 0.1215,
+                "calibration_gap": 0.033
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 263,
+                "mean_predicted_prob": 0.2822,
+                "empirical_rate": 0.3042,
+                "calibration_gap": 0.022
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 296,
+                "mean_predicted_prob": 0.5096,
+                "empirical_rate": 0.4662,
+                "calibration_gap": 0.0434
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 180,
+                "mean_predicted_prob": 0.6834,
+                "empirical_rate": 0.6833,
+                "calibration_gap": 0.0001
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 22,
+                "mean_predicted_prob": 0.8214,
+                "empirical_rate": 0.8182,
+                "calibration_gap": 0.0032
+              }
+            ]
+          },
+          "DRAW": {
+            "empirical_freq": 0.273,
+            "mean_predicted_prob": 0.2426,
+            "bias": -0.0305,
+            "binary_brier": 0.19776,
+            "ece_5bins": 0.03235,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 101,
+                "mean_predicted_prob": 0.151,
+                "empirical_rate": 0.1584,
+                "calibration_gap": 0.0074
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 765,
+                "mean_predicted_prob": 0.2542,
+                "empirical_rate": 0.2889,
+                "calibration_gap": 0.0346
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 2,
+                "mean_predicted_prob": 0.4098,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.4098
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 0,
+                "mean_predicted_prob": 0.7,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          },
+          "AWAY": {
+            "empirical_freq": 0.2984,
+            "mean_predicted_prob": 0.3165,
+            "bias": 0.0182,
+            "binary_brier": 0.17241,
+            "ece_5bins": 0.04951,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 264,
+                "mean_predicted_prob": 0.125,
+                "empirical_rate": 0.0758,
+                "calibration_gap": 0.0492
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 294,
+                "mean_predicted_prob": 0.2579,
+                "empirical_rate": 0.2687,
+                "calibration_gap": 0.0108
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 261,
+                "mean_predicted_prob": 0.5148,
+                "empirical_rate": 0.4521,
+                "calibration_gap": 0.0627
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 49,
+                "mean_predicted_prob": 0.6441,
+                "empirical_rate": 0.8571,
+                "calibration_gap": 0.213
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          }
+        }
+      },
+      "ENSEMBLE": {
+        "multiclass_brier": 0.58036,
+        "brier_skill_score_vs_baseline": 0.1117,
+        "log_loss": 0.97093,
+        "ece_5_bins": 0.03121,
+        "ece_10_bins": 0.03145,
+        "accuracy": 0.5253,
+        "reliability_diagram_5_bins": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 468,
+            "mean_predicted_prob": 0.1426,
+            "empirical_win_rate": 0.1111,
+            "calibration_gap": 0.0315
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1328,
+            "mean_predicted_prob": 0.2622,
+            "empirical_win_rate": 0.2854,
+            "calibration_gap": 0.0232
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 567,
+            "mean_predicted_prob": 0.5078,
+            "empirical_win_rate": 0.4621,
+            "calibration_gap": 0.0457
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 230,
+            "mean_predicted_prob": 0.6788,
+            "empirical_win_rate": 0.7217,
+            "calibration_gap": 0.0429
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 11,
+            "mean_predicted_prob": 0.818,
+            "empirical_win_rate": 0.8182,
+            "calibration_gap": 0.0001
+          }
+        ],
+        "per_class_calibration": {
+          "HOME": {
+            "empirical_freq": 0.4286,
+            "mean_predicted_prob": 0.4407,
+            "bias": 0.0122,
+            "binary_brier": 0.21065,
+            "ece_5bins": 0.02887,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 100,
+                "mean_predicted_prob": 0.1587,
+                "empirical_rate": 0.12,
+                "calibration_gap": 0.0387
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 265,
+                "mean_predicted_prob": 0.2847,
+                "empirical_rate": 0.3019,
+                "calibration_gap": 0.0172
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 308,
+                "mean_predicted_prob": 0.5063,
+                "empirical_rate": 0.461,
+                "calibration_gap": 0.0453
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 184,
+                "mean_predicted_prob": 0.6865,
+                "empirical_rate": 0.7011,
+                "calibration_gap": 0.0146
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 11,
+                "mean_predicted_prob": 0.818,
+                "empirical_rate": 0.8182,
+                "calibration_gap": 0.0001
+              }
+            ]
+          },
+          "DRAW": {
+            "empirical_freq": 0.273,
+            "mean_predicted_prob": 0.243,
+            "bias": -0.03,
+            "binary_brier": 0.1974,
+            "ece_5bins": 0.03113,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 108,
+                "mean_predicted_prob": 0.1619,
+                "empirical_rate": 0.1574,
+                "calibration_gap": 0.0045
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 760,
+                "mean_predicted_prob": 0.2546,
+                "empirical_rate": 0.2895,
+                "calibration_gap": 0.0349
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 0,
+                "mean_predicted_prob": 0.5,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 0,
+                "mean_predicted_prob": 0.7,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          },
+          "AWAY": {
+            "empirical_freq": 0.2984,
+            "mean_predicted_prob": 0.3162,
+            "bias": 0.0178,
+            "binary_brier": 0.1723,
+            "ece_5bins": 0.0344,
+            "reliability_bins_5": [
+              {
+                "bin_range": "0.00-0.20",
+                "count": 260,
+                "mean_predicted_prob": 0.1283,
+                "empirical_rate": 0.0885,
+                "calibration_gap": 0.0399
+              },
+              {
+                "bin_range": "0.20-0.40",
+                "count": 303,
+                "mean_predicted_prob": 0.2618,
+                "empirical_rate": 0.2607,
+                "calibration_gap": 0.0011
+              },
+              {
+                "bin_range": "0.40-0.60",
+                "count": 259,
+                "mean_predicted_prob": 0.5095,
+                "empirical_rate": 0.4633,
+                "calibration_gap": 0.0462
+              },
+              {
+                "bin_range": "0.60-0.80",
+                "count": 46,
+                "mean_predicted_prob": 0.648,
+                "empirical_rate": 0.8043,
+                "calibration_gap": 0.1563
+              },
+              {
+                "bin_range": "0.80-1.00",
+                "count": 0,
+                "mean_predicted_prob": 0.9,
+                "empirical_rate": 0.0,
+                "calibration_gap": 0.0
+              }
+            ]
+          }
+        }
+      }
+    },
+    "goal_markets_calibration_and_by_competition": {
+      "OVER_1_5": {
+        "reliability_bins_poisson": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 0,
+            "mean_predicted_prob": 0.3,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 32,
+            "mean_predicted_prob": 0.5616,
+            "empirical_rate": 0.6875,
+            "calibration_gap": 0.1259
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 518,
+            "mean_predicted_prob": 0.7273,
+            "empirical_rate": 0.7529,
+            "calibration_gap": 0.0256
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 318,
+            "mean_predicted_prob": 0.8482,
+            "empirical_rate": 0.8616,
+            "calibration_gap": 0.0135
+          }
+        ],
+        "reliability_bins_rf_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 0,
+            "mean_predicted_prob": 0.3,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 43,
+            "mean_predicted_prob": 0.5671,
+            "empirical_rate": 0.5581,
+            "calibration_gap": 0.0089
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 412,
+            "mean_predicted_prob": 0.7156,
+            "empirical_rate": 0.75,
+            "calibration_gap": 0.0344
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 413,
+            "mean_predicted_prob": 0.8525,
+            "empirical_rate": 0.8547,
+            "calibration_gap": 0.0022
+          }
+        ],
+        "reliability_bins_xgb_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 0,
+            "mean_predicted_prob": 0.3,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 45,
+            "mean_predicted_prob": 0.5513,
+            "empirical_rate": 0.6,
+            "calibration_gap": 0.0487
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 426,
+            "mean_predicted_prob": 0.7154,
+            "empirical_rate": 0.7559,
+            "calibration_gap": 0.0405
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 397,
+            "mean_predicted_prob": 0.8489,
+            "empirical_rate": 0.8489,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_ensemble_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 0,
+            "mean_predicted_prob": 0.3,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 32,
+            "mean_predicted_prob": 0.5616,
+            "empirical_rate": 0.6875,
+            "calibration_gap": 0.1259
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 518,
+            "mean_predicted_prob": 0.7273,
+            "empirical_rate": 0.7529,
+            "calibration_gap": 0.0256
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 318,
+            "mean_predicted_prob": 0.8482,
+            "empirical_rate": 0.8616,
+            "calibration_gap": 0.0135
+          }
+        ],
+        "by_competition": {
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "empirical_rate": 0.6991,
+            "mean_pred_ensemble": 0.7134,
+            "brier_ensemble": 0.20982,
+            "brier_poisson": 0.20982,
+            "brier_baseline": 0.21407,
+            "log_loss_ensemble": 0.61032,
+            "ece_ensemble": 0.045,
+            "accuracy_ensemble": 0.6991
+          },
+          "Premier League": {
+            "matches": 224,
+            "empirical_rate": 0.8929,
+            "mean_pred_ensemble": 0.7929,
+            "brier_ensemble": 0.10587,
+            "brier_poisson": 0.10587,
+            "brier_baseline": 0.11329,
+            "log_loss_ensemble": 0.37219,
+            "ece_ensemble": 0.1,
+            "accuracy_ensemble": 0.8929
+          },
+          "Serie A": {
+            "matches": 235,
+            "empirical_rate": 0.7447,
+            "mean_pred_ensemble": 0.7369,
+            "brier_ensemble": 0.18218,
+            "brier_poisson": 0.18218,
+            "brier_baseline": 0.19037,
+            "log_loss_ensemble": 0.54767,
+            "ece_ensemble": 0.00777,
+            "accuracy_ensemble": 0.7447
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "empirical_rate": 0.8361,
+            "mean_pred_ensemble": 0.8328,
+            "brier_ensemble": 0.13498,
+            "brier_poisson": 0.13498,
+            "brier_baseline": 0.14283,
+            "log_loss_ensemble": 0.44052,
+            "ece_ensemble": 0.0033,
+            "accuracy_ensemble": 0.8361
+          }
+        }
+      },
+      "OVER_2_5": {
+        "reliability_bins_poisson": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 1,
+            "mean_predicted_prob": 0.1672,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.1672
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 114,
+            "mean_predicted_prob": 0.3453,
+            "empirical_rate": 0.2719,
+            "calibration_gap": 0.0734
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 528,
+            "mean_predicted_prob": 0.5066,
+            "empirical_rate": 0.5455,
+            "calibration_gap": 0.0389
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 220,
+            "mean_predicted_prob": 0.67,
+            "empirical_rate": 0.6818,
+            "calibration_gap": 0.0118
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 5,
+            "mean_predicted_prob": 0.8261,
+            "empirical_rate": 0.4,
+            "calibration_gap": 0.4261
+          }
+        ],
+        "reliability_bins_rf_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 138,
+            "mean_predicted_prob": 0.3758,
+            "empirical_rate": 0.2971,
+            "calibration_gap": 0.0787
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 427,
+            "mean_predicted_prob": 0.4907,
+            "empirical_rate": 0.5293,
+            "calibration_gap": 0.0386
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 303,
+            "mean_predicted_prob": 0.6702,
+            "empirical_rate": 0.6733,
+            "calibration_gap": 0.0031
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_xgb_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 129,
+            "mean_predicted_prob": 0.3771,
+            "empirical_rate": 0.3411,
+            "calibration_gap": 0.036
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 474,
+            "mean_predicted_prob": 0.4944,
+            "empirical_rate": 0.5169,
+            "calibration_gap": 0.0225
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 265,
+            "mean_predicted_prob": 0.6681,
+            "empirical_rate": 0.6868,
+            "calibration_gap": 0.0187
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_ensemble_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 124,
+            "mean_predicted_prob": 0.3601,
+            "empirical_rate": 0.2661,
+            "calibration_gap": 0.0939
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 485,
+            "mean_predicted_prob": 0.5009,
+            "empirical_rate": 0.532,
+            "calibration_gap": 0.0311
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 257,
+            "mean_predicted_prob": 0.6693,
+            "empirical_rate": 0.6926,
+            "calibration_gap": 0.0233
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 2,
+            "mean_predicted_prob": 0.8062,
+            "empirical_rate": 1.0,
+            "calibration_gap": 0.1938
+          }
+        ],
+        "by_competition": {
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "empirical_rate": 0.4469,
+            "mean_pred_ensemble": 0.4652,
+            "brier_ensemble": 0.2321,
+            "brier_poisson": 0.23194,
+            "brier_baseline": 0.25195,
+            "log_loss_ensemble": 0.65638,
+            "ece_ensemble": 0.03772,
+            "accuracy_ensemble": 0.5973
+          },
+          "Premier League": {
+            "matches": 224,
+            "empirical_rate": 0.6607,
+            "mean_pred_ensemble": 0.5683,
+            "brier_ensemble": 0.23674,
+            "brier_poisson": 0.23733,
+            "brier_baseline": 0.24513,
+            "log_loss_ensemble": 0.66628,
+            "ece_ensemble": 0.09241,
+            "accuracy_ensemble": 0.5714
+          },
+          "Serie A": {
+            "matches": 235,
+            "empirical_rate": 0.4979,
+            "mean_pred_ensemble": 0.4859,
+            "brier_ensemble": 0.22741,
+            "brier_poisson": 0.22783,
+            "brier_baseline": 0.25032,
+            "log_loss_ensemble": 0.64716,
+            "ece_ensemble": 0.06388,
+            "accuracy_ensemble": 0.6723
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "empirical_rate": 0.5738,
+            "mean_pred_ensemble": 0.6261,
+            "brier_ensemble": 0.23916,
+            "brier_poisson": 0.24022,
+            "brier_baseline": 0.2479,
+            "log_loss_ensemble": 0.6723,
+            "ece_ensemble": 0.05657,
+            "accuracy_ensemble": 0.5902
+          }
+        }
+      },
+      "UNDER_2_5": {
+        "reliability_bins_poisson": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 5,
+            "mean_predicted_prob": 0.1739,
+            "empirical_rate": 0.6,
+            "calibration_gap": 0.4261
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 220,
+            "mean_predicted_prob": 0.33,
+            "empirical_rate": 0.3182,
+            "calibration_gap": 0.0118
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 528,
+            "mean_predicted_prob": 0.4934,
+            "empirical_rate": 0.4545,
+            "calibration_gap": 0.0389
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 114,
+            "mean_predicted_prob": 0.6547,
+            "empirical_rate": 0.7281,
+            "calibration_gap": 0.0734
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 1,
+            "mean_predicted_prob": 0.8328,
+            "empirical_rate": 1.0,
+            "calibration_gap": 0.1672
+          }
+        ],
+        "reliability_bins_rf_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 298,
+            "mean_predicted_prob": 0.3287,
+            "empirical_rate": 0.3255,
+            "calibration_gap": 0.0032
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 435,
+            "mean_predicted_prob": 0.5099,
+            "empirical_rate": 0.4736,
+            "calibration_gap": 0.0364
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 135,
+            "mean_predicted_prob": 0.6241,
+            "empirical_rate": 0.6963,
+            "calibration_gap": 0.0722
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_xgb_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 262,
+            "mean_predicted_prob": 0.3313,
+            "empirical_rate": 0.3168,
+            "calibration_gap": 0.0145
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 472,
+            "mean_predicted_prob": 0.5043,
+            "empirical_rate": 0.4767,
+            "calibration_gap": 0.0276
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 134,
+            "mean_predicted_prob": 0.6219,
+            "empirical_rate": 0.6642,
+            "calibration_gap": 0.0422
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_ensemble_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 2,
+            "mean_predicted_prob": 0.1903,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.1903
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 251,
+            "mean_predicted_prob": 0.3294,
+            "empirical_rate": 0.3068,
+            "calibration_gap": 0.0227
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 490,
+            "mean_predicted_prob": 0.4981,
+            "empirical_rate": 0.4673,
+            "calibration_gap": 0.0308
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 125,
+            "mean_predicted_prob": 0.6402,
+            "empirical_rate": 0.728,
+            "calibration_gap": 0.0878
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "empirical_rate": 0.5531,
+            "mean_pred_ensemble": 0.5352,
+            "brier_ensemble": 0.23217,
+            "brier_poisson": 0.23194,
+            "brier_baseline": 0.25195,
+            "log_loss_ensemble": 0.65651,
+            "ece_ensemble": 0.03247,
+            "accuracy_ensemble": 0.5885
+          },
+          "Premier League": {
+            "matches": 224,
+            "empirical_rate": 0.3393,
+            "mean_pred_ensemble": 0.4325,
+            "brier_ensemble": 0.23702,
+            "brier_poisson": 0.23733,
+            "brier_baseline": 0.24513,
+            "log_loss_ensemble": 0.66687,
+            "ece_ensemble": 0.09324,
+            "accuracy_ensemble": 0.5625
+          },
+          "Serie A": {
+            "matches": 235,
+            "empirical_rate": 0.5021,
+            "mean_pred_ensemble": 0.5142,
+            "brier_ensemble": 0.22733,
+            "brier_poisson": 0.22783,
+            "brier_baseline": 0.25032,
+            "log_loss_ensemble": 0.64696,
+            "ece_ensemble": 0.06379,
+            "accuracy_ensemble": 0.6723
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "empirical_rate": 0.4262,
+            "mean_pred_ensemble": 0.3742,
+            "brier_ensemble": 0.2392,
+            "brier_poisson": 0.24022,
+            "brier_baseline": 0.2479,
+            "log_loss_ensemble": 0.67243,
+            "ece_ensemble": 0.05618,
+            "accuracy_ensemble": 0.5847
+          }
+        }
+      },
+      "OVER_3_5": {
+        "reliability_bins_poisson": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 124,
+            "mean_predicted_prob": 0.1609,
+            "empirical_rate": 0.1452,
+            "calibration_gap": 0.0158
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 565,
+            "mean_predicted_prob": 0.2975,
+            "empirical_rate": 0.3522,
+            "calibration_gap": 0.0547
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 171,
+            "mean_predicted_prob": 0.4704,
+            "empirical_rate": 0.4386,
+            "calibration_gap": 0.0318
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 8,
+            "mean_predicted_prob": 0.6374,
+            "empirical_rate": 0.5,
+            "calibration_gap": 0.1374
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_rf_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 132,
+            "mean_predicted_prob": 0.1913,
+            "empirical_rate": 0.1894,
+            "calibration_gap": 0.0019
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 503,
+            "mean_predicted_prob": 0.273,
+            "empirical_rate": 0.3241,
+            "calibration_gap": 0.0511
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 223,
+            "mean_predicted_prob": 0.4987,
+            "empirical_rate": 0.4709,
+            "calibration_gap": 0.0278
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 10,
+            "mean_predicted_prob": 0.612,
+            "empirical_rate": 0.3,
+            "calibration_gap": 0.312
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_xgb_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 145,
+            "mean_predicted_prob": 0.187,
+            "empirical_rate": 0.2345,
+            "calibration_gap": 0.0475
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 495,
+            "mean_predicted_prob": 0.276,
+            "empirical_rate": 0.3212,
+            "calibration_gap": 0.0452
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 215,
+            "mean_predicted_prob": 0.4858,
+            "empirical_rate": 0.4605,
+            "calibration_gap": 0.0254
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 13,
+            "mean_predicted_prob": 0.6201,
+            "empirical_rate": 0.3077,
+            "calibration_gap": 0.3124
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_ensemble_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 124,
+            "mean_predicted_prob": 0.1609,
+            "empirical_rate": 0.1452,
+            "calibration_gap": 0.0158
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 565,
+            "mean_predicted_prob": 0.2975,
+            "empirical_rate": 0.3522,
+            "calibration_gap": 0.0547
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 171,
+            "mean_predicted_prob": 0.4704,
+            "empirical_rate": 0.4386,
+            "calibration_gap": 0.0318
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 8,
+            "mean_predicted_prob": 0.6374,
+            "empirical_rate": 0.5,
+            "calibration_gap": 0.1374
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "empirical_rate": 0.2699,
+            "mean_pred_ensemble": 0.253,
+            "brier_ensemble": 0.18594,
+            "brier_poisson": 0.18594,
+            "brier_baseline": 0.19805,
+            "log_loss_ensemble": 0.55709,
+            "ece_ensemble": 0.01871,
+            "accuracy_ensemble": 0.7345
+          },
+          "Premier League": {
+            "matches": 224,
+            "empirical_rate": 0.4732,
+            "mean_pred_ensemble": 0.3459,
+            "brier_ensemble": 0.26734,
+            "brier_poisson": 0.26734,
+            "brier_baseline": 0.27882,
+            "log_loss_ensemble": 0.73283,
+            "ece_ensemble": 0.13305,
+            "accuracy_ensemble": 0.5134
+          },
+          "Serie A": {
+            "matches": 235,
+            "empirical_rate": 0.2638,
+            "mean_pred_ensemble": 0.2724,
+            "brier_ensemble": 0.18324,
+            "brier_poisson": 0.18324,
+            "brier_baseline": 0.19563,
+            "log_loss_ensemble": 0.54867,
+            "ece_ensemble": 0.02033,
+            "accuracy_ensemble": 0.7277
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "empirical_rate": 0.3661,
+            "mean_pred_ensemble": 0.4093,
+            "brier_ensemble": 0.2346,
+            "brier_poisson": 0.2346,
+            "brier_baseline": 0.23627,
+            "log_loss_ensemble": 0.66124,
+            "ece_ensemble": 0.0753,
+            "accuracy_ensemble": 0.6175
+          }
+        }
+      },
+      "BTTS": {
+        "reliability_bins_poisson": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 47,
+            "mean_predicted_prob": 0.3652,
+            "empirical_rate": 0.4043,
+            "calibration_gap": 0.0391
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 622,
+            "mean_predicted_prob": 0.5109,
+            "empirical_rate": 0.545,
+            "calibration_gap": 0.0341
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 199,
+            "mean_predicted_prob": 0.6461,
+            "empirical_rate": 0.6231,
+            "calibration_gap": 0.023
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_rf_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 53,
+            "mean_predicted_prob": 0.3835,
+            "empirical_rate": 0.4528,
+            "calibration_gap": 0.0693
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 629,
+            "mean_predicted_prob": 0.5192,
+            "empirical_rate": 0.539,
+            "calibration_gap": 0.0197
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 186,
+            "mean_predicted_prob": 0.6305,
+            "empirical_rate": 0.6398,
+            "calibration_gap": 0.0093
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_xgb_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 34,
+            "mean_predicted_prob": 0.3881,
+            "empirical_rate": 0.4412,
+            "calibration_gap": 0.0531
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 660,
+            "mean_predicted_prob": 0.5129,
+            "empirical_rate": 0.5394,
+            "calibration_gap": 0.0265
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 174,
+            "mean_predicted_prob": 0.6348,
+            "empirical_rate": 0.6379,
+            "calibration_gap": 0.0031
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "reliability_bins_ensemble_goals": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 0,
+            "mean_predicted_prob": 0.1,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 32,
+            "mean_predicted_prob": 0.3864,
+            "empirical_rate": 0.3438,
+            "calibration_gap": 0.0427
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 657,
+            "mean_predicted_prob": 0.5128,
+            "empirical_rate": 0.5419,
+            "calibration_gap": 0.029
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 179,
+            "mean_predicted_prob": 0.6368,
+            "empirical_rate": 0.6425,
+            "calibration_gap": 0.0056
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "empirical_rate": 0.4602,
+            "mean_pred_ensemble": 0.4909,
+            "brier_ensemble": 0.24491,
+            "brier_poisson": 0.24603,
+            "brier_baseline": 0.25284,
+            "log_loss_ensemble": 0.68287,
+            "ece_ensemble": 0.03071,
+            "accuracy_ensemble": 0.5708
+          },
+          "Premier League": {
+            "matches": 224,
+            "empirical_rate": 0.625,
+            "mean_pred_ensemble": 0.5484,
+            "brier_ensemble": 0.24778,
+            "brier_poisson": 0.24676,
+            "brier_baseline": 0.24404,
+            "log_loss_ensemble": 0.6891,
+            "ece_ensemble": 0.10917,
+            "accuracy_ensemble": 0.5848
+          },
+          "Serie A": {
+            "matches": 235,
+            "empirical_rate": 0.5404,
+            "mean_pred_ensemble": 0.5077,
+            "brier_ensemble": 0.24142,
+            "brier_poisson": 0.24195,
+            "brier_baseline": 0.24855,
+            "log_loss_ensemble": 0.67584,
+            "ece_ensemble": 0.03276,
+            "accuracy_ensemble": 0.5872
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "empirical_rate": 0.6066,
+            "mean_pred_ensemble": 0.6021,
+            "brier_ensemble": 0.23304,
+            "brier_poisson": 0.23518,
+            "brier_baseline": 0.24503,
+            "log_loss_ensemble": 0.65861,
+            "ece_ensemble": 0.03883,
+            "accuracy_ensemble": 0.5956
+          }
+        }
+      }
+    }
+  },
+  "section_5_reproducibility_and_artifacts": {
+    "metrics_reproducibility_checks": {
+      "POISSON": {
+        "reported_brier": 0.59239,
+        "recalculated_brier": 0.59239,
+        "reported_log_loss": 0.99028,
+        "recalculated_log_loss": 0.99028,
+        "exact_match": true
+      },
+      "ELO": {
+        "reported_brier": 0.58332,
+        "recalculated_brier": 0.58332,
+        "reported_log_loss": 0.97939,
+        "recalculated_log_loss": 0.97939,
+        "exact_match": true
+      },
+      "RANDOM_FOREST": {
+        "reported_brier": 0.57943,
+        "recalculated_brier": 0.57943,
+        "reported_log_loss": 0.96989,
+        "recalculated_log_loss": 0.96989,
+        "exact_match": true
+      },
+      "XGBOOST": {
+        "reported_brier": 0.58162,
+        "recalculated_brier": 0.58162,
+        "reported_log_loss": 0.97254,
+        "recalculated_log_loss": 0.97254,
+        "exact_match": true
+      },
+      "ENSEMBLE": {
+        "reported_brier": 0.58036,
+        "recalculated_brier": 0.58036,
+        "reported_log_loss": 0.97093,
+        "recalculated_log_loss": 0.97093,
+        "exact_match": true
+      }
+    },
+    "reproducibility_discrepancies_count": 0,
+    "artifacts_on_disk": [
+      {
+        "filename": "sportpredict_models_v1.0.0-mvp.joblib",
+        "size_bytes": 740822,
+        "sha256": "8db65a188a7958ee045d084ec38021dc2a3791c5442b1cc61ef7bf07476a4d34"
+      },
+      {
+        "filename": "sportpredict_models_v1.1.0.joblib",
+        "size_bytes": 740822,
+        "sha256": "e3998c30b3dcb56b84a36a792c95038d73f53db9f65ac37fee312b2f5293a665"
+      },
+      {
+        "filename": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "size_bytes": 7272958,
+        "sha256": "0c7b596b7c48af98206772cc3d3553b313ad43df8fed6a085c1c3c1b97f4f78e"
+      },
+      {
+        "filename": "sportpredict_models_v2.4.0-real-cc0.joblib",
+        "size_bytes": 7299138,
+        "sha256": "bc281c637ad459c4b5219f4f2e1e24206286a3f8620b9c05827f90a088ffee9f"
+      },
+      {
+        "filename": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "size_bytes": 7299138,
+        "sha256": "3052813e9f3cb0504fd3e9177d76770764db3f26459e7f7a848498b4f8bb7655"
+      },
+      {
+        "filename": "sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "size_bytes": 20005465,
+        "sha256": "4e3b8f6309f682170b211768f2943491479badb2f2140be688e3c082145ac56a"
+      }
+    ],
+    "db_models_versions_count": 25,
+    "db_models_inventory": [
+      {
+        "id": 1,
+        "version": "v1.0.0-mvp",
+        "model_code": "POISSON",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.59893,
+        "test_brier_score": 0.62604
+      },
+      {
+        "id": 2,
+        "version": "v1.0.0-mvp",
+        "model_code": "ELO",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.62858,
+        "test_brier_score": 0.64583
+      },
+      {
+        "id": 3,
+        "version": "v1.0.0-mvp",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.5808,
+        "test_brier_score": 0.68457
+      },
+      {
+        "id": 4,
+        "version": "v1.0.0-mvp",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.56231,
+        "test_brier_score": 0.67487
+      },
+      {
+        "id": 5,
+        "version": "v1.0.0-mvp",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.56789,
+        "test_brier_score": 0.64825
+      },
+      {
+        "id": 6,
+        "version": "v1.1.0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.59893,
+        "test_brier_score": 0.62604
+      },
+      {
+        "id": 7,
+        "version": "v1.1.0",
+        "model_code": "ELO",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.62858,
+        "test_brier_score": 0.64583
+      },
+      {
+        "id": 8,
+        "version": "v1.1.0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.5808,
+        "test_brier_score": 0.68457
+      },
+      {
+        "id": 9,
+        "version": "v1.1.0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.56231,
+        "test_brier_score": 0.67487
+      },
+      {
+        "id": 10,
+        "version": "v1.1.0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "train_matches_count": 90,
+        "val_brier_score": 0.56789,
+        "test_brier_score": 0.64825
+      },
+      {
+        "id": 11,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "train_matches_count": 2602,
+        "val_brier_score": 0.58403,
+        "test_brier_score": 0.58981
+      },
+      {
+        "id": 12,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ELO",
+        "is_active": false,
+        "train_matches_count": 2602,
+        "val_brier_score": 0.58208,
+        "test_brier_score": 0.58467
+      },
+      {
+        "id": 13,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "train_matches_count": 2602,
+        "val_brier_score": 0.56963,
+        "test_brier_score": 0.58168
+      },
+      {
+        "id": 14,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "train_matches_count": 2602,
+        "val_brier_score": 0.57249,
+        "test_brier_score": 0.58336
+      },
+      {
+        "id": 15,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "train_matches_count": 2602,
+        "val_brier_score": 0.56959,
+        "test_brier_score": 0.58131
+      },
+      {
+        "id": 16,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "POISSON",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58259,
+        "test_brier_score": 0.59239
+      },
+      {
+        "id": 17,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ELO",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.5767,
+        "test_brier_score": 0.58332
+      },
+      {
+        "id": 18,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "RANDOM_FOREST",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56769,
+        "test_brier_score": 0.57943
+      },
+      {
+        "id": 19,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "XGBOOST",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56584,
+        "test_brier_score": 0.58162
+      },
+      {
+        "id": 20,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ENSEMBLE",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56556,
+        "test_brier_score": 0.58036
+      },
+      {
+        "id": 26,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "POISSON",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58266,
+        "test_brier_score": 0.59274
+      },
+      {
+        "id": 27,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "ELO",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58413,
+        "test_brier_score": 0.58879
+      },
+      {
+        "id": 28,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.57042,
+        "test_brier_score": 0.58259
+      },
+      {
+        "id": 29,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "XGBOOST",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.57199,
+        "test_brier_score": 0.58363
+      },
+      {
+        "id": 30,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "ENSEMBLE",
+        "is_active": true,
+        "train_matches_count": 2605,
+        "val_brier_score": 0.5703,
+        "test_brier_score": 0.58232
+      }
+    ]
+  }
+}

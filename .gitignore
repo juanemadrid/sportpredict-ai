@@ -1,0 +1,28 @@
+# Entornos Python y herramientas locales
+.venv/
+backend/.venv/
+.tools/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Variables de entorno reales
+.env
+.env.local
+backend/.env
+frontend/.env.local
+
+# Base de datos local de desarrollo y caché
+backend/data/*.db
+backend/data/*.db-journal
+backend/data/cache/
+
+# Dependencias y compilación Node / Next.js
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+next-env.d.ts
+*.tsbuildinfo

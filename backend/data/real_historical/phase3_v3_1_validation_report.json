@@ -1,0 +1,5334 @@
+{
+  "executed_at_utc": "2026-11-09T18:06:13.438469+00:00",
+  "version_created": "v3.1.0",
+  "section_1_oof_stacking_correction": {
+    "total_train_matches": 2605,
+    "total_predictions_generated": 2605,
+    "distinct_timestamps_in_train": 1773,
+    "expanding_window_refits_count": 34,
+    "expanding_step_size": 80,
+    "min_fit_matches": 20,
+    "temporal_violations_count": 0,
+    "self_inclusion_violations_count": 0,
+    "strictly_past_only_guaranteed": true,
+    "sample_trace": [
+      {
+        "match_id": 158,
+        "target_kickoff_utc": "2021-08-13T20:00:00+00:00",
+        "prior_matches_available": 0,
+        "model_fitted_on_count": 0,
+        "max_prior_kickoff_utc": null,
+        "strictly_past_only": true
+      },
+      {
+        "match_id": 3578,
+        "target_kickoff_utc": "2021-08-13T20:30:00+00:00",
+        "prior_matches_available": 1,
+        "model_fitted_on_count": 0,
+        "max_prior_kickoff_utc": "2021-08-13T20:00:00+00:00",
+        "strictly_past_only": true
+      },
+      {
+        "match_id": 1298,
+        "target_kickoff_utc": "2021-08-13T21:00:00+00:00",
+        "prior_matches_available": 2,
+        "model_fitted_on_count": 0,
+        "max_prior_kickoff_utc": "2021-08-13T20:30:00+00:00",
+        "strictly_past_only": true
+      },
+      {
+        "match_id": 159,
+        "target_kickoff_utc": "2021-08-14T12:30:00+00:00",
+        "prior_matches_available": 3,
+        "model_fitted_on_count": 0,
+        "max_prior_kickoff_utc": "2021-08-13T21:00:00+00:00",
+        "strictly_past_only": true
+      },
+      {
+        "match_id": 160,
+        "target_kickoff_utc": "2021-08-14T15:00:00+00:00",
+        "prior_matches_available": 4,
+        "model_fitted_on_count": 0,
+        "max_prior_kickoff_utc": "2021-08-14T12:30:00+00:00",
+        "strictly_past_only": true
+      },
+      {
+        "match_id": 2782,
+        "target_kickoff_utc": "2022-05-01T15:00:00+00:00",
+        "prior_matches_available": 1306,
+        "model_fitted_on_count": 1268,
+        "max_prior_kickoff_utc": "2022-05-01T14:00:00+00:00",
+        "strictly_past_only": true
+      },
+      {
+        "match_id": 2783,
+        "target_kickoff_utc": "2022-05-01T15:00:00+00:00",
+        "prior_matches_available": 1306,
+        "model_fitted_on_count": 1268,
+        "max_prior_kickoff_utc": "2022-05-01T14:00:00+00:00",
+        "strictly_past_only": true
+      },
+      {
+        "match_id": 846,
+        "target_kickoff_utc": "2023-04-22T15:00:00+00:00",
+        "prior_matches_available": 2600,
+        "model_fitted_on_count": 2561,
+        "max_prior_kickoff_utc": "2023-04-22T14:00:00+00:00",
+        "strictly_past_only": true
+      }
+    ],
+    "train_lambda_total_rmse_v3_0_insample": 1.58867,
+    "train_lambda_total_rmse_v3_1_oof": 1.69347,
+    "train_lambda_total_corr_v3_0_insample": 0.3376,
+    "train_lambda_total_corr_v3_1_oof": 0.14889
+  },
+  "section_2_v3_0_vs_v3_1_goal_markets_comparison": {
+    "OVER_1_5": {
+      "primary_model_selected_v3_1": "POISSON",
+      "primary_selection_reason": "Poisson/Dixon-Coles seleccionado como modelo principal de OVER_1_5: Brier Poisson=0.15973 vs Ensamble OOF=0.16000 (Δ=+0.00027, p=0.5820, sin ventaja estadística del ensamble).",
+      "poisson_feature_importance_share": {
+        "rf_v3_0_insample": 0.5577,
+        "rf_v3_1_oof": 0.2686,
+        "xgb_v3_0_insample": 0.2547,
+        "xgb_v3_1_oof": 0.1614
+      },
+      "rf_v3_1_top10_features": {
+        "poisson_market_prob": 0.0931,
+        "poisson_lambda_total": 0.0835,
+        "poisson_lambda_home": 0.0635,
+        "combined_goal_env10": 0.061,
+        "home_home_gf_avg": 0.0567,
+        "home_elo_pre": 0.0415,
+        "elo_diff": 0.0378,
+        "away_away_ga_avg": 0.0377,
+        "away_elo_pre": 0.0359,
+        "home_over25_rate10": 0.0349
+      },
+      "xgb_v3_1_top10_features": {
+        "poisson_lambda_home": 0.0485,
+        "poisson_market_prob": 0.0485,
+        "home_home_gf_avg": 0.0418,
+        "home_pts_last10": 0.04,
+        "poisson_lambda_total": 0.038,
+        "away_pts_last10": 0.0359,
+        "home_btts_rate10": 0.0343,
+        "home_over25_rate10": 0.0339,
+        "combined_goal_env10": 0.0334,
+        "league_pos_diff": 0.0329
+      },
+      "ensemble_weights_v3_0": {
+        "POISSON": 1.0,
+        "RF_GOALS": 0.0,
+        "XGB_GOALS": 0.0
+      },
+      "ensemble_weights_v3_1": {
+        "POISSON": 0.7515,
+        "RF_GOALS": 0.1266,
+        "XGB_GOALS": 0.1219
+      },
+      "metrics_test_868": {
+        "BASELINE": {
+          "brier_score": 0.16663,
+          "train_base_rate": 0.7601,
+          "test_empirical_rate": 0.7903
+        },
+        "POISSON": {
+          "market_code": "OVER_1_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7654,
+          "brier_score": 0.15973,
+          "brier_ci_95": [
+            0.14578,
+            0.17368
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.4961,
+          "ece_calibration": 0.02488,
+          "accuracy": 0.7903,
+          "f1_score": 0.8826,
+          "test_vs_baseline": {
+            "model_a": "POISSON (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.0069,
+            "ci_95_diff": [
+              -0.01198,
+              -0.00189
+            ],
+            "boot_std_error": 0.0026,
+            "z_statistic": -2.653,
+            "p_value_two_sided": 0.01,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00690, IC95% [-0.01198, -0.00189], p = 0.0100)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          },
+          "ece_10_bins": 0.03545,
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 32,
+              "mean_predicted_prob": 0.5616,
+              "empirical_rate": 0.6875,
+              "calibration_gap": 0.1259
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 518,
+              "mean_predicted_prob": 0.7273,
+              "empirical_rate": 0.7529,
+              "calibration_gap": 0.0256
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 318,
+              "mean_predicted_prob": 0.8482,
+              "empirical_rate": 0.8616,
+              "calibration_gap": 0.0135
+            }
+          ]
+        },
+        "RF_GOALS_V3_0": {
+          "market_code": "OVER_1_5",
+          "model_name": "RF_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7734,
+          "brier_score": 0.16056,
+          "brier_ci_95": [
+            0.14605,
+            0.17506
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.49803,
+          "ece_calibration": 0.01781,
+          "accuracy": 0.788,
+          "f1_score": 0.8813,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_0 (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16056,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.00607,
+            "ci_95_diff": [
+              -0.01177,
+              -0.00028
+            ],
+            "boot_std_error": 0.00288,
+            "z_statistic": -2.1043,
+            "p_value_two_sided": 0.038,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_0 (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00607, IC95% [-0.01177, -0.00028], p = 0.0380)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_0 (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16056,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.00083,
+            "ci_95_diff": [
+              -0.0009,
+              0.00266
+            ],
+            "boot_std_error": 0.00092,
+            "z_statistic": 0.9019,
+            "p_value_two_sided": 0.383,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS_V3_0 (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00083, IC95% [-0.00090, +0.00266], p = 0.3830; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS_V3_1": {
+          "market_code": "OVER_1_5",
+          "model_name": "RF_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7572,
+          "brier_score": 0.16342,
+          "brier_ci_95": [
+            0.14976,
+            0.17707
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.50724,
+          "ece_calibration": 0.03313,
+          "accuracy": 0.7903,
+          "f1_score": 0.8829,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_1 (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16342,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.00321,
+            "ci_95_diff": [
+              -0.0051,
+              -0.00146
+            ],
+            "boot_std_error": 0.00094,
+            "z_statistic": -3.4107,
+            "p_value_two_sided": 0.002,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_1 (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00321, IC95% [-0.00510, -0.00146], p = 0.0020)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_1 (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16342,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.00369,
+            "ci_95_diff": [
+              7e-05,
+              0.00734
+            ],
+            "boot_std_error": 0.00188,
+            "z_statistic": 1.9651,
+            "p_value_two_sided": 0.047,
+            "statistically_significant_95": true,
+            "verdict": "RF_GOALS_V3_1 (OVER_1_5) es significativamente PEOR que Poisson (OVER_1_5) al 95% (Δ Brier = +0.00369, IC95% [+0.00007, +0.00734], p = 0.0470)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 0,
+              "mean_predicted_prob": 0.5,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 802,
+              "mean_predicted_prob": 0.753,
+              "empirical_rate": 0.7843,
+              "calibration_gap": 0.0313
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 66,
+              "mean_predicted_prob": 0.8085,
+              "empirical_rate": 0.8636,
+              "calibration_gap": 0.0551
+            }
+          ]
+        },
+        "XGB_GOALS_V3_0": {
+          "market_code": "OVER_1_5",
+          "model_name": "XGB_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7679,
+          "brier_score": 0.16124,
+          "brier_ci_95": [
+            0.1469,
+            0.17558
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.50002,
+          "ece_calibration": 0.02239,
+          "accuracy": 0.788,
+          "f1_score": 0.8811,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_0 (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16124,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.00539,
+            "ci_95_diff": [
+              -0.01153,
+              0.00061
+            ],
+            "boot_std_error": 0.00302,
+            "z_statistic": -1.7841,
+            "p_value_two_sided": 0.077,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_0 (OVER_1_5) y Baseline (OVER_1_5) (Δ Brier = -0.00539, IC95% [-0.01153, +0.00061], p = 0.0770; el 0 está dentro del IC)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_0 (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16124,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.00151,
+            "ci_95_diff": [
+              -0.00102,
+              0.00388
+            ],
+            "boot_std_error": 0.00124,
+            "z_statistic": 1.2121,
+            "p_value_two_sided": 0.22,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_0 (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00151, IC95% [-0.00102, +0.00388], p = 0.2200; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS_V3_1": {
+          "market_code": "OVER_1_5",
+          "model_name": "XGB_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7555,
+          "brier_score": 0.16489,
+          "brier_ci_95": [
+            0.15121,
+            0.17856
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.51128,
+          "ece_calibration": 0.0348,
+          "accuracy": 0.7903,
+          "f1_score": 0.8829,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_1 (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16489,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.00174,
+            "ci_95_diff": [
+              -0.00315,
+              -0.00051
+            ],
+            "boot_std_error": 0.00065,
+            "z_statistic": -2.6729,
+            "p_value_two_sided": 0.009,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_1 (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00174, IC95% [-0.00315, -0.00051], p = 0.0090)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_1 (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16489,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.00516,
+            "ci_95_diff": [
+              0.001,
+              0.00939
+            ],
+            "boot_std_error": 0.00216,
+            "z_statistic": 2.3854,
+            "p_value_two_sided": 0.017,
+            "statistically_significant_95": true,
+            "verdict": "XGB_GOALS_V3_1 (OVER_1_5) es significativamente PEOR que Poisson (OVER_1_5) al 95% (Δ Brier = +0.00516, IC95% [+0.00100, +0.00939], p = 0.0170)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 0,
+              "mean_predicted_prob": 0.5,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 868,
+              "mean_predicted_prob": 0.7555,
+              "empirical_rate": 0.7903,
+              "calibration_gap": 0.0348
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "ENSEMBLE_GOALS_V3_0": {
+          "market_code": "OVER_1_5",
+          "model_name": "ENSEMBLE_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7654,
+          "brier_score": 0.15973,
+          "brier_ci_95": [
+            0.14578,
+            0.17368
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.4961,
+          "ece_calibration": 0.02488,
+          "accuracy": 0.7903,
+          "f1_score": 0.8826,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.0069,
+            "ci_95_diff": [
+              -0.01198,
+              -0.00189
+            ],
+            "boot_std_error": 0.0026,
+            "z_statistic": -2.653,
+            "p_value_two_sided": 0.01,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_0 (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00690, IC95% [-0.01198, -0.00189], p = 0.0100)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_0 (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS_V3_1": {
+          "market_code": "OVER_1_5",
+          "model_name": "ENSEMBLE_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7632,
+          "brier_score": 0.16,
+          "brier_ci_95": [
+            0.14621,
+            0.17379
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.49713,
+          "ece_calibration": 0.02714,
+          "accuracy": 0.7915,
+          "f1_score": 0.8835,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.00663,
+            "ci_95_diff": [
+              -0.01085,
+              -0.00255
+            ],
+            "boot_std_error": 0.00212,
+            "z_statistic": -3.1247,
+            "p_value_two_sided": 0.003,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_1 (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00663, IC95% [-0.01085, -0.00255], p = 0.0030)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.00027,
+            "ci_95_diff": [
+              -0.00069,
+              0.00124
+            ],
+            "boot_std_error": 0.0005,
+            "z_statistic": 0.5423,
+            "p_value_two_sided": 0.582,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_1 (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00027, IC95% [-0.00069, +0.00124], p = 0.5820; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 12,
+              "mean_predicted_prob": 0.568,
+              "empirical_rate": 0.6667,
+              "calibration_gap": 0.0986
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 582,
+              "mean_predicted_prob": 0.7329,
+              "empirical_rate": 0.7577,
+              "calibration_gap": 0.0249
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 274,
+              "mean_predicted_prob": 0.8362,
+              "empirical_rate": 0.865,
+              "calibration_gap": 0.0288
+            }
+          ]
+        }
+      },
+      "delta_v3_1_minus_v3_0": {
+        "rf_brier_diff": 0.00286,
+        "xgb_brier_diff": 0.00365,
+        "ensemble_brier_diff": 0.00027,
+        "rf_logloss_diff": 0.00921,
+        "xgb_logloss_diff": 0.01126,
+        "ensemble_logloss_diff": 0.00103
+      },
+      "by_competition": {
+        "LaLiga EA Sports": {
+          "matches": 226,
+          "empirical_rate": 0.6991,
+          "brier_baseline": 0.21407,
+          "brier_poisson": 0.20982,
+          "brier_ensemble_v3_1": 0.20881,
+          "ece_poisson": 0.045,
+          "ece_ensemble_v3_1": 0.03415
+        },
+        "Premier League": {
+          "matches": 224,
+          "empirical_rate": 0.8929,
+          "brier_baseline": 0.11329,
+          "brier_poisson": 0.10587,
+          "brier_ensemble_v3_1": 0.10682,
+          "ece_poisson": 0.1,
+          "ece_ensemble_v3_1": 0.10701
+        },
+        "Serie A": {
+          "matches": 235,
+          "empirical_rate": 0.7447,
+          "brier_baseline": 0.19037,
+          "brier_poisson": 0.18218,
+          "brier_ensemble_v3_1": 0.183,
+          "ece_poisson": 0.00777,
+          "ece_ensemble_v3_1": 0.00651
+        },
+        "Bundesliga": {
+          "matches": 183,
+          "empirical_rate": 0.8361,
+          "brier_baseline": 0.14283,
+          "brier_poisson": 0.13498,
+          "brier_ensemble_v3_1": 0.13527,
+          "ece_poisson": 0.0033,
+          "ece_ensemble_v3_1": 0.02703
+        }
+      }
+    },
+    "OVER_2_5": {
+      "primary_model_selected_v3_1": "POISSON",
+      "primary_selection_reason": "Poisson/Dixon-Coles seleccionado como modelo principal de OVER_2_5: Brier Poisson=0.23396 vs Ensamble OOF=0.23395 (Δ=-0.00001, p=0.9700, sin ventaja estadística del ensamble).",
+      "poisson_feature_importance_share": {
+        "rf_v3_0_insample": 0.6222,
+        "rf_v3_1_oof": 0.3476,
+        "xgb_v3_0_insample": 0.2812,
+        "xgb_v3_1_oof": 0.1983
+      },
+      "rf_v3_1_top10_features": {
+        "poisson_market_prob": 0.1329,
+        "poisson_lambda_total": 0.1062,
+        "poisson_lambda_home": 0.0667,
+        "combined_goal_env10": 0.0636,
+        "home_elo_pre": 0.0475,
+        "home_home_gf_avg": 0.0435,
+        "poisson_lambda_away": 0.0418,
+        "home_gf_last10": 0.0389,
+        "elo_diff": 0.0352,
+        "away_btts_rate10": 0.0313
+      },
+      "xgb_v3_1_top10_features": {
+        "poisson_market_prob": 0.0737,
+        "poisson_lambda_total": 0.0567,
+        "combined_goal_env10": 0.0414,
+        "poisson_lambda_away": 0.0344,
+        "poisson_lambda_home": 0.0335,
+        "away_over25_rate10": 0.0328,
+        "away_gf_last10": 0.0321,
+        "home_elo_pre": 0.032,
+        "away_ga_last10": 0.0318,
+        "home_gf_last10": 0.0308
+      },
+      "ensemble_weights_v3_0": {
+        "POISSON": 0.5519,
+        "RF_GOALS": 0.4481,
+        "XGB_GOALS": 0.0
+      },
+      "ensemble_weights_v3_1": {
+        "POISSON": 0.8954,
+        "RF_GOALS": 0.1046,
+        "XGB_GOALS": 0.0
+      },
+      "metrics_test_868": {
+        "BASELINE": {
+          "brier_score": 0.2489,
+          "train_base_rate": 0.5159,
+          "test_empirical_rate": 0.5426
+        },
+        "POISSON": {
+          "market_code": "OVER_2_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5283,
+          "brier_score": 0.23396,
+          "brier_ci_95": [
+            0.22654,
+            0.24138
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66085,
+          "ece_calibration": 0.03893,
+          "accuracy": 0.6037,
+          "f1_score": 0.6518,
+          "test_vs_baseline": {
+            "model_a": "POISSON (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01493,
+            "ci_95_diff": [
+              -0.02225,
+              -0.00821
+            ],
+            "boot_std_error": 0.00352,
+            "z_statistic": -4.2397,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01493, IC95% [-0.02225, -0.00821], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          },
+          "ece_10_bins": 0.04713,
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 1,
+              "mean_predicted_prob": 0.1672,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.1672
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 114,
+              "mean_predicted_prob": 0.3453,
+              "empirical_rate": 0.2719,
+              "calibration_gap": 0.0734
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 528,
+              "mean_predicted_prob": 0.5066,
+              "empirical_rate": 0.5455,
+              "calibration_gap": 0.0389
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 220,
+              "mean_predicted_prob": 0.67,
+              "empirical_rate": 0.6818,
+              "calibration_gap": 0.0118
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 5,
+              "mean_predicted_prob": 0.8261,
+              "empirical_rate": 0.4,
+              "calibration_gap": 0.4261
+            }
+          ]
+        },
+        "RF_GOALS_V3_0": {
+          "market_code": "OVER_2_5",
+          "model_name": "RF_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5351,
+          "brier_score": 0.23362,
+          "brier_ci_95": [
+            0.22593,
+            0.2413
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.65997,
+          "ece_calibration": 0.03256,
+          "accuracy": 0.6106,
+          "f1_score": 0.6457,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_0 (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23362,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01528,
+            "ci_95_diff": [
+              -0.02256,
+              -0.00826
+            ],
+            "boot_std_error": 0.00365,
+            "z_statistic": -4.1841,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_0 (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01528, IC95% [-0.02256, -0.00826], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_0 (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23362,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00035,
+            "ci_95_diff": [
+              -0.00232,
+              0.00168
+            ],
+            "boot_std_error": 0.001,
+            "z_statistic": -0.3472,
+            "p_value_two_sided": 0.742,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS_V3_0 (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = -0.00035, IC95% [-0.00232, +0.00168], p = 0.7420; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS_V3_1": {
+          "market_code": "OVER_2_5",
+          "model_name": "RF_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5105,
+          "brier_score": 0.23922,
+          "brier_ci_95": [
+            0.23595,
+            0.24248
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.67148,
+          "ece_calibration": 0.03348,
+          "accuracy": 0.621,
+          "f1_score": 0.6526,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_1 (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23922,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.00968,
+            "ci_95_diff": [
+              -0.01255,
+              -0.00645
+            ],
+            "boot_std_error": 0.00158,
+            "z_statistic": -6.1282,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_1 (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.00968, IC95% [-0.01255, -0.00645], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_1 (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23922,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00525,
+            "ci_95_diff": [
+              0.00064,
+              0.00997
+            ],
+            "boot_std_error": 0.0024,
+            "z_statistic": 2.1861,
+            "p_value_two_sided": 0.03,
+            "statistically_significant_95": true,
+            "verdict": "RF_GOALS_V3_1 (OVER_2_5) es significativamente PEOR que Poisson (OVER_2_5) al 95% (Δ Brier = +0.00525, IC95% [+0.00064, +0.00997], p = 0.0300)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 844,
+              "mean_predicted_prob": 0.5078,
+              "empirical_rate": 0.5415,
+              "calibration_gap": 0.0337
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 24,
+              "mean_predicted_prob": 0.6086,
+              "empirical_rate": 0.5833,
+              "calibration_gap": 0.0253
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "XGB_GOALS_V3_0": {
+          "market_code": "OVER_2_5",
+          "model_name": "XGB_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.53,
+          "brier_score": 0.23469,
+          "brier_ci_95": [
+            0.22751,
+            0.24186
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66186,
+          "ece_calibration": 0.02334,
+          "accuracy": 0.6037,
+          "f1_score": 0.6387,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_0 (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23469,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01421,
+            "ci_95_diff": [
+              -0.02067,
+              -0.00755
+            ],
+            "boot_std_error": 0.00344,
+            "z_statistic": -4.1259,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_0 (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01421, IC95% [-0.02067, -0.00755], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_0 (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23469,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00072,
+            "ci_95_diff": [
+              -0.0017,
+              0.00316
+            ],
+            "boot_std_error": 0.00123,
+            "z_statistic": 0.5852,
+            "p_value_two_sided": 0.563,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_0 (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = +0.00072, IC95% [-0.00170, +0.00316], p = 0.5630; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS_V3_1": {
+          "market_code": "OVER_2_5",
+          "model_name": "XGB_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5071,
+          "brier_score": 0.24021,
+          "brier_ci_95": [
+            0.23708,
+            0.24334
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.67347,
+          "ece_calibration": 0.03555,
+          "accuracy": 0.5991,
+          "f1_score": 0.6242,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_1 (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24021,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.00868,
+            "ci_95_diff": [
+              -0.01139,
+              -0.00542
+            ],
+            "boot_std_error": 0.00159,
+            "z_statistic": -5.4469,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_1 (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.00868, IC95% [-0.01139, -0.00542], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_1 (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24021,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00625,
+            "ci_95_diff": [
+              0.00136,
+              0.01146
+            ],
+            "boot_std_error": 0.00257,
+            "z_statistic": 2.4301,
+            "p_value_two_sided": 0.017,
+            "statistically_significant_95": true,
+            "verdict": "XGB_GOALS_V3_1 (OVER_2_5) es significativamente PEOR que Poisson (OVER_2_5) al 95% (Δ Brier = +0.00625, IC95% [+0.00136, +0.01146], p = 0.0170)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 857,
+              "mean_predicted_prob": 0.5058,
+              "empirical_rate": 0.5414,
+              "calibration_gap": 0.0356
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 11,
+              "mean_predicted_prob": 0.6047,
+              "empirical_rate": 0.6364,
+              "calibration_gap": 0.0317
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "ENSEMBLE_GOALS_V3_0": {
+          "market_code": "OVER_2_5",
+          "model_name": "ENSEMBLE_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5313,
+          "brier_score": 0.23352,
+          "brier_ci_95": [
+            0.22605,
+            0.24098
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.65979,
+          "ece_calibration": 0.03813,
+          "accuracy": 0.6094,
+          "f1_score": 0.653,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23352,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01538,
+            "ci_95_diff": [
+              -0.02263,
+              -0.00859
+            ],
+            "boot_std_error": 0.00355,
+            "z_statistic": -4.3376,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_0 (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01538, IC95% [-0.02263, -0.00859], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23352,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00045,
+            "ci_95_diff": [
+              -0.00133,
+              0.00045
+            ],
+            "boot_std_error": 0.00045,
+            "z_statistic": -0.9932,
+            "p_value_two_sided": 0.298,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_0 (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = -0.00045, IC95% [-0.00133, +0.00045], p = 0.2980; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS_V3_1": {
+          "market_code": "OVER_2_5",
+          "model_name": "ENSEMBLE_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5264,
+          "brier_score": 0.23395,
+          "brier_ci_95": [
+            0.227,
+            0.2409
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.6607,
+          "ece_calibration": 0.03022,
+          "accuracy": 0.6094,
+          "f1_score": 0.6579,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23395,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01494,
+            "ci_95_diff": [
+              -0.02176,
+              -0.00869
+            ],
+            "boot_std_error": 0.00329,
+            "z_statistic": -4.5357,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_1 (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01494, IC95% [-0.02176, -0.00869], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23395,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -1e-05,
+            "ci_95_diff": [
+              -0.00051,
+              0.00049
+            ],
+            "boot_std_error": 0.00025,
+            "z_statistic": -0.0378,
+            "p_value_two_sided": 0.97,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_1 (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = -0.00001, IC95% [-0.00051, +0.00049], p = 0.9700; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 1,
+              "mean_predicted_prob": 0.1938,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.1938
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 105,
+              "mean_predicted_prob": 0.3513,
+              "empirical_rate": 0.2952,
+              "calibration_gap": 0.0561
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 551,
+              "mean_predicted_prob": 0.5068,
+              "empirical_rate": 0.5372,
+              "calibration_gap": 0.0304
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 209,
+              "mean_predicted_prob": 0.665,
+              "empirical_rate": 0.6794,
+              "calibration_gap": 0.0145
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 2,
+              "mean_predicted_prob": 0.8178,
+              "empirical_rate": 1.0,
+              "calibration_gap": 0.1822
+            }
+          ]
+        }
+      },
+      "delta_v3_1_minus_v3_0": {
+        "rf_brier_diff": 0.0056,
+        "xgb_brier_diff": 0.00552,
+        "ensemble_brier_diff": 0.00043,
+        "rf_logloss_diff": 0.01151,
+        "xgb_logloss_diff": 0.01161,
+        "ensemble_logloss_diff": 0.00091
+      },
+      "by_competition": {
+        "LaLiga EA Sports": {
+          "matches": 226,
+          "empirical_rate": 0.4469,
+          "brier_baseline": 0.25195,
+          "brier_poisson": 0.23194,
+          "brier_ensemble_v3_1": 0.23232,
+          "ece_poisson": 0.02654,
+          "ece_ensemble_v3_1": 0.01739
+        },
+        "Premier League": {
+          "matches": 224,
+          "empirical_rate": 0.6607,
+          "brier_baseline": 0.24513,
+          "brier_poisson": 0.23733,
+          "brier_ensemble_v3_1": 0.23711,
+          "ece_poisson": 0.10437,
+          "ece_ensemble_v3_1": 0.10068
+        },
+        "Serie A": {
+          "matches": 235,
+          "empirical_rate": 0.4979,
+          "brier_baseline": 0.25032,
+          "brier_poisson": 0.22783,
+          "brier_ensemble_v3_1": 0.22852,
+          "ece_poisson": 0.05453,
+          "ece_ensemble_v3_1": 0.05306
+        },
+        "Bundesliga": {
+          "matches": 183,
+          "empirical_rate": 0.5738,
+          "brier_baseline": 0.2479,
+          "brier_poisson": 0.24022,
+          "brier_ensemble_v3_1": 0.23909,
+          "ece_poisson": 0.05118,
+          "ece_ensemble_v3_1": 0.04643
+        }
+      }
+    },
+    "UNDER_2_5": {
+      "primary_model_selected_v3_1": "POISSON",
+      "primary_selection_reason": "Poisson/Dixon-Coles seleccionado como modelo principal de UNDER_2_5: Brier Poisson=0.23396 vs Ensamble OOF=0.23395 (Δ=-0.00002, p=0.9430, sin ventaja estadística del ensamble).",
+      "poisson_feature_importance_share": {
+        "rf_v3_0_insample": 0.6197,
+        "rf_v3_1_oof": 0.3487,
+        "xgb_v3_0_insample": 0.2778,
+        "xgb_v3_1_oof": 0.1862
+      },
+      "rf_v3_1_top10_features": {
+        "poisson_market_prob": 0.1307,
+        "poisson_lambda_total": 0.1077,
+        "poisson_lambda_home": 0.0661,
+        "combined_goal_env10": 0.065,
+        "home_elo_pre": 0.0453,
+        "home_home_gf_avg": 0.0442,
+        "poisson_lambda_away": 0.0442,
+        "home_gf_last10": 0.0402,
+        "elo_diff": 0.0329,
+        "away_btts_rate10": 0.0322
+      },
+      "xgb_v3_1_top10_features": {
+        "poisson_lambda_total": 0.068,
+        "poisson_market_prob": 0.0505,
+        "combined_goal_env10": 0.0411,
+        "poisson_lambda_home": 0.0345,
+        "away_gf_last10": 0.0334,
+        "home_elo_pre": 0.0332,
+        "poisson_lambda_away": 0.0332,
+        "away_ga_last10": 0.0326,
+        "home_pts_last5": 0.0324,
+        "home_home_gf_avg": 0.0324
+      },
+      "ensemble_weights_v3_0": {
+        "POISSON": 0.5784,
+        "RF_GOALS": 0.4216,
+        "XGB_GOALS": 0.0
+      },
+      "ensemble_weights_v3_1": {
+        "POISSON": 0.8974,
+        "RF_GOALS": 0.1026,
+        "XGB_GOALS": 0.0
+      },
+      "metrics_test_868": {
+        "BASELINE": {
+          "brier_score": 0.2489,
+          "train_base_rate": 0.4841,
+          "test_empirical_rate": 0.4574
+        },
+        "POISSON": {
+          "market_code": "UNDER_2_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4717,
+          "brier_score": 0.23396,
+          "brier_ci_95": [
+            0.22654,
+            0.24138
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66085,
+          "ece_calibration": 0.03893,
+          "accuracy": 0.6037,
+          "f1_score": 0.5401,
+          "test_vs_baseline": {
+            "model_a": "POISSON (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01493,
+            "ci_95_diff": [
+              -0.02225,
+              -0.00821
+            ],
+            "boot_std_error": 0.00352,
+            "z_statistic": -4.2397,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01493, IC95% [-0.02225, -0.00821], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          },
+          "ece_10_bins": 0.04713,
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 5,
+              "mean_predicted_prob": 0.1739,
+              "empirical_rate": 0.6,
+              "calibration_gap": 0.4261
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 220,
+              "mean_predicted_prob": 0.33,
+              "empirical_rate": 0.3182,
+              "calibration_gap": 0.0118
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 528,
+              "mean_predicted_prob": 0.4934,
+              "empirical_rate": 0.4545,
+              "calibration_gap": 0.0389
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 114,
+              "mean_predicted_prob": 0.6547,
+              "empirical_rate": 0.7281,
+              "calibration_gap": 0.0734
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 1,
+              "mean_predicted_prob": 0.8328,
+              "empirical_rate": 1.0,
+              "calibration_gap": 0.1672
+            }
+          ]
+        },
+        "RF_GOALS_V3_0": {
+          "market_code": "UNDER_2_5",
+          "model_name": "RF_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4655,
+          "brier_score": 0.23375,
+          "brier_ci_95": [
+            0.22607,
+            0.24142
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66023,
+          "ece_calibration": 0.03054,
+          "accuracy": 0.6071,
+          "f1_score": 0.5667,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_0 (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23375,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01515,
+            "ci_95_diff": [
+              -0.02242,
+              -0.00811
+            ],
+            "boot_std_error": 0.00365,
+            "z_statistic": -4.1477,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_0 (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01515, IC95% [-0.02242, -0.00811], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_0 (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23375,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00022,
+            "ci_95_diff": [
+              -0.00224,
+              0.00178
+            ],
+            "boot_std_error": 0.00101,
+            "z_statistic": -0.2142,
+            "p_value_two_sided": 0.842,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS_V3_0 (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = -0.00022, IC95% [-0.00224, +0.00178], p = 0.8420; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS_V3_1": {
+          "market_code": "UNDER_2_5",
+          "model_name": "RF_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4893,
+          "brier_score": 0.2393,
+          "brier_ci_95": [
+            0.23613,
+            0.24247
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.67165,
+          "ece_calibration": 0.03361,
+          "accuracy": 0.6175,
+          "f1_score": 0.5776,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_1 (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.2393,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.00959,
+            "ci_95_diff": [
+              -0.01231,
+              -0.00649
+            ],
+            "boot_std_error": 0.00152,
+            "z_statistic": -6.3215,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_1 (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.00959, IC95% [-0.01231, -0.00649], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_1 (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.2393,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00534,
+            "ci_95_diff": [
+              0.00065,
+              0.01029
+            ],
+            "boot_std_error": 0.00245,
+            "z_statistic": 2.1812,
+            "p_value_two_sided": 0.031,
+            "statistically_significant_95": true,
+            "verdict": "RF_GOALS_V3_1 (UNDER_2_5) es significativamente PEOR que Poisson (UNDER_2_5) al 95% (Δ Brier = +0.00534, IC95% [+0.00065, +0.01029], p = 0.0310)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 21,
+              "mean_predicted_prob": 0.3929,
+              "empirical_rate": 0.4286,
+              "calibration_gap": 0.0357
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 847,
+              "mean_predicted_prob": 0.4916,
+              "empirical_rate": 0.4581,
+              "calibration_gap": 0.0336
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 0,
+              "mean_predicted_prob": 0.7,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "XGB_GOALS_V3_0": {
+          "market_code": "UNDER_2_5",
+          "model_name": "XGB_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4703,
+          "brier_score": 0.23465,
+          "brier_ci_95": [
+            0.22747,
+            0.24183
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66181,
+          "ece_calibration": 0.02593,
+          "accuracy": 0.5991,
+          "f1_score": 0.555,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_0 (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23465,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01424,
+            "ci_95_diff": [
+              -0.02067,
+              -0.00756
+            ],
+            "boot_std_error": 0.00345,
+            "z_statistic": -4.1271,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_0 (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01424, IC95% [-0.02067, -0.00756], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_0 (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23465,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00069,
+            "ci_95_diff": [
+              -0.0018,
+              0.00312
+            ],
+            "boot_std_error": 0.00125,
+            "z_statistic": 0.5539,
+            "p_value_two_sided": 0.595,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_0 (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = +0.00069, IC95% [-0.00180, +0.00312], p = 0.5950; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS_V3_1": {
+          "market_code": "UNDER_2_5",
+          "model_name": "XGB_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4929,
+          "brier_score": 0.24025,
+          "brier_ci_95": [
+            0.23723,
+            0.24326
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.67355,
+          "ece_calibration": 0.03646,
+          "accuracy": 0.6048,
+          "f1_score": 0.5729,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_1 (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24025,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.00865,
+            "ci_95_diff": [
+              -0.0114,
+              -0.00547
+            ],
+            "boot_std_error": 0.00153,
+            "z_statistic": -5.6385,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_1 (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.00865, IC95% [-0.01140, -0.00547], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_1 (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24025,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00628,
+            "ci_95_diff": [
+              0.00145,
+              0.01155
+            ],
+            "boot_std_error": 0.00257,
+            "z_statistic": 2.4467,
+            "p_value_two_sided": 0.014,
+            "statistically_significant_95": true,
+            "verdict": "XGB_GOALS_V3_1 (UNDER_2_5) es significativamente PEOR que Poisson (UNDER_2_5) al 95% (Δ Brier = +0.00628, IC95% [+0.00145, +0.01155], p = 0.0140)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 4,
+              "mean_predicted_prob": 0.396,
+              "empirical_rate": 0.5,
+              "calibration_gap": 0.104
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 864,
+              "mean_predicted_prob": 0.4933,
+              "empirical_rate": 0.4572,
+              "calibration_gap": 0.0361
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 0,
+              "mean_predicted_prob": 0.7,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "ENSEMBLE_GOALS_V3_0": {
+          "market_code": "UNDER_2_5",
+          "model_name": "ENSEMBLE_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4691,
+          "brier_score": 0.23359,
+          "brier_ci_95": [
+            0.22613,
+            0.24105
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.65995,
+          "ece_calibration": 0.03701,
+          "accuracy": 0.6037,
+          "f1_score": 0.5486,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23359,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.0153,
+            "ci_95_diff": [
+              -0.02253,
+              -0.00848
+            ],
+            "boot_std_error": 0.00354,
+            "z_statistic": -4.3201,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_0 (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01530, IC95% [-0.02253, -0.00848], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23359,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00037,
+            "ci_95_diff": [
+              -0.00123,
+              0.00047
+            ],
+            "boot_std_error": 0.00043,
+            "z_statistic": -0.865,
+            "p_value_two_sided": 0.378,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_0 (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = -0.00037, IC95% [-0.00123, +0.00047], p = 0.3780; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS_V3_1": {
+          "market_code": "UNDER_2_5",
+          "model_name": "ENSEMBLE_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4735,
+          "brier_score": 0.23395,
+          "brier_ci_95": [
+            0.227,
+            0.2409
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66068,
+          "ece_calibration": 0.03109,
+          "accuracy": 0.6094,
+          "f1_score": 0.5474,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23395,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01495,
+            "ci_95_diff": [
+              -0.02175,
+              -0.00869
+            ],
+            "boot_std_error": 0.00329,
+            "z_statistic": -4.5399,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_1 (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01495, IC95% [-0.02175, -0.00869], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23395,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -2e-05,
+            "ci_95_diff": [
+              -0.00052,
+              0.00047
+            ],
+            "boot_std_error": 0.00025,
+            "z_statistic": -0.0647,
+            "p_value_two_sided": 0.943,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_1 (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = -0.00002, IC95% [-0.00052, +0.00047], p = 0.9430; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 2,
+              "mean_predicted_prob": 0.182,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.182
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 209,
+              "mean_predicted_prob": 0.335,
+              "empirical_rate": 0.3206,
+              "calibration_gap": 0.0144
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 550,
+              "mean_predicted_prob": 0.493,
+              "empirical_rate": 0.4618,
+              "calibration_gap": 0.0311
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 106,
+              "mean_predicted_prob": 0.6482,
+              "empirical_rate": 0.7075,
+              "calibration_gap": 0.0593
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 1,
+              "mean_predicted_prob": 0.8061,
+              "empirical_rate": 1.0,
+              "calibration_gap": 0.1939
+            }
+          ]
+        }
+      },
+      "delta_v3_1_minus_v3_0": {
+        "rf_brier_diff": 0.00555,
+        "xgb_brier_diff": 0.0056,
+        "ensemble_brier_diff": 0.00036,
+        "rf_logloss_diff": 0.01142,
+        "xgb_logloss_diff": 0.01174,
+        "ensemble_logloss_diff": 0.00073
+      },
+      "by_competition": {
+        "LaLiga EA Sports": {
+          "matches": 226,
+          "empirical_rate": 0.5531,
+          "brier_baseline": 0.25195,
+          "brier_poisson": 0.23194,
+          "brier_ensemble_v3_1": 0.23231,
+          "ece_poisson": 0.02654,
+          "ece_ensemble_v3_1": 0.01741
+        },
+        "Premier League": {
+          "matches": 224,
+          "empirical_rate": 0.3393,
+          "brier_baseline": 0.24513,
+          "brier_poisson": 0.23733,
+          "brier_ensemble_v3_1": 0.2371,
+          "ece_poisson": 0.10437,
+          "ece_ensemble_v3_1": 0.10058
+        },
+        "Serie A": {
+          "matches": 235,
+          "empirical_rate": 0.5021,
+          "brier_baseline": 0.25032,
+          "brier_poisson": 0.22783,
+          "brier_ensemble_v3_1": 0.2285,
+          "ece_poisson": 0.05453,
+          "ece_ensemble_v3_1": 0.053
+        },
+        "Bundesliga": {
+          "matches": 183,
+          "empirical_rate": 0.4262,
+          "brier_baseline": 0.2479,
+          "brier_poisson": 0.24022,
+          "brier_ensemble_v3_1": 0.23911,
+          "ece_poisson": 0.05118,
+          "ece_ensemble_v3_1": 0.0465
+        }
+      }
+    },
+    "OVER_3_5": {
+      "primary_model_selected_v3_1": "POISSON",
+      "primary_selection_reason": "Poisson/Dixon-Coles seleccionado como modelo principal de OVER_3_5: Brier Poisson=0.21648 vs Ensamble OOF=0.21612 (Δ=-0.00035, p=0.5360, sin ventaja estadística del ensamble).",
+      "poisson_feature_importance_share": {
+        "rf_v3_0_insample": 0.6236,
+        "rf_v3_1_oof": 0.3131,
+        "xgb_v3_0_insample": 0.3048,
+        "xgb_v3_1_oof": 0.1877
+      },
+      "rf_v3_1_top10_features": {
+        "poisson_market_prob": 0.125,
+        "poisson_lambda_total": 0.1019,
+        "combined_goal_env10": 0.0569,
+        "home_elo_pre": 0.0562,
+        "poisson_lambda_home": 0.0524,
+        "home_home_gf_avg": 0.046,
+        "home_gf_last5": 0.0435,
+        "home_gf_last10": 0.0416,
+        "elo_diff": 0.0367,
+        "away_gf_last10": 0.0358
+      },
+      "xgb_v3_1_top10_features": {
+        "poisson_lambda_total": 0.0639,
+        "poisson_market_prob": 0.063,
+        "away_ga_last5": 0.0448,
+        "combined_goal_env10": 0.037,
+        "away_btts_rate10": 0.0363,
+        "poisson_lambda_home": 0.0336,
+        "away_pts_last10": 0.0331,
+        "home_gf_last5": 0.0324,
+        "away_over25_rate10": 0.0318,
+        "home_pts_last10": 0.0318
+      },
+      "ensemble_weights_v3_0": {
+        "POISSON": 1.0,
+        "RF_GOALS": 0.0,
+        "XGB_GOALS": 0.0
+      },
+      "ensemble_weights_v3_1": {
+        "POISSON": 0.6985,
+        "RF_GOALS": 0.1742,
+        "XGB_GOALS": 0.1273
+      },
+      "metrics_test_868": {
+        "BASELINE": {
+          "brier_score": 0.2263,
+          "train_base_rate": 0.3013,
+          "test_empirical_rate": 0.341
+        },
+        "POISSON": {
+          "market_code": "OVER_3_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3152,
+          "brier_score": 0.21648,
+          "brier_ci_95": [
+            0.20399,
+            0.22897
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62212,
+          "ece_calibration": 0.0454,
+          "accuracy": 0.6509,
+          "f1_score": 0.1318,
+          "test_vs_baseline": {
+            "model_a": "POISSON (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00982,
+            "ci_95_diff": [
+              -0.0153,
+              -0.00462
+            ],
+            "boot_std_error": 0.00266,
+            "z_statistic": -3.6863,
+            "p_value_two_sided": 0.002,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00982, IC95% [-0.01530, -0.00462], p = 0.0020)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          },
+          "ece_10_bins": 0.04784,
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 124,
+              "mean_predicted_prob": 0.1609,
+              "empirical_rate": 0.1452,
+              "calibration_gap": 0.0158
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 565,
+              "mean_predicted_prob": 0.2975,
+              "empirical_rate": 0.3522,
+              "calibration_gap": 0.0547
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 171,
+              "mean_predicted_prob": 0.4704,
+              "empirical_rate": 0.4386,
+              "calibration_gap": 0.0318
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 8,
+              "mean_predicted_prob": 0.6374,
+              "empirical_rate": 0.5,
+              "calibration_gap": 0.1374
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "RF_GOALS_V3_0": {
+          "market_code": "OVER_3_5",
+          "model_name": "RF_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3225,
+          "brier_score": 0.21812,
+          "brier_ci_95": [
+            0.20533,
+            0.23091
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.626,
+          "ece_calibration": 0.04062,
+          "accuracy": 0.6452,
+          "f1_score": 0.277,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_0 (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21812,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00818,
+            "ci_95_diff": [
+              -0.01492,
+              -0.00209
+            ],
+            "boot_std_error": 0.00329,
+            "z_statistic": -2.4845,
+            "p_value_two_sided": 0.013,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_0 (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00818, IC95% [-0.01492, -0.00209], p = 0.0130)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_0 (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21812,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.00164,
+            "ci_95_diff": [
+              -0.00089,
+              0.00427
+            ],
+            "boot_std_error": 0.00135,
+            "z_statistic": 1.2123,
+            "p_value_two_sided": 0.238,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS_V3_0 (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00164, IC95% [-0.00089, +0.00427], p = 0.2380; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS_V3_1": {
+          "market_code": "OVER_3_5",
+          "model_name": "RF_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.2942,
+          "brier_score": 0.21897,
+          "brier_ci_95": [
+            0.20609,
+            0.23185
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62787,
+          "ece_calibration": 0.05167,
+          "accuracy": 0.659,
+          "f1_score": 0.0,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_1 (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21897,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00733,
+            "ci_95_diff": [
+              -0.01025,
+              -0.00418
+            ],
+            "boot_std_error": 0.00153,
+            "z_statistic": -4.7889,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_1 (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00733, IC95% [-0.01025, -0.00418], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_1 (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21897,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.00249,
+            "ci_95_diff": [
+              -0.00126,
+              0.00654
+            ],
+            "boot_std_error": 0.00198,
+            "z_statistic": 1.2565,
+            "p_value_two_sided": 0.207,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS_V3_1 (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00249, IC95% [-0.00126, +0.00654], p = 0.2070; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 1,
+              "mean_predicted_prob": 0.1941,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.1941
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 824,
+              "mean_predicted_prob": 0.2879,
+              "empirical_rate": 0.3398,
+              "calibration_gap": 0.0519
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 43,
+              "mean_predicted_prob": 0.4166,
+              "empirical_rate": 0.3721,
+              "calibration_gap": 0.0445
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 0,
+              "mean_predicted_prob": 0.7,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "XGB_GOALS_V3_0": {
+          "market_code": "OVER_3_5",
+          "model_name": "XGB_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3183,
+          "brier_score": 0.21916,
+          "brier_ci_95": [
+            0.20621,
+            0.23212
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62897,
+          "ece_calibration": 0.04468,
+          "accuracy": 0.6486,
+          "f1_score": 0.2356,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_0 (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21916,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00713,
+            "ci_95_diff": [
+              -0.01322,
+              -0.00097
+            ],
+            "boot_std_error": 0.00315,
+            "z_statistic": -2.2622,
+            "p_value_two_sided": 0.019,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_0 (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00713, IC95% [-0.01322, -0.00097], p = 0.0190)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_0 (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21916,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.00269,
+            "ci_95_diff": [
+              -0.00021,
+              0.0061
+            ],
+            "boot_std_error": 0.00156,
+            "z_statistic": 1.7245,
+            "p_value_two_sided": 0.085,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_0 (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00269, IC95% [-0.00021, +0.00610], p = 0.0850; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS_V3_1": {
+          "market_code": "OVER_3_5",
+          "model_name": "XGB_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.291,
+          "brier_score": 0.22002,
+          "brier_ci_95": [
+            0.20695,
+            0.23309
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.63045,
+          "ece_calibration": 0.05221,
+          "accuracy": 0.659,
+          "f1_score": 0.0,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_1 (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.22002,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00628,
+            "ci_95_diff": [
+              -0.00894,
+              -0.00298
+            ],
+            "boot_std_error": 0.0015,
+            "z_statistic": -4.1916,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_1 (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00628, IC95% [-0.00894, -0.00298], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_1 (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.22002,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.00354,
+            "ci_95_diff": [
+              -0.0004,
+              0.00811
+            ],
+            "boot_std_error": 0.00219,
+            "z_statistic": 1.6165,
+            "p_value_two_sided": 0.098,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_1 (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00354, IC95% [-0.00040, +0.00811], p = 0.0980; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 1,
+              "mean_predicted_prob": 0.193,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.193
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 846,
+              "mean_predicted_prob": 0.288,
+              "empirical_rate": 0.3404,
+              "calibration_gap": 0.0525
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 21,
+              "mean_predicted_prob": 0.4164,
+              "empirical_rate": 0.381,
+              "calibration_gap": 0.0355
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 0,
+              "mean_predicted_prob": 0.7,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "ENSEMBLE_GOALS_V3_0": {
+          "market_code": "OVER_3_5",
+          "model_name": "ENSEMBLE_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3152,
+          "brier_score": 0.21648,
+          "brier_ci_95": [
+            0.20399,
+            0.22897
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62212,
+          "ece_calibration": 0.0454,
+          "accuracy": 0.6509,
+          "f1_score": 0.1318,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00982,
+            "ci_95_diff": [
+              -0.0153,
+              -0.00462
+            ],
+            "boot_std_error": 0.00266,
+            "z_statistic": -3.6863,
+            "p_value_two_sided": 0.002,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_0 (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00982, IC95% [-0.01530, -0.00462], p = 0.0020)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_0 (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS_V3_1": {
+          "market_code": "OVER_3_5",
+          "model_name": "ENSEMBLE_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3084,
+          "brier_score": 0.21612,
+          "brier_ci_95": [
+            0.20369,
+            0.22856
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62123,
+          "ece_calibration": 0.04028,
+          "accuracy": 0.6555,
+          "f1_score": 0.0568,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21612,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.01017,
+            "ci_95_diff": [
+              -0.01466,
+              -0.00595
+            ],
+            "boot_std_error": 0.00218,
+            "z_statistic": -4.6735,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_1 (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.01017, IC95% [-0.01466, -0.00595], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21612,
+            "brier_b": 0.21648,
+            "mean_diff_brier": -0.00035,
+            "ci_95_diff": [
+              -0.00149,
+              0.00093
+            ],
+            "boot_std_error": 0.00062,
+            "z_statistic": -0.5717,
+            "p_value_two_sided": 0.536,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_1 (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = -0.00035, IC95% [-0.00149, +0.00093], p = 0.5360; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 98,
+              "mean_predicted_prob": 0.1769,
+              "empirical_rate": 0.1531,
+              "calibration_gap": 0.0238
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 628,
+              "mean_predicted_prob": 0.2958,
+              "empirical_rate": 0.3455,
+              "calibration_gap": 0.0497
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 141,
+              "mean_predicted_prob": 0.454,
+              "empirical_rate": 0.4468,
+              "calibration_gap": 0.0072
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 1,
+              "mean_predicted_prob": 0.6055,
+              "empirical_rate": 1.0,
+              "calibration_gap": 0.3945
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        }
+      },
+      "delta_v3_1_minus_v3_0": {
+        "rf_brier_diff": 0.00085,
+        "xgb_brier_diff": 0.00086,
+        "ensemble_brier_diff": -0.00036,
+        "rf_logloss_diff": 0.00187,
+        "xgb_logloss_diff": 0.00148,
+        "ensemble_logloss_diff": -0.00089
+      },
+      "by_competition": {
+        "LaLiga EA Sports": {
+          "matches": 226,
+          "empirical_rate": 0.2699,
+          "brier_baseline": 0.19805,
+          "brier_poisson": 0.18594,
+          "brier_ensemble_v3_1": 0.18566,
+          "ece_poisson": 0.01871,
+          "ece_ensemble_v3_1": 0.02078
+        },
+        "Premier League": {
+          "matches": 224,
+          "empirical_rate": 0.4732,
+          "brier_baseline": 0.27882,
+          "brier_poisson": 0.26734,
+          "brier_ensemble_v3_1": 0.26826,
+          "ece_poisson": 0.13305,
+          "ece_ensemble_v3_1": 0.13837
+        },
+        "Serie A": {
+          "matches": 235,
+          "empirical_rate": 0.2638,
+          "brier_baseline": 0.19563,
+          "brier_poisson": 0.18324,
+          "brier_ensemble_v3_1": 0.18388,
+          "ece_poisson": 0.02033,
+          "ece_ensemble_v3_1": 0.01066
+        },
+        "Bundesliga": {
+          "matches": 183,
+          "empirical_rate": 0.3661,
+          "brier_baseline": 0.23627,
+          "brier_poisson": 0.2346,
+          "brier_ensemble_v3_1": 0.23133,
+          "ece_poisson": 0.0753,
+          "ece_ensemble_v3_1": 0.04769
+        }
+      }
+    },
+    "BTTS": {
+      "primary_model_selected_v3_1": "POISSON",
+      "primary_selection_reason": "Poisson/Dixon-Coles seleccionado como modelo principal de BTTS: Brier Poisson=0.24283 vs Ensamble OOF=0.24277 (Δ=-0.00005, p=0.9560, sin ventaja estadística del ensamble).",
+      "poisson_feature_importance_share": {
+        "rf_v3_0_insample": 0.5038,
+        "rf_v3_1_oof": 0.197,
+        "xgb_v3_0_insample": 0.2093,
+        "xgb_v3_1_oof": 0.1238
+      },
+      "rf_v3_1_top10_features": {
+        "combined_goal_env10": 0.0709,
+        "elo_diff": 0.0647,
+        "poisson_market_prob": 0.0594,
+        "away_elo_pre": 0.0533,
+        "poisson_lambda_total": 0.0463,
+        "poisson_lambda_home": 0.0457,
+        "poisson_lambda_away": 0.0456,
+        "league_pos_diff": 0.0426,
+        "home_elo_pre": 0.0391,
+        "away_away_ga_avg": 0.0389
+      },
+      "xgb_v3_1_top10_features": {
+        "poisson_market_prob": 0.0406,
+        "home_gf_last10": 0.0389,
+        "combined_goal_env10": 0.0388,
+        "away_gf_last5": 0.0386,
+        "away_elo_pre": 0.0363,
+        "away_away_ga_avg": 0.0352,
+        "league_pos_diff": 0.0349,
+        "elo_diff": 0.0347,
+        "away_pts_last10": 0.0343,
+        "home_elo_pre": 0.0343
+      },
+      "ensemble_weights_v3_0": {
+        "POISSON": 0.3333,
+        "RF_GOALS": 0.3333,
+        "XGB_GOALS": 0.3333
+      },
+      "ensemble_weights_v3_1": {
+        "POISSON": 0.6131,
+        "RF_GOALS": 0.1835,
+        "XGB_GOALS": 0.2034
+      },
+      "metrics_test_868": {
+        "BASELINE": {
+          "brier_score": 0.24776,
+          "train_base_rate": 0.5267,
+          "test_empirical_rate": 0.5553
+        },
+        "POISSON": {
+          "market_code": "BTTS",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.534,
+          "brier_score": 0.24283,
+          "brier_ci_95": [
+            0.2369,
+            0.24876
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67883,
+          "ece_calibration": 0.03185,
+          "accuracy": 0.576,
+          "f1_score": 0.6468,
+          "test_vs_baseline": {
+            "model_a": "POISSON (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24283,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00493,
+            "ci_95_diff": [
+              -0.00985,
+              0.00012
+            ],
+            "boot_std_error": 0.00249,
+            "z_statistic": -1.9833,
+            "p_value_two_sided": 0.055,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (BTTS) y Baseline (BTTS) (Δ Brier = -0.00493, IC95% [-0.00985, +0.00012], p = 0.0550; el 0 está dentro del IC)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24283,
+            "brier_b": 0.24283,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (BTTS) y Poisson (BTTS) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          },
+          "ece_10_bins": 0.03244,
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 47,
+              "mean_predicted_prob": 0.3652,
+              "empirical_rate": 0.4043,
+              "calibration_gap": 0.0391
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 622,
+              "mean_predicted_prob": 0.5109,
+              "empirical_rate": 0.545,
+              "calibration_gap": 0.0341
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 199,
+              "mean_predicted_prob": 0.6461,
+              "empirical_rate": 0.6231,
+              "calibration_gap": 0.023
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "RF_GOALS_V3_0": {
+          "market_code": "BTTS",
+          "model_name": "RF_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5348,
+          "brier_score": 0.24219,
+          "brier_ci_95": [
+            0.23664,
+            0.24774
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67746,
+          "ece_calibration": 0.02051,
+          "accuracy": 0.5841,
+          "f1_score": 0.661,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_0 (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24219,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00557,
+            "ci_95_diff": [
+              -0.01061,
+              -0.00095
+            ],
+            "boot_std_error": 0.00243,
+            "z_statistic": -2.2913,
+            "p_value_two_sided": 0.021,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_0 (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00557, IC95% [-0.01061, -0.00095], p = 0.0210)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_0 (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24219,
+            "brier_b": 0.24283,
+            "mean_diff_brier": -0.00064,
+            "ci_95_diff": [
+              -0.003,
+              0.00147
+            ],
+            "boot_std_error": 0.00112,
+            "z_statistic": -0.5712,
+            "p_value_two_sided": 0.547,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS_V3_0 (BTTS) y Poisson (BTTS) (Δ Brier = -0.00064, IC95% [-0.00300, +0.00147], p = 0.5470; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS_V3_1": {
+          "market_code": "BTTS",
+          "model_name": "RF_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5201,
+          "brier_score": 0.24644,
+          "brier_ci_95": [
+            0.24474,
+            0.24814
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.68601,
+          "ece_calibration": 0.03525,
+          "accuracy": 0.5588,
+          "f1_score": 0.6899,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS_V3_1 (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24644,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00132,
+            "ci_95_diff": [
+              -0.00241,
+              -0.00025
+            ],
+            "boot_std_error": 0.00056,
+            "z_statistic": -2.3467,
+            "p_value_two_sided": 0.015,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS_V3_1 (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00132, IC95% [-0.00241, -0.00025], p = 0.0150)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS_V3_1 (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24644,
+            "brier_b": 0.24283,
+            "mean_diff_brier": 0.00361,
+            "ci_95_diff": [
+              -0.00127,
+              0.00813
+            ],
+            "boot_std_error": 0.00237,
+            "z_statistic": 1.5221,
+            "p_value_two_sided": 0.125,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS_V3_1 (BTTS) y Poisson (BTTS) (Δ Brier = +0.00361, IC95% [-0.00127, +0.00813], p = 0.1250; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 868,
+              "mean_predicted_prob": 0.5201,
+              "empirical_rate": 0.5553,
+              "calibration_gap": 0.0352
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 0,
+              "mean_predicted_prob": 0.7,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "XGB_GOALS_V3_0": {
+          "market_code": "BTTS",
+          "model_name": "XGB_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5324,
+          "brier_score": 0.24266,
+          "brier_ci_95": [
+            0.23738,
+            0.24794
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67835,
+          "ece_calibration": 0.02286,
+          "accuracy": 0.5818,
+          "f1_score": 0.6546,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_0 (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24266,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.0051,
+            "ci_95_diff": [
+              -0.00963,
+              -0.00081
+            ],
+            "boot_std_error": 0.00217,
+            "z_statistic": -2.3505,
+            "p_value_two_sided": 0.025,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_0 (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00510, IC95% [-0.00963, -0.00081], p = 0.0250)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_0 (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24266,
+            "brier_b": 0.24283,
+            "mean_diff_brier": -0.00017,
+            "ci_95_diff": [
+              -0.0029,
+              0.00236
+            ],
+            "boot_std_error": 0.00132,
+            "z_statistic": -0.1255,
+            "p_value_two_sided": 0.898,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_0 (BTTS) y Poisson (BTTS) (Δ Brier = -0.00017, IC95% [-0.00290, +0.00236], p = 0.8980; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS_V3_1": {
+          "market_code": "BTTS",
+          "model_name": "XGB_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.52,
+          "brier_score": 0.24666,
+          "brier_ci_95": [
+            0.24498,
+            0.24834
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.68645,
+          "ece_calibration": 0.0353,
+          "accuracy": 0.553,
+          "f1_score": 0.6881,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS_V3_1 (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24666,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.0011,
+            "ci_95_diff": [
+              -0.00214,
+              -4e-05
+            ],
+            "boot_std_error": 0.00054,
+            "z_statistic": -2.0426,
+            "p_value_two_sided": 0.036,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS_V3_1 (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00110, IC95% [-0.00214, -0.00004], p = 0.0360)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS_V3_1 (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24666,
+            "brier_b": 0.24283,
+            "mean_diff_brier": 0.00383,
+            "ci_95_diff": [
+              -0.00105,
+              0.00847
+            ],
+            "boot_std_error": 0.00245,
+            "z_statistic": 1.568,
+            "p_value_two_sided": 0.116,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS_V3_1 (BTTS) y Poisson (BTTS) (Δ Brier = +0.00383, IC95% [-0.00105, +0.00847], p = 0.1160; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 0,
+              "mean_predicted_prob": 0.3,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 868,
+              "mean_predicted_prob": 0.52,
+              "empirical_rate": 0.5553,
+              "calibration_gap": 0.0353
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 0,
+              "mean_predicted_prob": 0.7,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        },
+        "ENSEMBLE_GOALS_V3_0": {
+          "market_code": "BTTS",
+          "model_name": "ENSEMBLE_GOALS_V3_0",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5337,
+          "brier_score": 0.2422,
+          "brier_ci_95": [
+            0.23675,
+            0.24765
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67746,
+          "ece_calibration": 0.02471,
+          "accuracy": 0.5841,
+          "f1_score": 0.6591,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.2422,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00556,
+            "ci_95_diff": [
+              -0.01009,
+              -0.00116
+            ],
+            "boot_std_error": 0.00228,
+            "z_statistic": -2.4356,
+            "p_value_two_sided": 0.017,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_0 (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00556, IC95% [-0.01009, -0.00116], p = 0.0170)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_0 (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.2422,
+            "brier_b": 0.24283,
+            "mean_diff_brier": -0.00062,
+            "ci_95_diff": [
+              -0.00218,
+              0.00084
+            ],
+            "boot_std_error": 0.00077,
+            "z_statistic": -0.8161,
+            "p_value_two_sided": 0.41,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_0 (BTTS) y Poisson (BTTS) (Δ Brier = -0.00062, IC95% [-0.00218, +0.00084], p = 0.4100; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS_V3_1": {
+          "market_code": "BTTS",
+          "model_name": "ENSEMBLE_GOALS_V3_1",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5286,
+          "brier_score": 0.24277,
+          "brier_ci_95": [
+            0.23874,
+            0.24681
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.6786,
+          "ece_calibration": 0.02694,
+          "accuracy": 0.5806,
+          "f1_score": 0.6611,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24277,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00499,
+            "ci_95_diff": [
+              -0.00821,
+              -0.00181
+            ],
+            "boot_std_error": 0.0016,
+            "z_statistic": -3.1193,
+            "p_value_two_sided": 0.002,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS_V3_1 (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00499, IC95% [-0.00821, -0.00181], p = 0.0020)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS_V3_1 (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24277,
+            "brier_b": 0.24283,
+            "mean_diff_brier": -5e-05,
+            "ci_95_diff": [
+              -0.002,
+              0.00173
+            ],
+            "boot_std_error": 0.00093,
+            "z_statistic": -0.0579,
+            "p_value_two_sided": 0.956,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS_V3_1 (BTTS) y Poisson (BTTS) (Δ Brier = -0.00005, IC95% [-0.00200, +0.00173], p = 0.9560; el 0 está dentro del IC)."
+          },
+          "reliability_bins_5": [
+            {
+              "bin_range": "0.00-0.20",
+              "count": 0,
+              "mean_predicted_prob": 0.1,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            },
+            {
+              "bin_range": "0.20-0.40",
+              "count": 8,
+              "mean_predicted_prob": 0.387,
+              "empirical_rate": 0.375,
+              "calibration_gap": 0.012
+            },
+            {
+              "bin_range": "0.40-0.60",
+              "count": 766,
+              "mean_predicted_prob": 0.5187,
+              "empirical_rate": 0.547,
+              "calibration_gap": 0.0283
+            },
+            {
+              "bin_range": "0.60-0.80",
+              "count": 94,
+              "mean_predicted_prob": 0.621,
+              "empirical_rate": 0.6383,
+              "calibration_gap": 0.0173
+            },
+            {
+              "bin_range": "0.80-1.00",
+              "count": 0,
+              "mean_predicted_prob": 0.9,
+              "empirical_rate": 0.0,
+              "calibration_gap": 0.0
+            }
+          ]
+        }
+      },
+      "delta_v3_1_minus_v3_0": {
+        "rf_brier_diff": 0.00425,
+        "xgb_brier_diff": 0.004,
+        "ensemble_brier_diff": 0.00057,
+        "rf_logloss_diff": 0.00855,
+        "xgb_logloss_diff": 0.0081,
+        "ensemble_logloss_diff": 0.00114
+      },
+      "by_competition": {
+        "LaLiga EA Sports": {
+          "matches": 226,
+          "empirical_rate": 0.4602,
+          "brier_baseline": 0.25284,
+          "brier_poisson": 0.24603,
+          "brier_ensemble_v3_1": 0.24605,
+          "ece_poisson": 0.02984,
+          "ece_ensemble_v3_1": 0.03513
+        },
+        "Premier League": {
+          "matches": 224,
+          "empirical_rate": 0.625,
+          "brier_baseline": 0.24404,
+          "brier_poisson": 0.24676,
+          "brier_ensemble_v3_1": 0.24523,
+          "ece_poisson": 0.11526,
+          "ece_ensemble_v3_1": 0.11167
+        },
+        "Serie A": {
+          "matches": 235,
+          "empirical_rate": 0.5404,
+          "brier_baseline": 0.24855,
+          "brier_poisson": 0.24195,
+          "brier_ensemble_v3_1": 0.24303,
+          "ece_poisson": 0.03548,
+          "ece_ensemble_v3_1": 0.03131
+        },
+        "Bundesliga": {
+          "matches": 183,
+          "empirical_rate": 0.6066,
+          "brier_baseline": 0.24503,
+          "brier_poisson": 0.23518,
+          "brier_ensemble_v3_1": 0.23538,
+          "ece_poisson": 0.00738,
+          "ece_ensemble_v3_1": 0.03009
+        }
+      }
+    }
+  },
+  "section_3_statistical_tests_with_holm_correction": {
+    "family_goal_markets_vs_baseline_m20": {
+      "OVER_2_5_POISSON_vs_BASE": {
+        "model_a": "OVER_2_5_POISSON",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23396,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.01493,
+        "ci_95_diff": [
+          -0.02225,
+          -0.00821
+        ],
+        "boot_std_error": 0.00352,
+        "z_statistic": -4.2397,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_2_5_POISSON sobre BASELINE al 95% (Δ Brier = -0.01493, IC95% [-0.02225, -0.00821], p = 0.0000).",
+        "holm_rank": 1,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.0025,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_2_5_RF_V3_1_vs_BASE": {
+        "model_a": "OVER_2_5_RF_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23922,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.00968,
+        "ci_95_diff": [
+          -0.01255,
+          -0.00645
+        ],
+        "boot_std_error": 0.00158,
+        "z_statistic": -6.1282,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_2_5_RF_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00968, IC95% [-0.01255, -0.00645], p = 0.0000).",
+        "holm_rank": 2,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.002632,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_2_5_XGB_V3_1_vs_BASE": {
+        "model_a": "OVER_2_5_XGB_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24021,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.00868,
+        "ci_95_diff": [
+          -0.01139,
+          -0.00542
+        ],
+        "boot_std_error": 0.00159,
+        "z_statistic": -5.4469,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_2_5_XGB_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00868, IC95% [-0.01139, -0.00542], p = 0.0000).",
+        "holm_rank": 3,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.002778,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_2_5_ENS_V3_1_vs_BASE": {
+        "model_a": "OVER_2_5_ENS_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23395,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.01494,
+        "ci_95_diff": [
+          -0.02176,
+          -0.00869
+        ],
+        "boot_std_error": 0.00329,
+        "z_statistic": -4.5357,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_2_5_ENS_V3_1 sobre BASELINE al 95% (Δ Brier = -0.01494, IC95% [-0.02176, -0.00869], p = 0.0000).",
+        "holm_rank": 4,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.002941,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "UNDER_2_5_POISSON_vs_BASE": {
+        "model_a": "UNDER_2_5_POISSON",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23396,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.01493,
+        "ci_95_diff": [
+          -0.02225,
+          -0.00821
+        ],
+        "boot_std_error": 0.00352,
+        "z_statistic": -4.2397,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de UNDER_2_5_POISSON sobre BASELINE al 95% (Δ Brier = -0.01493, IC95% [-0.02225, -0.00821], p = 0.0000).",
+        "holm_rank": 5,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.003125,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "UNDER_2_5_RF_V3_1_vs_BASE": {
+        "model_a": "UNDER_2_5_RF_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.2393,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.00959,
+        "ci_95_diff": [
+          -0.01231,
+          -0.00649
+        ],
+        "boot_std_error": 0.00152,
+        "z_statistic": -6.3215,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de UNDER_2_5_RF_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00959, IC95% [-0.01231, -0.00649], p = 0.0000).",
+        "holm_rank": 6,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.003333,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "UNDER_2_5_XGB_V3_1_vs_BASE": {
+        "model_a": "UNDER_2_5_XGB_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24025,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.00865,
+        "ci_95_diff": [
+          -0.0114,
+          -0.00547
+        ],
+        "boot_std_error": 0.00153,
+        "z_statistic": -5.6385,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de UNDER_2_5_XGB_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00865, IC95% [-0.01140, -0.00547], p = 0.0000).",
+        "holm_rank": 7,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.003571,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "UNDER_2_5_ENS_V3_1_vs_BASE": {
+        "model_a": "UNDER_2_5_ENS_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23395,
+        "brier_b": 0.2489,
+        "mean_diff_brier": -0.01495,
+        "ci_95_diff": [
+          -0.02175,
+          -0.00869
+        ],
+        "boot_std_error": 0.00329,
+        "z_statistic": -4.5399,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de UNDER_2_5_ENS_V3_1 sobre BASELINE al 95% (Δ Brier = -0.01495, IC95% [-0.02175, -0.00869], p = 0.0000).",
+        "holm_rank": 8,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.003846,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_3_5_RF_V3_1_vs_BASE": {
+        "model_a": "OVER_3_5_RF_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.21897,
+        "brier_b": 0.2263,
+        "mean_diff_brier": -0.00733,
+        "ci_95_diff": [
+          -0.01025,
+          -0.00418
+        ],
+        "boot_std_error": 0.00153,
+        "z_statistic": -4.7889,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_3_5_RF_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00733, IC95% [-0.01025, -0.00418], p = 0.0000).",
+        "holm_rank": 9,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.004167,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_3_5_XGB_V3_1_vs_BASE": {
+        "model_a": "OVER_3_5_XGB_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.22002,
+        "brier_b": 0.2263,
+        "mean_diff_brier": -0.00628,
+        "ci_95_diff": [
+          -0.00894,
+          -0.00298
+        ],
+        "boot_std_error": 0.0015,
+        "z_statistic": -4.1916,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_3_5_XGB_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00628, IC95% [-0.00894, -0.00298], p = 0.0000).",
+        "holm_rank": 10,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.004545,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_3_5_ENS_V3_1_vs_BASE": {
+        "model_a": "OVER_3_5_ENS_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.21612,
+        "brier_b": 0.2263,
+        "mean_diff_brier": -0.01017,
+        "ci_95_diff": [
+          -0.01466,
+          -0.00595
+        ],
+        "boot_std_error": 0.00218,
+        "z_statistic": -4.6735,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_3_5_ENS_V3_1 sobre BASELINE al 95% (Δ Brier = -0.01017, IC95% [-0.01466, -0.00595], p = 0.0000).",
+        "holm_rank": 11,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.005,
+        "p_value_holm_adjusted": 0.0,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_1_5_RF_V3_1_vs_BASE": {
+        "model_a": "OVER_1_5_RF_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16342,
+        "brier_b": 0.16663,
+        "mean_diff_brier": -0.00321,
+        "ci_95_diff": [
+          -0.0051,
+          -0.00146
+        ],
+        "boot_std_error": 0.00094,
+        "z_statistic": -3.4107,
+        "p_value_two_sided": 0.002,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_1_5_RF_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00321, IC95% [-0.00510, -0.00146], p = 0.0020).",
+        "holm_rank": 12,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.005556,
+        "p_value_holm_adjusted": 0.018,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_3_5_POISSON_vs_BASE": {
+        "model_a": "OVER_3_5_POISSON",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.21648,
+        "brier_b": 0.2263,
+        "mean_diff_brier": -0.00982,
+        "ci_95_diff": [
+          -0.0153,
+          -0.00462
+        ],
+        "boot_std_error": 0.00266,
+        "z_statistic": -3.6863,
+        "p_value_two_sided": 0.002,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_3_5_POISSON sobre BASELINE al 95% (Δ Brier = -0.00982, IC95% [-0.01530, -0.00462], p = 0.0020).",
+        "holm_rank": 13,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.00625,
+        "p_value_holm_adjusted": 0.018,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "BTTS_ENS_V3_1_vs_BASE": {
+        "model_a": "BTTS_ENS_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24277,
+        "brier_b": 0.24776,
+        "mean_diff_brier": -0.00499,
+        "ci_95_diff": [
+          -0.00821,
+          -0.00181
+        ],
+        "boot_std_error": 0.0016,
+        "z_statistic": -3.1193,
+        "p_value_two_sided": 0.002,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de BTTS_ENS_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00499, IC95% [-0.00821, -0.00181], p = 0.0020).",
+        "holm_rank": 14,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.007143,
+        "p_value_holm_adjusted": 0.018,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_1_5_ENS_V3_1_vs_BASE": {
+        "model_a": "OVER_1_5_ENS_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16,
+        "brier_b": 0.16663,
+        "mean_diff_brier": -0.00663,
+        "ci_95_diff": [
+          -0.01085,
+          -0.00255
+        ],
+        "boot_std_error": 0.00212,
+        "z_statistic": -3.1247,
+        "p_value_two_sided": 0.003,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_1_5_ENS_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00663, IC95% [-0.01085, -0.00255], p = 0.0030).",
+        "holm_rank": 15,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.008333,
+        "p_value_holm_adjusted": 0.018,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_1_5_XGB_V3_1_vs_BASE": {
+        "model_a": "OVER_1_5_XGB_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16489,
+        "brier_b": 0.16663,
+        "mean_diff_brier": -0.00174,
+        "ci_95_diff": [
+          -0.00315,
+          -0.00051
+        ],
+        "boot_std_error": 0.00065,
+        "z_statistic": -2.6729,
+        "p_value_two_sided": 0.009,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_1_5_XGB_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00174, IC95% [-0.00315, -0.00051], p = 0.0090).",
+        "holm_rank": 16,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.01,
+        "p_value_holm_adjusted": 0.045,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "OVER_1_5_POISSON_vs_BASE": {
+        "model_a": "OVER_1_5_POISSON",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.15973,
+        "brier_b": 0.16663,
+        "mean_diff_brier": -0.0069,
+        "ci_95_diff": [
+          -0.01198,
+          -0.00189
+        ],
+        "boot_std_error": 0.0026,
+        "z_statistic": -2.653,
+        "p_value_two_sided": 0.01,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de OVER_1_5_POISSON sobre BASELINE al 95% (Δ Brier = -0.00690, IC95% [-0.01198, -0.00189], p = 0.0100).",
+        "holm_rank": 17,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.0125,
+        "p_value_holm_adjusted": 0.045,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "BTTS_RF_V3_1_vs_BASE": {
+        "model_a": "BTTS_RF_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24644,
+        "brier_b": 0.24776,
+        "mean_diff_brier": -0.00132,
+        "ci_95_diff": [
+          -0.00241,
+          -0.00025
+        ],
+        "boot_std_error": 0.00056,
+        "z_statistic": -2.3467,
+        "p_value_two_sided": 0.015,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de BTTS_RF_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00132, IC95% [-0.00241, -0.00025], p = 0.0150).",
+        "holm_rank": 18,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.016667,
+        "p_value_holm_adjusted": 0.045,
+        "significant_raw_005": true,
+        "significant_holm_005": true,
+        "evidence_classification": "CONFIRMATORY"
+      },
+      "BTTS_XGB_V3_1_vs_BASE": {
+        "model_a": "BTTS_XGB_V3_1",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24666,
+        "brier_b": 0.24776,
+        "mean_diff_brier": -0.0011,
+        "ci_95_diff": [
+          -0.00214,
+          -4e-05
+        ],
+        "boot_std_error": 0.00054,
+        "z_statistic": -2.0426,
+        "p_value_two_sided": 0.036,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de BTTS_XGB_V3_1 sobre BASELINE al 95% (Δ Brier = -0.00110, IC95% [-0.00214, -0.00004], p = 0.0360).",
+        "holm_rank": 19,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.025,
+        "p_value_holm_adjusted": 0.072,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "BTTS_POISSON_vs_BASE": {
+        "model_a": "BTTS_POISSON",
+        "model_b": "BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24283,
+        "brier_b": 0.24776,
+        "mean_diff_brier": -0.00493,
+        "ci_95_diff": [
+          -0.00985,
+          0.00012
+        ],
+        "boot_std_error": 0.00249,
+        "z_statistic": -1.9833,
+        "p_value_two_sided": 0.055,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre BTTS_POISSON y BASELINE (Δ Brier = -0.00493, IC95% [-0.00985, +0.00012], p = 0.0550; el 0 está dentro del IC).",
+        "holm_rank": 20,
+        "family_size_m": 20,
+        "holm_threshold_alpha": 0.05,
+        "p_value_holm_adjusted": 0.072,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      }
+    },
+    "family_goal_trees_and_ensemble_vs_poisson_m15": {
+      "UNDER_2_5_XGB_V3_1_vs_POISSON": {
+        "model_a": "UNDER_2_5_XGB_V3_1",
+        "model_b": "UNDER_2_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24025,
+        "brier_b": 0.23396,
+        "mean_diff_brier": 0.00628,
+        "ci_95_diff": [
+          0.00145,
+          0.01155
+        ],
+        "boot_std_error": 0.00257,
+        "z_statistic": 2.4467,
+        "p_value_two_sided": 0.014,
+        "statistically_significant_95": true,
+        "verdict": "UNDER_2_5_XGB_V3_1 es significativamente PEOR que UNDER_2_5_POISSON al 95% (Δ Brier = +0.00628, IC95% [+0.00145, +0.01155], p = 0.0140).",
+        "holm_rank": 1,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.003333,
+        "p_value_holm_adjusted": 0.21,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "OVER_1_5_XGB_V3_1_vs_POISSON": {
+        "model_a": "OVER_1_5_XGB_V3_1",
+        "model_b": "OVER_1_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16489,
+        "brier_b": 0.15973,
+        "mean_diff_brier": 0.00516,
+        "ci_95_diff": [
+          0.001,
+          0.00939
+        ],
+        "boot_std_error": 0.00216,
+        "z_statistic": 2.3854,
+        "p_value_two_sided": 0.017,
+        "statistically_significant_95": true,
+        "verdict": "OVER_1_5_XGB_V3_1 es significativamente PEOR que OVER_1_5_POISSON al 95% (Δ Brier = +0.00516, IC95% [+0.00100, +0.00939], p = 0.0170).",
+        "holm_rank": 2,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.003571,
+        "p_value_holm_adjusted": 0.238,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "OVER_2_5_XGB_V3_1_vs_POISSON": {
+        "model_a": "OVER_2_5_XGB_V3_1",
+        "model_b": "OVER_2_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24021,
+        "brier_b": 0.23396,
+        "mean_diff_brier": 0.00625,
+        "ci_95_diff": [
+          0.00136,
+          0.01146
+        ],
+        "boot_std_error": 0.00257,
+        "z_statistic": 2.4301,
+        "p_value_two_sided": 0.017,
+        "statistically_significant_95": true,
+        "verdict": "OVER_2_5_XGB_V3_1 es significativamente PEOR que OVER_2_5_POISSON al 95% (Δ Brier = +0.00625, IC95% [+0.00136, +0.01146], p = 0.0170).",
+        "holm_rank": 3,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.003846,
+        "p_value_holm_adjusted": 0.238,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "OVER_2_5_RF_V3_1_vs_POISSON": {
+        "model_a": "OVER_2_5_RF_V3_1",
+        "model_b": "OVER_2_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23922,
+        "brier_b": 0.23396,
+        "mean_diff_brier": 0.00525,
+        "ci_95_diff": [
+          0.00064,
+          0.00997
+        ],
+        "boot_std_error": 0.0024,
+        "z_statistic": 2.1861,
+        "p_value_two_sided": 0.03,
+        "statistically_significant_95": true,
+        "verdict": "OVER_2_5_RF_V3_1 es significativamente PEOR que OVER_2_5_POISSON al 95% (Δ Brier = +0.00525, IC95% [+0.00064, +0.00997], p = 0.0300).",
+        "holm_rank": 4,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.004167,
+        "p_value_holm_adjusted": 0.36,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "UNDER_2_5_RF_V3_1_vs_POISSON": {
+        "model_a": "UNDER_2_5_RF_V3_1",
+        "model_b": "UNDER_2_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.2393,
+        "brier_b": 0.23396,
+        "mean_diff_brier": 0.00534,
+        "ci_95_diff": [
+          0.00065,
+          0.01029
+        ],
+        "boot_std_error": 0.00245,
+        "z_statistic": 2.1812,
+        "p_value_two_sided": 0.031,
+        "statistically_significant_95": true,
+        "verdict": "UNDER_2_5_RF_V3_1 es significativamente PEOR que UNDER_2_5_POISSON al 95% (Δ Brier = +0.00534, IC95% [+0.00065, +0.01029], p = 0.0310).",
+        "holm_rank": 5,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.004545,
+        "p_value_holm_adjusted": 0.36,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "OVER_1_5_RF_V3_1_vs_POISSON": {
+        "model_a": "OVER_1_5_RF_V3_1",
+        "model_b": "OVER_1_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16342,
+        "brier_b": 0.15973,
+        "mean_diff_brier": 0.00369,
+        "ci_95_diff": [
+          7e-05,
+          0.00734
+        ],
+        "boot_std_error": 0.00188,
+        "z_statistic": 1.9651,
+        "p_value_two_sided": 0.047,
+        "statistically_significant_95": true,
+        "verdict": "OVER_1_5_RF_V3_1 es significativamente PEOR que OVER_1_5_POISSON al 95% (Δ Brier = +0.00369, IC95% [+0.00007, +0.00734], p = 0.0470).",
+        "holm_rank": 6,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.005,
+        "p_value_holm_adjusted": 0.47,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "OVER_3_5_XGB_V3_1_vs_POISSON": {
+        "model_a": "OVER_3_5_XGB_V3_1",
+        "model_b": "OVER_3_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.22002,
+        "brier_b": 0.21648,
+        "mean_diff_brier": 0.00354,
+        "ci_95_diff": [
+          -0.0004,
+          0.00811
+        ],
+        "boot_std_error": 0.00219,
+        "z_statistic": 1.6165,
+        "p_value_two_sided": 0.098,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_3_5_XGB_V3_1 y OVER_3_5_POISSON (Δ Brier = +0.00354, IC95% [-0.00040, +0.00811], p = 0.0980; el 0 está dentro del IC).",
+        "holm_rank": 7,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.005556,
+        "p_value_holm_adjusted": 0.882,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "BTTS_XGB_V3_1_vs_POISSON": {
+        "model_a": "BTTS_XGB_V3_1",
+        "model_b": "BTTS_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24666,
+        "brier_b": 0.24283,
+        "mean_diff_brier": 0.00383,
+        "ci_95_diff": [
+          -0.00105,
+          0.00847
+        ],
+        "boot_std_error": 0.00245,
+        "z_statistic": 1.568,
+        "p_value_two_sided": 0.116,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre BTTS_XGB_V3_1 y BTTS_POISSON (Δ Brier = +0.00383, IC95% [-0.00105, +0.00847], p = 0.1160; el 0 está dentro del IC).",
+        "holm_rank": 8,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.00625,
+        "p_value_holm_adjusted": 0.928,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "BTTS_RF_V3_1_vs_POISSON": {
+        "model_a": "BTTS_RF_V3_1",
+        "model_b": "BTTS_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24644,
+        "brier_b": 0.24283,
+        "mean_diff_brier": 0.00361,
+        "ci_95_diff": [
+          -0.00127,
+          0.00813
+        ],
+        "boot_std_error": 0.00237,
+        "z_statistic": 1.5221,
+        "p_value_two_sided": 0.125,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre BTTS_RF_V3_1 y BTTS_POISSON (Δ Brier = +0.00361, IC95% [-0.00127, +0.00813], p = 0.1250; el 0 está dentro del IC).",
+        "holm_rank": 9,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.007143,
+        "p_value_holm_adjusted": 0.928,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_3_5_RF_V3_1_vs_POISSON": {
+        "model_a": "OVER_3_5_RF_V3_1",
+        "model_b": "OVER_3_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.21897,
+        "brier_b": 0.21648,
+        "mean_diff_brier": 0.00249,
+        "ci_95_diff": [
+          -0.00126,
+          0.00654
+        ],
+        "boot_std_error": 0.00198,
+        "z_statistic": 1.2565,
+        "p_value_two_sided": 0.207,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_3_5_RF_V3_1 y OVER_3_5_POISSON (Δ Brier = +0.00249, IC95% [-0.00126, +0.00654], p = 0.2070; el 0 está dentro del IC).",
+        "holm_rank": 10,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.008333,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_3_5_ENS_V3_1_vs_POISSON": {
+        "model_a": "OVER_3_5_ENS_V3_1",
+        "model_b": "OVER_3_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.21612,
+        "brier_b": 0.21648,
+        "mean_diff_brier": -0.00035,
+        "ci_95_diff": [
+          -0.00149,
+          0.00093
+        ],
+        "boot_std_error": 0.00062,
+        "z_statistic": -0.5717,
+        "p_value_two_sided": 0.536,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_3_5_ENS_V3_1 y OVER_3_5_POISSON (Δ Brier = -0.00035, IC95% [-0.00149, +0.00093], p = 0.5360; el 0 está dentro del IC).",
+        "holm_rank": 11,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.01,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_1_5_ENS_V3_1_vs_POISSON": {
+        "model_a": "OVER_1_5_ENS_V3_1",
+        "model_b": "OVER_1_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16,
+        "brier_b": 0.15973,
+        "mean_diff_brier": 0.00027,
+        "ci_95_diff": [
+          -0.00069,
+          0.00124
+        ],
+        "boot_std_error": 0.0005,
+        "z_statistic": 0.5423,
+        "p_value_two_sided": 0.582,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_1_5_ENS_V3_1 y OVER_1_5_POISSON (Δ Brier = +0.00027, IC95% [-0.00069, +0.00124], p = 0.5820; el 0 está dentro del IC).",
+        "holm_rank": 12,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.0125,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "UNDER_2_5_ENS_V3_1_vs_POISSON": {
+        "model_a": "UNDER_2_5_ENS_V3_1",
+        "model_b": "UNDER_2_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23395,
+        "brier_b": 0.23396,
+        "mean_diff_brier": -2e-05,
+        "ci_95_diff": [
+          -0.00052,
+          0.00047
+        ],
+        "boot_std_error": 0.00025,
+        "z_statistic": -0.0647,
+        "p_value_two_sided": 0.943,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre UNDER_2_5_ENS_V3_1 y UNDER_2_5_POISSON (Δ Brier = -0.00002, IC95% [-0.00052, +0.00047], p = 0.9430; el 0 está dentro del IC).",
+        "holm_rank": 13,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.016667,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "BTTS_ENS_V3_1_vs_POISSON": {
+        "model_a": "BTTS_ENS_V3_1",
+        "model_b": "BTTS_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24277,
+        "brier_b": 0.24283,
+        "mean_diff_brier": -5e-05,
+        "ci_95_diff": [
+          -0.002,
+          0.00173
+        ],
+        "boot_std_error": 0.00093,
+        "z_statistic": -0.0579,
+        "p_value_two_sided": 0.956,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre BTTS_ENS_V3_1 y BTTS_POISSON (Δ Brier = -0.00005, IC95% [-0.00200, +0.00173], p = 0.9560; el 0 está dentro del IC).",
+        "holm_rank": 14,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.025,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_2_5_ENS_V3_1_vs_POISSON": {
+        "model_a": "OVER_2_5_ENS_V3_1",
+        "model_b": "OVER_2_5_POISSON",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23395,
+        "brier_b": 0.23396,
+        "mean_diff_brier": -1e-05,
+        "ci_95_diff": [
+          -0.00051,
+          0.00049
+        ],
+        "boot_std_error": 0.00025,
+        "z_statistic": -0.0378,
+        "p_value_two_sided": 0.97,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_2_5_ENS_V3_1 y OVER_2_5_POISSON (Δ Brier = -0.00001, IC95% [-0.00051, +0.00049], p = 0.9700; el 0 está dentro del IC).",
+        "holm_rank": 15,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.05,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      }
+    },
+    "family_v3_1_oof_vs_v3_0_insample_m15": {
+      "OVER_2_5_XGB_V3_1_vs_V3_0": {
+        "model_a": "OVER_2_5_XGB_V3_1",
+        "model_b": "OVER_2_5_XGB_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24021,
+        "brier_b": 0.23469,
+        "mean_diff_brier": 0.00553,
+        "ci_95_diff": [
+          0.00079,
+          0.01029
+        ],
+        "boot_std_error": 0.00235,
+        "z_statistic": 2.3465,
+        "p_value_two_sided": 0.014,
+        "statistically_significant_95": true,
+        "verdict": "OVER_2_5_XGB_V3_1 es significativamente PEOR que OVER_2_5_XGB_V3_0 al 95% (Δ Brier = +0.00553, IC95% [+0.00079, +0.01029], p = 0.0140).",
+        "holm_rank": 1,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.003333,
+        "p_value_holm_adjusted": 0.21,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "UNDER_2_5_XGB_V3_1_vs_V3_0": {
+        "model_a": "UNDER_2_5_XGB_V3_1",
+        "model_b": "UNDER_2_5_XGB_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24025,
+        "brier_b": 0.23465,
+        "mean_diff_brier": 0.00559,
+        "ci_95_diff": [
+          0.00088,
+          0.01034
+        ],
+        "boot_std_error": 0.00237,
+        "z_statistic": 2.3571,
+        "p_value_two_sided": 0.016,
+        "statistically_significant_95": true,
+        "verdict": "UNDER_2_5_XGB_V3_1 es significativamente PEOR que UNDER_2_5_XGB_V3_0 al 95% (Δ Brier = +0.00559, IC95% [+0.00088, +0.01034], p = 0.0160).",
+        "holm_rank": 2,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.003571,
+        "p_value_holm_adjusted": 0.224,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "OVER_2_5_RF_V3_1_vs_V3_0": {
+        "model_a": "OVER_2_5_RF_V3_1",
+        "model_b": "OVER_2_5_RF_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23922,
+        "brier_b": 0.23362,
+        "mean_diff_brier": 0.0056,
+        "ci_95_diff": [
+          0.00069,
+          0.01029
+        ],
+        "boot_std_error": 0.00243,
+        "z_statistic": 2.3035,
+        "p_value_two_sided": 0.021,
+        "statistically_significant_95": true,
+        "verdict": "OVER_2_5_RF_V3_1 es significativamente PEOR que OVER_2_5_RF_V3_0 al 95% (Δ Brier = +0.00560, IC95% [+0.00069, +0.01029], p = 0.0210).",
+        "holm_rank": 3,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.003846,
+        "p_value_holm_adjusted": 0.273,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "UNDER_2_5_RF_V3_1_vs_V3_0": {
+        "model_a": "UNDER_2_5_RF_V3_1",
+        "model_b": "UNDER_2_5_RF_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.2393,
+        "brier_b": 0.23375,
+        "mean_diff_brier": 0.00556,
+        "ci_95_diff": [
+          0.00058,
+          0.0104
+        ],
+        "boot_std_error": 0.00248,
+        "z_statistic": 2.2421,
+        "p_value_two_sided": 0.023,
+        "statistically_significant_95": true,
+        "verdict": "UNDER_2_5_RF_V3_1 es significativamente PEOR que UNDER_2_5_RF_V3_0 al 95% (Δ Brier = +0.00556, IC95% [+0.00058, +0.01040], p = 0.0230).",
+        "holm_rank": 4,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.004167,
+        "p_value_holm_adjusted": 0.276,
+        "significant_raw_005": true,
+        "significant_holm_005": false,
+        "evidence_classification": "EXPLORATORY"
+      },
+      "BTTS_XGB_V3_1_vs_V3_0": {
+        "model_a": "BTTS_XGB_V3_1",
+        "model_b": "BTTS_XGB_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24666,
+        "brier_b": 0.24266,
+        "mean_diff_brier": 0.004,
+        "ci_95_diff": [
+          -0.00046,
+          0.00865
+        ],
+        "boot_std_error": 0.0022,
+        "z_statistic": 1.8187,
+        "p_value_two_sided": 0.077,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre BTTS_XGB_V3_1 y BTTS_XGB_V3_0 (Δ Brier = +0.00400, IC95% [-0.00046, +0.00865], p = 0.0770; el 0 está dentro del IC).",
+        "holm_rank": 5,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.004545,
+        "p_value_holm_adjusted": 0.847,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "BTTS_RF_V3_1_vs_V3_0": {
+        "model_a": "BTTS_RF_V3_1",
+        "model_b": "BTTS_RF_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24644,
+        "brier_b": 0.24219,
+        "mean_diff_brier": 0.00425,
+        "ci_95_diff": [
+          -0.00038,
+          0.00893
+        ],
+        "boot_std_error": 0.00234,
+        "z_statistic": 1.8156,
+        "p_value_two_sided": 0.078,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre BTTS_RF_V3_1 y BTTS_RF_V3_0 (Δ Brier = +0.00425, IC95% [-0.00038, +0.00893], p = 0.0780; el 0 está dentro del IC).",
+        "holm_rank": 6,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.005,
+        "p_value_holm_adjusted": 0.847,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_1_5_XGB_V3_1_vs_V3_0": {
+        "model_a": "OVER_1_5_XGB_V3_1",
+        "model_b": "OVER_1_5_XGB_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16489,
+        "brier_b": 0.16124,
+        "mean_diff_brier": 0.00365,
+        "ci_95_diff": [
+          -0.00139,
+          0.00873
+        ],
+        "boot_std_error": 0.00256,
+        "z_statistic": 1.4243,
+        "p_value_two_sided": 0.154,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_1_5_XGB_V3_1 y OVER_1_5_XGB_V3_0 (Δ Brier = +0.00365, IC95% [-0.00139, +0.00873], p = 0.1540; el 0 está dentro del IC).",
+        "holm_rank": 7,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.005556,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_1_5_RF_V3_1_vs_V3_0": {
+        "model_a": "OVER_1_5_RF_V3_1",
+        "model_b": "OVER_1_5_RF_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16342,
+        "brier_b": 0.16056,
+        "mean_diff_brier": 0.00286,
+        "ci_95_diff": [
+          -0.00143,
+          0.00697
+        ],
+        "boot_std_error": 0.00211,
+        "z_statistic": 1.3548,
+        "p_value_two_sided": 0.173,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_1_5_RF_V3_1 y OVER_1_5_RF_V3_0 (Δ Brier = +0.00286, IC95% [-0.00143, +0.00697], p = 0.1730; el 0 está dentro del IC).",
+        "holm_rank": 8,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.00625,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_2_5_ENS_V3_1_vs_V3_0": {
+        "model_a": "OVER_2_5_ENS_V3_1",
+        "model_b": "OVER_2_5_ENS_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23395,
+        "brier_b": 0.23352,
+        "mean_diff_brier": 0.00044,
+        "ci_95_diff": [
+          -0.0005,
+          0.00133
+        ],
+        "boot_std_error": 0.00047,
+        "z_statistic": 0.9265,
+        "p_value_two_sided": 0.344,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_2_5_ENS_V3_1 y OVER_2_5_ENS_V3_0 (Δ Brier = +0.00044, IC95% [-0.00050, +0.00133], p = 0.3440; el 0 está dentro del IC).",
+        "holm_rank": 9,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.007143,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "UNDER_2_5_ENS_V3_1_vs_V3_0": {
+        "model_a": "UNDER_2_5_ENS_V3_1",
+        "model_b": "UNDER_2_5_ENS_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.23395,
+        "brier_b": 0.23359,
+        "mean_diff_brier": 0.00035,
+        "ci_95_diff": [
+          -0.00052,
+          0.00124
+        ],
+        "boot_std_error": 0.00045,
+        "z_statistic": 0.78,
+        "p_value_two_sided": 0.424,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre UNDER_2_5_ENS_V3_1 y UNDER_2_5_ENS_V3_0 (Δ Brier = +0.00035, IC95% [-0.00052, +0.00124], p = 0.4240; el 0 está dentro del IC).",
+        "holm_rank": 10,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.008333,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_3_5_ENS_V3_1_vs_V3_0": {
+        "model_a": "OVER_3_5_ENS_V3_1",
+        "model_b": "OVER_3_5_ENS_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.21612,
+        "brier_b": 0.21648,
+        "mean_diff_brier": -0.00035,
+        "ci_95_diff": [
+          -0.00149,
+          0.00093
+        ],
+        "boot_std_error": 0.00062,
+        "z_statistic": -0.5717,
+        "p_value_two_sided": 0.536,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_3_5_ENS_V3_1 y OVER_3_5_ENS_V3_0 (Δ Brier = -0.00035, IC95% [-0.00149, +0.00093], p = 0.5360; el 0 está dentro del IC).",
+        "holm_rank": 11,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.01,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "BTTS_ENS_V3_1_vs_V3_0": {
+        "model_a": "BTTS_ENS_V3_1",
+        "model_b": "BTTS_ENS_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.24277,
+        "brier_b": 0.2422,
+        "mean_diff_brier": 0.00057,
+        "ci_95_diff": [
+          -0.00128,
+          0.00248
+        ],
+        "boot_std_error": 0.00096,
+        "z_statistic": 0.5974,
+        "p_value_two_sided": 0.538,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre BTTS_ENS_V3_1 y BTTS_ENS_V3_0 (Δ Brier = +0.00057, IC95% [-0.00128, +0.00248], p = 0.5380; el 0 está dentro del IC).",
+        "holm_rank": 12,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.0125,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_1_5_ENS_V3_1_vs_V3_0": {
+        "model_a": "OVER_1_5_ENS_V3_1",
+        "model_b": "OVER_1_5_ENS_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.16,
+        "brier_b": 0.15973,
+        "mean_diff_brier": 0.00027,
+        "ci_95_diff": [
+          -0.00069,
+          0.00124
+        ],
+        "boot_std_error": 0.0005,
+        "z_statistic": 0.5423,
+        "p_value_two_sided": 0.582,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_1_5_ENS_V3_1 y OVER_1_5_ENS_V3_0 (Δ Brier = +0.00027, IC95% [-0.00069, +0.00124], p = 0.5820; el 0 está dentro del IC).",
+        "holm_rank": 13,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.016667,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_3_5_RF_V3_1_vs_V3_0": {
+        "model_a": "OVER_3_5_RF_V3_1",
+        "model_b": "OVER_3_5_RF_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.21897,
+        "brier_b": 0.21812,
+        "mean_diff_brier": 0.00085,
+        "ci_95_diff": [
+          -0.00327,
+          0.00555
+        ],
+        "boot_std_error": 0.0023,
+        "z_statistic": 0.3708,
+        "p_value_two_sided": 0.691,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_3_5_RF_V3_1 y OVER_3_5_RF_V3_0 (Δ Brier = +0.00085, IC95% [-0.00327, +0.00555], p = 0.6910; el 0 está dentro del IC).",
+        "holm_rank": 14,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.025,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      },
+      "OVER_3_5_XGB_V3_1_vs_V3_0": {
+        "model_a": "OVER_3_5_XGB_V3_1",
+        "model_b": "OVER_3_5_XGB_V3_0",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.22002,
+        "brier_b": 0.21916,
+        "mean_diff_brier": 0.00086,
+        "ci_95_diff": [
+          -0.00361,
+          0.00546
+        ],
+        "boot_std_error": 0.00229,
+        "z_statistic": 0.3739,
+        "p_value_two_sided": 0.709,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre OVER_3_5_XGB_V3_1 y OVER_3_5_XGB_V3_0 (Δ Brier = +0.00086, IC95% [-0.00361, +0.00546], p = 0.7090; el 0 está dentro del IC).",
+        "holm_rank": 15,
+        "family_size_m": 15,
+        "holm_threshold_alpha": 0.05,
+        "p_value_holm_adjusted": 1.0,
+        "significant_raw_005": false,
+        "significant_holm_005": false,
+        "evidence_classification": "NOT_SIGNIFICANT"
+      }
+    }
+  },
+  "section_4_active_versions_audit_and_transition": {
+    "root_cause_of_v2_5_0_active": "En `run_phase3_scientific_audit.py`, los registros IDs 16-20 (`v3.0.0-phase3-scientific`) se guardaron con `artifact_path = 'F:\\\\Proyectos\\\\Predicciones\\\\backend\\\\artifacts\\\\models\\\\sportpredict_models_v3.0.0-phase3-scientific.joblib'` (incluyendo un subdirectorio inexistente `\\models\\`), mientras que el archivo real estaba en `backend/artifacts/`. Cuando `pytest` ejecutó `test_mvp_phase1.py::test_end_to_end_api_and_ml_pipeline`, `analyze_match` llamó a `_load_latest_artifact_if_available(db)`, que verificó `Path(active_m.artifact_path).exists()` -> `False`, disparando un reentrenamiento automático `self.train_and_validate_all_models(db)` directamente sobre `sportpredict_local.db`. Ese reentrenamiento creó `v2.5.0-real-cc0` (IDs 26-30) con `is_active=True` sin poner `is_active=False` en `v3.0.0-phase3-scientific`.",
+    "pre_transition_active_versions": [
+      "v3.0.0-phase3-scientific",
+      "v2.5.0-real-cc0"
+    ],
+    "pre_transition_models_count": 25,
+    "pre_transition_inventory": [
+      {
+        "id": 1,
+        "version": "v1.0.0-mvp",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.59893,
+        "test_brier_score": 0.62604,
+        "trained_at": "2026-11-09T15:55:00.286256"
+      },
+      {
+        "id": 2,
+        "version": "v1.0.0-mvp",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.62858,
+        "test_brier_score": 0.64583,
+        "trained_at": "2026-11-09T15:55:00.290806"
+      },
+      {
+        "id": 3,
+        "version": "v1.0.0-mvp",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.5808,
+        "test_brier_score": 0.68457,
+        "trained_at": "2026-11-09T15:55:00.291813"
+      },
+      {
+        "id": 4,
+        "version": "v1.0.0-mvp",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56231,
+        "test_brier_score": 0.67487,
+        "trained_at": "2026-11-09T15:55:00.293159"
+      },
+      {
+        "id": 5,
+        "version": "v1.0.0-mvp",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56789,
+        "test_brier_score": 0.64825,
+        "trained_at": "2026-11-09T15:55:00.294169"
+      },
+      {
+        "id": 6,
+        "version": "v1.1.0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.59893,
+        "test_brier_score": 0.62604,
+        "trained_at": "2026-11-09T16:02:31.432404"
+      },
+      {
+        "id": 7,
+        "version": "v1.1.0",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.62858,
+        "test_brier_score": 0.64583,
+        "trained_at": "2026-11-09T16:02:31.438915"
+      },
+      {
+        "id": 8,
+        "version": "v1.1.0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.5808,
+        "test_brier_score": 0.68457,
+        "trained_at": "2026-11-09T16:02:31.441913"
+      },
+      {
+        "id": 9,
+        "version": "v1.1.0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56231,
+        "test_brier_score": 0.67487,
+        "trained_at": "2026-11-09T16:02:31.445422"
+      },
+      {
+        "id": 10,
+        "version": "v1.1.0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56789,
+        "test_brier_score": 0.64825,
+        "trained_at": "2026-11-09T16:02:31.447930"
+      },
+      {
+        "id": 11,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.58403,
+        "test_brier_score": 0.58981,
+        "trained_at": "2026-11-09T16:22:30.815754"
+      },
+      {
+        "id": 12,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.58208,
+        "test_brier_score": 0.58467,
+        "trained_at": "2026-11-09T16:22:30.819787"
+      },
+      {
+        "id": 13,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.56963,
+        "test_brier_score": 0.58168,
+        "trained_at": "2026-11-09T16:22:30.820792"
+      },
+      {
+        "id": 14,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.57249,
+        "test_brier_score": 0.58336,
+        "trained_at": "2026-11-09T16:22:30.821799"
+      },
+      {
+        "id": 15,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.56959,
+        "test_brier_score": 0.58131,
+        "trained_at": "2026-11-09T16:22:30.822806"
+      },
+      {
+        "id": 16,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "POISSON",
+        "is_active": true,
+        "artifact_path": "F:\\Proyectos\\Predicciones\\backend\\artifacts\\models\\sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58259,
+        "test_brier_score": 0.59239,
+        "trained_at": "2026-11-09T16:56:02.588463"
+      },
+      {
+        "id": 17,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ELO",
+        "is_active": true,
+        "artifact_path": "F:\\Proyectos\\Predicciones\\backend\\artifacts\\models\\sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.5767,
+        "test_brier_score": 0.58332,
+        "trained_at": "2026-11-09T16:56:02.589463"
+      },
+      {
+        "id": 18,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "RANDOM_FOREST",
+        "is_active": true,
+        "artifact_path": "F:\\Proyectos\\Predicciones\\backend\\artifacts\\models\\sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56769,
+        "test_brier_score": 0.57943,
+        "trained_at": "2026-11-09T16:56:02.590462"
+      },
+      {
+        "id": 19,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "XGBOOST",
+        "is_active": true,
+        "artifact_path": "F:\\Proyectos\\Predicciones\\backend\\artifacts\\models\\sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56584,
+        "test_brier_score": 0.58162,
+        "trained_at": "2026-11-09T16:56:02.590462"
+      },
+      {
+        "id": 20,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ENSEMBLE",
+        "is_active": true,
+        "artifact_path": "F:\\Proyectos\\Predicciones\\backend\\artifacts\\models\\sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56556,
+        "test_brier_score": 0.58036,
+        "trained_at": "2026-11-09T16:56:02.591462"
+      },
+      {
+        "id": 26,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "POISSON",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58266,
+        "test_brier_score": 0.59274,
+        "trained_at": "2026-11-09T17:01:51.946047"
+      },
+      {
+        "id": 27,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "ELO",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58413,
+        "test_brier_score": 0.58879,
+        "trained_at": "2026-11-09T17:01:51.948046"
+      },
+      {
+        "id": 28,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.57042,
+        "test_brier_score": 0.58259,
+        "trained_at": "2026-11-09T17:01:51.949046"
+      },
+      {
+        "id": 29,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "XGBOOST",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.57199,
+        "test_brier_score": 0.58363,
+        "trained_at": "2026-11-09T17:01:51.950048"
+      },
+      {
+        "id": 30,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "ENSEMBLE",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.5703,
+        "test_brier_score": 0.58232,
+        "trained_at": "2026-11-09T17:01:51.950048"
+      }
+    ],
+    "post_transition_active_versions": [
+      "v3.1.0"
+    ],
+    "post_transition_models_count": 30,
+    "post_transition_inventory": [
+      {
+        "id": 1,
+        "version": "v1.0.0-mvp",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.59893,
+        "test_brier_score": 0.62604
+      },
+      {
+        "id": 2,
+        "version": "v1.0.0-mvp",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.62858,
+        "test_brier_score": 0.64583
+      },
+      {
+        "id": 3,
+        "version": "v1.0.0-mvp",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.5808,
+        "test_brier_score": 0.68457
+      },
+      {
+        "id": 4,
+        "version": "v1.0.0-mvp",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56231,
+        "test_brier_score": 0.67487
+      },
+      {
+        "id": 5,
+        "version": "v1.0.0-mvp",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.0.0-mvp.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56789,
+        "test_brier_score": 0.64825
+      },
+      {
+        "id": 6,
+        "version": "v1.1.0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.59893,
+        "test_brier_score": 0.62604
+      },
+      {
+        "id": 7,
+        "version": "v1.1.0",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.62858,
+        "test_brier_score": 0.64583
+      },
+      {
+        "id": 8,
+        "version": "v1.1.0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.5808,
+        "test_brier_score": 0.68457
+      },
+      {
+        "id": 9,
+        "version": "v1.1.0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56231,
+        "test_brier_score": 0.67487
+      },
+      {
+        "id": 10,
+        "version": "v1.1.0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v1.1.0.joblib",
+        "train_matches_count": 90,
+        "val_brier_score": 0.56789,
+        "test_brier_score": 0.64825
+      },
+      {
+        "id": 11,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.58403,
+        "test_brier_score": 0.58981
+      },
+      {
+        "id": 12,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.58208,
+        "test_brier_score": 0.58467
+      },
+      {
+        "id": 13,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.56963,
+        "test_brier_score": 0.58168
+      },
+      {
+        "id": 14,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.57249,
+        "test_brier_score": 0.58336
+      },
+      {
+        "id": 15,
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.0.0-real-cc0.joblib",
+        "train_matches_count": 2602,
+        "val_brier_score": 0.56959,
+        "test_brier_score": 0.58131
+      },
+      {
+        "id": 16,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58259,
+        "test_brier_score": 0.59239
+      },
+      {
+        "id": 17,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.5767,
+        "test_brier_score": 0.58332
+      },
+      {
+        "id": 18,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56769,
+        "test_brier_score": 0.57943
+      },
+      {
+        "id": 19,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56584,
+        "test_brier_score": 0.58162
+      },
+      {
+        "id": 20,
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v3.0.0-phase3-scientific.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56556,
+        "test_brier_score": 0.58036
+      },
+      {
+        "id": 26,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58266,
+        "test_brier_score": 0.59274
+      },
+      {
+        "id": 27,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "ELO",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58413,
+        "test_brier_score": 0.58879
+      },
+      {
+        "id": 28,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.57042,
+        "test_brier_score": 0.58259
+      },
+      {
+        "id": 29,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.57199,
+        "test_brier_score": 0.58363
+      },
+      {
+        "id": 30,
+        "version": "v2.5.0-real-cc0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "artifact_path": "sportpredict_models_v2.5.0-real-cc0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.5703,
+        "test_brier_score": 0.58232
+      },
+      {
+        "id": 31,
+        "version": "v3.1.0",
+        "model_code": "POISSON",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v3.1.0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.58259,
+        "test_brier_score": 0.59239
+      },
+      {
+        "id": 32,
+        "version": "v3.1.0",
+        "model_code": "ELO",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v3.1.0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.5767,
+        "test_brier_score": 0.58332
+      },
+      {
+        "id": 33,
+        "version": "v3.1.0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v3.1.0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56769,
+        "test_brier_score": 0.57943
+      },
+      {
+        "id": 34,
+        "version": "v3.1.0",
+        "model_code": "XGBOOST",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v3.1.0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56584,
+        "test_brier_score": 0.58162
+      },
+      {
+        "id": 35,
+        "version": "v3.1.0",
+        "model_code": "ENSEMBLE",
+        "is_active": true,
+        "artifact_path": "sportpredict_models_v3.1.0.joblib",
+        "train_matches_count": 2605,
+        "val_brier_score": 0.56556,
+        "test_brier_score": 0.58036
+      }
+    ],
+    "service_loaded_artifact_successfully": true,
+    "service_active_version_resolved": "v3.1.0",
+    "api_comparison_default_version_resolved": "v3.1.0"
+  },
+  "section_5_dataset_traceability_clarification": {
+    "total_real_finished_matches": 4338,
+    "total_db_matches_all_statuses": 4495,
+    "breakdown_by_source_and_season": {
+      "REAL|OPENFOOTBALL_CC0|2021-22|FINISHED": {
+        "is_demo": false,
+        "source_name": "OPENFOOTBALL_CC0",
+        "season": "2021-22",
+        "status": "FINISHED",
+        "count": 1446,
+        "min_kickoff_utc": "2021-08-13T20:00:00",
+        "max_kickoff_utc": "2022-05-22T22:00:00"
+      },
+      "REAL|OPENFOOTBALL_CC0|2022-23|FINISHED": {
+        "is_demo": false,
+        "source_name": "OPENFOOTBALL_CC0",
+        "season": "2022-23",
+        "status": "FINISHED",
+        "count": 1446,
+        "min_kickoff_utc": "2022-08-05T20:00:00",
+        "max_kickoff_utc": "2023-06-04T21:00:00"
+      },
+      "REAL|OPENFOOTBALL_CC0|2023-24|FINISHED": {
+        "is_demo": false,
+        "source_name": "OPENFOOTBALL_CC0",
+        "season": "2023-24",
+        "status": "FINISHED",
+        "count": 1446,
+        "min_kickoff_utc": "2023-08-11T19:30:00",
+        "max_kickoff_utc": "2024-06-02T18:00:00"
+      },
+      "DEMO|DEMO_SEED|2025/2026|FINISHED": {
+        "is_demo": true,
+        "source_name": "DEMO_SEED",
+        "season": "2025/2026",
+        "status": "FINISHED",
+        "count": 75,
+        "min_kickoff_utc": "2026-02-22T15:00:00",
+        "max_kickoff_utc": "2026-06-14T21:00:00"
+      },
+      "DEMO|DEMO_SEED|2026/2027|FINISHED": {
+        "is_demo": true,
+        "source_name": "DEMO_SEED",
+        "season": "2026/2027",
+        "status": "FINISHED",
+        "count": 75,
+        "min_kickoff_utc": "2026-06-22T15:00:00",
+        "max_kickoff_utc": "2026-10-12T21:00:00"
+      },
+      "DEMO|DEMO_SEED|2026/2027|SCHEDULED": {
+        "is_demo": true,
+        "source_name": "DEMO_SEED",
+        "season": "2026/2027",
+        "status": "SCHEDULED",
+        "count": 6,
+        "min_kickoff_utc": "2026-11-09T19:00:00",
+        "max_kickoff_utc": "2026-11-11T21:00:00"
+      },
+      "REAL|Dataset_Propio_Autorizado|2026/2027|SCHEDULED": {
+        "is_demo": false,
+        "source_name": "Dataset_Propio_Autorizado",
+        "season": "2026/2027",
+        "status": "SCHEDULED",
+        "count": 1,
+        "min_kickoff_utc": "2026-11-15T20:00:00",
+        "max_kickoff_utc": "2026-11-15T20:00:00"
+      }
+    },
+    "exact_real_date_range_utc": {
+      "min_kickoff_utc": "2021-08-13T20:00:00+00:00",
+      "max_kickoff_utc": "2024-06-02T18:00:00+00:00",
+      "train_range": "2021-08-13T20:00:00+00:00 -> 2023-04-22T15:00:00+00:00 (2605 matches)",
+      "val_range": "2023-04-22T15:30:00+00:00 -> 2023-12-10T12:30:00+00:00 (865 matches)",
+      "test_range": "2023-12-10T14:00:00+00:00 -> 2024-06-02T18:00:00+00:00 (868 matches)"
+    },
+    "why_4338_is_identical_across_phase2_and_phase3": "El dataset histórico real (`OPENFOOTBALL_CC0`, 4,338 partidos de las temporadas 2021-22, 2022-23 y 2023-24 entre el 2021-08-13 y el 2024-06-02) NUNCA fue modificado ni sustituido entre la Fase 2 y la Fase 3. La mención de '2022/23 a mayo de 2025' en el texto narrativo de `06_AUDITORIA_COMPLEMENTARIA_FASE3.md` fue exclusivamente una errata de transcripción en el documento Markdown de dicho informe, mientras que el archivo JSON subyacente (`phase3_complementary_audit_results.json`, líneas 11-15) registró siempre las fechas reales exactas: `2021-08-13T20:00:00+00:00` a `2024-06-02T18:00:00+00:00`.",
+    "why_train_count_changed_from_2602_to_2605": "En `v2.0.0-real-cc0` (Fase 2), el corte 60%/20%/20% usó índices fijos (`2602 / 868 / 868`), dividiendo 4 partidos simultáneos jugados el `2023-04-22T15:00:00+00:00` entre Train (1 partido) y Validation (3 partidos). En Fase 3 (`v3.0.0` y `v3.1.0`), `split_chronologically_no_overlap` desplazó la frontera 3 posiciones (`2605 / 865 / 868`) para que todos los partidos simultáneos de las 15:00 UTC quedasen en Train y Validation comenzase estrictamente después (`2023-04-22T15:30:00+00:00`). El conjunto de prueba (`Test = 868` partidos, `2023-12-10T14:00:00+00:00` a `2024-06-02T18:00:00+00:00`) es exactamente el mismo partido por partido en `v2.0.0`, `v2.5.0`, `v3.0.0` y `v3.1.0`.",
+    "simultaneous_matches_at_train_val_boundary_2602": [
+      {
+        "slice_index": 2600,
+        "match_id": 846,
+        "competition": "Premier League",
+        "season": "2022-23",
+        "kickoff_utc": "2023-04-22T15:00:00+00:00"
+      },
+      {
+        "slice_index": 2601,
+        "match_id": 847,
+        "competition": "Premier League",
+        "season": "2022-23",
+        "kickoff_utc": "2023-04-22T15:00:00+00:00"
+      },
+      {
+        "slice_index": 2602,
+        "match_id": 848,
+        "competition": "Premier League",
+        "season": "2022-23",
+        "kickoff_utc": "2023-04-22T15:00:00+00:00"
+      },
+      {
+        "slice_index": 2603,
+        "match_id": 849,
+        "competition": "Premier League",
+        "season": "2022-23",
+        "kickoff_utc": "2023-04-22T15:00:00+00:00"
+      },
+      {
+        "slice_index": 2604,
+        "match_id": 3119,
+        "competition": "Serie A",
+        "season": "2022-23",
+        "kickoff_utc": "2023-04-22T15:00:00+00:00"
+      },
+      {
+        "slice_index": 2605,
+        "match_id": 4137,
+        "competition": "Bundesliga",
+        "season": "2022-23",
+        "kickoff_utc": "2023-04-22T15:30:00+00:00"
+      }
+    ]
+  },
+  "section_6_sha256_integrity": {
+    "before": {
+      "sportpredict_local.db": "54bd5ca6e647947ca44951c8a5bc7ed669235f5da3a0098e86fbb84640f13188",
+      "openfootball_real_matches_cc0.csv": "66ebf7560f0284a422f1bc95807761d0c123aaf655ee3d8dc4a569e11d259751",
+      "artifacts": {
+        "sportpredict_models_v1.0.0-mvp.joblib": {
+          "size_bytes": 740822,
+          "sha256": "8db65a188a7958ee045d084ec38021dc2a3791c5442b1cc61ef7bf07476a4d34"
+        },
+        "sportpredict_models_v1.1.0.joblib": {
+          "size_bytes": 740822,
+          "sha256": "e3998c30b3dcb56b84a36a792c95038d73f53db9f65ac37fee312b2f5293a665"
+        },
+        "sportpredict_models_v2.0.0-real-cc0.joblib": {
+          "size_bytes": 7272958,
+          "sha256": "0c7b596b7c48af98206772cc3d3553b313ad43df8fed6a085c1c3c1b97f4f78e"
+        },
+        "sportpredict_models_v2.4.0-real-cc0.joblib": {
+          "size_bytes": 7299138,
+          "sha256": "bc281c637ad459c4b5219f4f2e1e24206286a3f8620b9c05827f90a088ffee9f"
+        },
+        "sportpredict_models_v2.5.0-real-cc0.joblib": {
+          "size_bytes": 7299138,
+          "sha256": "3052813e9f3cb0504fd3e9177d76770764db3f26459e7f7a848498b4f8bb7655"
+        },
+        "sportpredict_models_v3.0.0-phase3-scientific.joblib": {
+          "size_bytes": 20005465,
+          "sha256": "4e3b8f6309f682170b211768f2943491479badb2f2140be688e3c082145ac56a"
+        }
+      }
+    },
+    "after": {
+      "sportpredict_local.db": "db0ee3b669bf137a11763cca8ed4a609a4ccb8617fb14e9084b18b32852c45d9",
+      "openfootball_real_matches_cc0.csv": "66ebf7560f0284a422f1bc95807761d0c123aaf655ee3d8dc4a569e11d259751",
+      "csv_unmodified": true,
+      "previous_6_joblib_artifacts_unmodified": true,
+      "artifacts": {
+        "sportpredict_models_v1.0.0-mvp.joblib": {
+          "size_bytes": 740822,
+          "sha256": "8db65a188a7958ee045d084ec38021dc2a3791c5442b1cc61ef7bf07476a4d34"
+        },
+        "sportpredict_models_v1.1.0.joblib": {
+          "size_bytes": 740822,
+          "sha256": "e3998c30b3dcb56b84a36a792c95038d73f53db9f65ac37fee312b2f5293a665"
+        },
+        "sportpredict_models_v2.0.0-real-cc0.joblib": {
+          "size_bytes": 7272958,
+          "sha256": "0c7b596b7c48af98206772cc3d3553b313ad43df8fed6a085c1c3c1b97f4f78e"
+        },
+        "sportpredict_models_v2.4.0-real-cc0.joblib": {
+          "size_bytes": 7299138,
+          "sha256": "bc281c637ad459c4b5219f4f2e1e24206286a3f8620b9c05827f90a088ffee9f"
+        },
+        "sportpredict_models_v2.5.0-real-cc0.joblib": {
+          "size_bytes": 7299138,
+          "sha256": "3052813e9f3cb0504fd3e9177d76770764db3f26459e7f7a848498b4f8bb7655"
+        },
+        "sportpredict_models_v3.0.0-phase3-scientific.joblib": {
+          "size_bytes": 20005465,
+          "sha256": "4e3b8f6309f682170b211768f2943491479badb2f2140be688e3c082145ac56a"
+        },
+        "sportpredict_models_v3.1.0.joblib": {
+          "size_bytes": 19083886,
+          "sha256": "4d2c51db007f47c011b895c3c7e594907a58dc9b538e8ff992f6c00cf8837f47"
+        }
+      }
+    }
+  }
+}

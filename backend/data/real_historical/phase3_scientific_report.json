@@ -1,0 +1,4839 @@
+{
+  "generated_at_utc": "2026-11-09T16:56:02.597381+00:00",
+  "version": "v3.0.0-phase3-scientific",
+  "dataset_used": {
+    "source": "OPENFOOTBALL_CC0_REAL (github.com/openfootball/football.json)",
+    "license": "CC0-1.0 Universal (Dominio Público)",
+    "total_real_matches": 4338,
+    "competitions": [
+      "Premier League",
+      "LaLiga EA Sports",
+      "Serie A",
+      "Bundesliga"
+    ],
+    "seasons": [
+      "2021-22",
+      "2022-23",
+      "2023-24"
+    ],
+    "has_historical_odds": false,
+    "roi_policy": "ROI no calculado por ausencia de cuotas históricas reales (prohibido inventar cuotas)."
+  },
+  "features_used_1x2": [
+    "elo_diff",
+    "home_elo_pre",
+    "away_elo_pre",
+    "home_pts_last5",
+    "away_pts_last5",
+    "home_pts_last10",
+    "away_pts_last10",
+    "home_gf_last5",
+    "home_ga_last5",
+    "away_gf_last5",
+    "away_ga_last5",
+    "home_gf_last10",
+    "home_ga_last10",
+    "away_gf_last10",
+    "away_ga_last10",
+    "home_home_gf_avg",
+    "home_home_ga_avg",
+    "away_away_gf_avg",
+    "away_away_ga_avg",
+    "home_over25_rate10",
+    "away_over25_rate10",
+    "home_btts_rate10",
+    "away_btts_rate10",
+    "home_clean_sheet_rate10",
+    "away_clean_sheet_rate10",
+    "combined_goal_env10",
+    "rest_days_diff",
+    "league_pos_diff",
+    "h2h_home_advantage"
+  ],
+  "features_used_goal_markets": [
+    "elo_diff",
+    "home_elo_pre",
+    "away_elo_pre",
+    "home_pts_last5",
+    "away_pts_last5",
+    "home_pts_last10",
+    "away_pts_last10",
+    "home_gf_last5",
+    "home_ga_last5",
+    "away_gf_last5",
+    "away_ga_last5",
+    "home_gf_last10",
+    "home_ga_last10",
+    "away_gf_last10",
+    "away_ga_last10",
+    "home_home_gf_avg",
+    "home_home_ga_avg",
+    "away_away_gf_avg",
+    "away_away_ga_avg",
+    "home_over25_rate10",
+    "away_over25_rate10",
+    "home_btts_rate10",
+    "away_btts_rate10",
+    "home_clean_sheet_rate10",
+    "away_clean_sheet_rate10",
+    "combined_goal_env10",
+    "rest_days_diff",
+    "league_pos_diff",
+    "h2h_home_advantage",
+    "poisson_lambda_home",
+    "poisson_lambda_away",
+    "poisson_lambda_total",
+    "poisson_market_prob"
+  ],
+  "temporal_and_standings_integrity_audit": {
+    "train_max_kickoff_utc": "2023-04-22T15:00:00+00:00",
+    "val_min_kickoff_utc": "2023-04-22T15:30:00+00:00",
+    "val_max_kickoff_utc": "2023-12-10T12:30:00+00:00",
+    "test_min_kickoff_utc": "2023-12-10T14:00:00+00:00",
+    "train_val_strictly_disjoint": true,
+    "val_test_strictly_disjoint": true,
+    "standings_audit_sample_size": 40,
+    "standings_pre_match_mismatches": 0,
+    "standings_integrity_verified": true
+  },
+  "experiment_1_poisson_dixon_coles": {
+    "grid_search_on_val": [
+      {
+        "xi": 0.0,
+        "use_competition_hfa": false,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58354,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5179,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2318,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7497,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.211,
+          "total_goals_rmse": 1.7014,
+          "total_goals_mae": 1.332
+        }
+      },
+      {
+        "xi": 0.0,
+        "use_competition_hfa": false,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58348,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5168,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.233,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7498,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2109,
+          "total_goals_rmse": 1.6958,
+          "total_goals_mae": 1.328
+        }
+      },
+      {
+        "xi": 0.0008,
+        "use_competition_hfa": false,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.5828,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5144,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2249,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7393,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2214,
+          "total_goals_rmse": 1.6977,
+          "total_goals_mae": 1.3298
+        }
+      },
+      {
+        "xi": 0.0008,
+        "use_competition_hfa": false,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58323,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5134,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2267,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7401,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2206,
+          "total_goals_rmse": 1.6927,
+          "total_goals_mae": 1.3272
+        }
+      },
+      {
+        "xi": 0.0015,
+        "use_competition_hfa": false,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58266,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5113,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2191,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7305,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2302,
+          "total_goals_rmse": 1.6958,
+          "total_goals_mae": 1.3293
+        }
+      },
+      {
+        "xi": 0.0015,
+        "use_competition_hfa": false,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58352,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5105,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2214,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7319,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2288,
+          "total_goals_rmse": 1.6913,
+          "total_goals_mae": 1.3276
+        }
+      },
+      {
+        "xi": 0.0022,
+        "use_competition_hfa": false,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58295,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5082,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2137,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7219,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2388,
+          "total_goals_rmse": 1.695,
+          "total_goals_mae": 1.3294
+        }
+      },
+      {
+        "xi": 0.0022,
+        "use_competition_hfa": false,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58427,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5075,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2164,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7239,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2368,
+          "total_goals_rmse": 1.691,
+          "total_goals_mae": 1.3283
+        }
+      },
+      {
+        "xi": 0.003,
+        "use_competition_hfa": false,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.5837,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5046,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2082,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7128,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2479,
+          "total_goals_rmse": 1.6953,
+          "total_goals_mae": 1.3302
+        }
+      },
+      {
+        "xi": 0.003,
+        "use_competition_hfa": false,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58551,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5041,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2113,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7153,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2454,
+          "total_goals_rmse": 1.6916,
+          "total_goals_mae": 1.3294
+        }
+      },
+      {
+        "xi": 0.0045,
+        "use_competition_hfa": false,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58599,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.4976,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.1997,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.6973,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2634,
+          "total_goals_rmse": 1.6977,
+          "total_goals_mae": 1.3323
+        }
+      },
+      {
+        "xi": 0.0045,
+        "use_competition_hfa": false,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58848,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.4974,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2033,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7008,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2599,
+          "total_goals_rmse": 1.6941,
+          "total_goals_mae": 1.3314
+        }
+      },
+      {
+        "xi": 0.0,
+        "use_competition_hfa": true,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58338,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5178,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2316,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7494,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2113,
+          "total_goals_rmse": 1.6952,
+          "total_goals_mae": 1.3272
+        }
+      },
+      {
+        "xi": 0.0,
+        "use_competition_hfa": true,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.5834,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5169,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2327,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7497,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.211,
+          "total_goals_rmse": 1.6917,
+          "total_goals_mae": 1.3249
+        }
+      },
+      {
+        "xi": 0.0008,
+        "use_competition_hfa": true,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.5827,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5143,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2248,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7391,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2216,
+          "total_goals_rmse": 1.6923,
+          "total_goals_mae": 1.3257
+        }
+      },
+      {
+        "xi": 0.0008,
+        "use_competition_hfa": true,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58315,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5135,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2264,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7399,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2208,
+          "total_goals_rmse": 1.6889,
+          "total_goals_mae": 1.3241
+        }
+      },
+      {
+        "xi": 0.0015,
+        "use_competition_hfa": true,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58259,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5111,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2191,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7302,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2305,
+          "total_goals_rmse": 1.6909,
+          "total_goals_mae": 1.3257
+        }
+      },
+      {
+        "xi": 0.0015,
+        "use_competition_hfa": true,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58347,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5104,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.221,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7315,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2292,
+          "total_goals_rmse": 1.6876,
+          "total_goals_mae": 1.3243
+        }
+      },
+      {
+        "xi": 0.0022,
+        "use_competition_hfa": true,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58288,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5079,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2136,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7214,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2393,
+          "total_goals_rmse": 1.6906,
+          "total_goals_mae": 1.3261
+        }
+      },
+      {
+        "xi": 0.0022,
+        "use_competition_hfa": true,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58421,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5073,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2159,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7232,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2375,
+          "total_goals_rmse": 1.6873,
+          "total_goals_mae": 1.3249
+        }
+      },
+      {
+        "xi": 0.003,
+        "use_competition_hfa": true,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58366,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.504,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2079,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7119,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2488,
+          "total_goals_rmse": 1.6911,
+          "total_goals_mae": 1.3268
+        }
+      },
+      {
+        "xi": 0.003,
+        "use_competition_hfa": true,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58546,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.5036,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2106,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.7141,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.2466,
+          "total_goals_rmse": 1.6877,
+          "total_goals_mae": 1.3256
+        }
+      },
+      {
+        "xi": 0.0045,
+        "use_competition_hfa": true,
+        "shrinkage": 4.0,
+        "n_iterations": 5,
+        "val_brier": 0.58596,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.4967,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.199,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.6957,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.265,
+          "total_goals_rmse": 1.6937,
+          "total_goals_mae": 1.3285
+        }
+      },
+      {
+        "xi": 0.0045,
+        "use_competition_hfa": true,
+        "shrinkage": 7.0,
+        "n_iterations": 5,
+        "val_brier": 0.58841,
+        "val_goals_calibration": {
+          "matches_evaluated": 865,
+          "mean_predicted_home_goals": 1.4964,
+          "mean_actual_home_goals": 1.6936,
+          "mean_predicted_away_goals": 1.2023,
+          "mean_actual_away_goals": 1.2671,
+          "mean_predicted_total_goals": 2.6987,
+          "mean_actual_total_goals": 2.9607,
+          "total_goals_bias": -0.262,
+          "total_goals_rmse": 1.6897,
+          "total_goals_mae": 1.3269
+        }
+      }
+    ],
+    "selected_best_config": {
+      "xi": 0.0015,
+      "use_competition_hfa": true,
+      "shrinkage": 4.0,
+      "n_iterations": 5,
+      "val_brier": 0.58259,
+      "val_goals_calibration": {
+        "matches_evaluated": 865,
+        "mean_predicted_home_goals": 1.5111,
+        "mean_actual_home_goals": 1.6936,
+        "mean_predicted_away_goals": 1.2191,
+        "mean_actual_away_goals": 1.2671,
+        "mean_predicted_total_goals": 2.7302,
+        "mean_actual_total_goals": 2.9607,
+        "total_goals_bias": -0.2305,
+        "total_goals_rmse": 1.6909,
+        "total_goals_mae": 1.3257
+      }
+    },
+    "phase2_goals_calibration_test": {
+      "matches_evaluated": 868,
+      "mean_predicted_home_goals": 1.5821,
+      "mean_actual_home_goals": 1.6025,
+      "mean_predicted_away_goals": 1.2485,
+      "mean_actual_away_goals": 1.3076,
+      "mean_predicted_total_goals": 2.8307,
+      "mean_actual_total_goals": 2.9101,
+      "total_goals_bias": -0.0795,
+      "total_goals_rmse": 1.6882,
+      "total_goals_mae": 1.351
+    },
+    "phase3_goals_calibration_test": {
+      "matches_evaluated": 868,
+      "mean_predicted_home_goals": 1.5794,
+      "mean_actual_home_goals": 1.6025,
+      "mean_predicted_away_goals": 1.2498,
+      "mean_actual_away_goals": 1.3076,
+      "mean_predicted_total_goals": 2.8292,
+      "mean_actual_total_goals": 2.9101,
+      "total_goals_bias": -0.0809,
+      "total_goals_rmse": 1.6646,
+      "total_goals_mae": 1.3346
+    }
+  },
+  "experiment_2_elo": {
+    "grid_search_on_val": [
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": false,
+        "val_brier": 0.58762,
+        "test_brier": 0.59007
+      },
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": false,
+        "val_brier": 0.5919,
+        "test_brier": 0.59254
+      },
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": false,
+        "val_brier": 0.59493,
+        "test_brier": 0.59425
+      },
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": false,
+        "val_brier": 0.59742,
+        "test_brier": 0.59564
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": false,
+        "val_brier": 0.58444,
+        "test_brier": 0.58693
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": false,
+        "val_brier": 0.58849,
+        "test_brier": 0.58896
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": false,
+        "val_brier": 0.59141,
+        "test_brier": 0.59038
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": false,
+        "val_brier": 0.59384,
+        "test_brier": 0.59155
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": false,
+        "val_brier": 0.58232,
+        "test_brier": 0.58479
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": false,
+        "val_brier": 0.58613,
+        "test_brier": 0.58647
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": false,
+        "val_brier": 0.58892,
+        "test_brier": 0.58766
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": false,
+        "val_brier": 0.59126,
+        "test_brier": 0.58863
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": false,
+        "val_brier": 0.58088,
+        "test_brier": 0.5833
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": false,
+        "val_brier": 0.58447,
+        "test_brier": 0.5847
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": false,
+        "val_brier": 0.58712,
+        "test_brier": 0.5857
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": false,
+        "val_brier": 0.58935,
+        "test_brier": 0.58652
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": false,
+        "val_brier": 0.57992,
+        "test_brier": 0.58225
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": false,
+        "val_brier": 0.5833,
+        "test_brier": 0.58344
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": false,
+        "val_brier": 0.58581,
+        "test_brier": 0.58429
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": false,
+        "val_brier": 0.58794,
+        "test_brier": 0.58498
+      },
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": true,
+        "val_brier": 0.58248,
+        "test_brier": 0.5896
+      },
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": true,
+        "val_brier": 0.58628,
+        "test_brier": 0.59158
+      },
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": true,
+        "val_brier": 0.58907,
+        "test_brier": 0.59303
+      },
+      {
+        "k_factor": 16.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": true,
+        "val_brier": 0.59142,
+        "test_brier": 0.59425
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": true,
+        "val_brier": 0.57988,
+        "test_brier": 0.58694
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": true,
+        "val_brier": 0.58337,
+        "test_brier": 0.58845
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": true,
+        "val_brier": 0.58599,
+        "test_brier": 0.5896
+      },
+      {
+        "k_factor": 20.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": true,
+        "val_brier": 0.58824,
+        "test_brier": 0.59057
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": true,
+        "val_brier": 0.57826,
+        "test_brier": 0.5852
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": true,
+        "val_brier": 0.58146,
+        "test_brier": 0.58638
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": true,
+        "val_brier": 0.58392,
+        "test_brier": 0.58728
+      },
+      {
+        "k_factor": 24.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": true,
+        "val_brier": 0.58604,
+        "test_brier": 0.58806
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": true,
+        "val_brier": 0.57727,
+        "test_brier": 0.58406
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": true,
+        "val_brier": 0.58021,
+        "test_brier": 0.58498
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": true,
+        "val_brier": 0.58251,
+        "test_brier": 0.5857
+      },
+      {
+        "k_factor": 28.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": true,
+        "val_brier": 0.58451,
+        "test_brier": 0.58633
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.0,
+        "use_competition_hfa": true,
+        "val_brier": 0.5767,
+        "test_brier": 0.58332
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.15,
+        "use_competition_hfa": true,
+        "val_brier": 0.57942,
+        "test_brier": 0.58405
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.25,
+        "use_competition_hfa": true,
+        "val_brier": 0.58156,
+        "test_brier": 0.58464
+      },
+      {
+        "k_factor": 32.0,
+        "season_regression_theta": 0.33,
+        "use_competition_hfa": true,
+        "val_brier": 0.58345,
+        "test_brier": 0.58515
+      }
+    ],
+    "selected_best_config": {
+      "k_factor": 32.0,
+      "season_regression_theta": 0.0,
+      "use_competition_hfa": true,
+      "val_brier": 0.5767,
+      "test_brier": 0.58332
+    },
+    "calibrated_competition_hfa": {
+      "2": 43.4,
+      "4": 60.9,
+      "1": 52.62,
+      "3": 25.0
+    },
+    "calibrated_competition_draw_nu": {
+      "2": 0.6113207547169811,
+      "4": 0.655581947743468,
+      "1": 0.7484662576687117,
+      "3": 0.7063492063492063
+    }
+  },
+  "experiment_3_rf_and_xgboost": {
+    "rf_grid_on_val": [
+      {
+        "n_estimators": 240,
+        "max_depth": 4,
+        "min_samples_leaf": 10,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58048,
+        "val_brier": 0.57005,
+        "overfit_gap": -0.01043
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 4,
+        "min_samples_leaf": 10,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57184,
+        "val_brier": 0.56807,
+        "overfit_gap": -0.00377
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 4,
+        "min_samples_leaf": 20,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58204,
+        "val_brier": 0.57001,
+        "overfit_gap": -0.01203
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 4,
+        "min_samples_leaf": 20,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57374,
+        "val_brier": 0.56992,
+        "overfit_gap": -0.00382
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 4,
+        "min_samples_leaf": 30,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58446,
+        "val_brier": 0.57027,
+        "overfit_gap": -0.01419
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 4,
+        "min_samples_leaf": 30,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57689,
+        "val_brier": 0.57113,
+        "overfit_gap": -0.00576
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 5,
+        "min_samples_leaf": 10,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57025,
+        "val_brier": 0.56965,
+        "overfit_gap": -0.0006
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 5,
+        "min_samples_leaf": 10,
+        "calibration_method": "isotonic",
+        "train_brier": 0.55747,
+        "val_brier": 0.56822,
+        "overfit_gap": 0.01075
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 5,
+        "min_samples_leaf": 20,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.576,
+        "val_brier": 0.56971,
+        "overfit_gap": -0.00629
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 5,
+        "min_samples_leaf": 20,
+        "calibration_method": "isotonic",
+        "train_brier": 0.5656,
+        "val_brier": 0.56915,
+        "overfit_gap": 0.00355
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 5,
+        "min_samples_leaf": 30,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57966,
+        "val_brier": 0.56997,
+        "overfit_gap": -0.00969
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 5,
+        "min_samples_leaf": 30,
+        "calibration_method": "isotonic",
+        "train_brier": 0.5702,
+        "val_brier": 0.56921,
+        "overfit_gap": -0.00099
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 6,
+        "min_samples_leaf": 10,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.55883,
+        "val_brier": 0.56952,
+        "overfit_gap": 0.01069
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 6,
+        "min_samples_leaf": 10,
+        "calibration_method": "isotonic",
+        "train_brier": 0.54297,
+        "val_brier": 0.56769,
+        "overfit_gap": 0.02472
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 6,
+        "min_samples_leaf": 20,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.56864,
+        "val_brier": 0.56996,
+        "overfit_gap": 0.00132
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 6,
+        "min_samples_leaf": 20,
+        "calibration_method": "isotonic",
+        "train_brier": 0.5559,
+        "val_brier": 0.56881,
+        "overfit_gap": 0.01291
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 6,
+        "min_samples_leaf": 30,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57593,
+        "val_brier": 0.5698,
+        "overfit_gap": -0.00613
+      },
+      {
+        "n_estimators": 240,
+        "max_depth": 6,
+        "min_samples_leaf": 30,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56573,
+        "val_brier": 0.5684,
+        "overfit_gap": 0.00267
+      }
+    ],
+    "selected_rf_config": {
+      "n_estimators": 240,
+      "max_depth": 6,
+      "min_samples_leaf": 10,
+      "calibration_method": "isotonic",
+      "train_brier": 0.54297,
+      "val_brier": 0.56769,
+      "overfit_gap": 0.02472
+    },
+    "rf_feature_importances": {
+      "elo_diff": 0.1582,
+      "league_pos_diff": 0.1163,
+      "away_elo_pre": 0.0879,
+      "home_elo_pre": 0.0799,
+      "away_pts_last10": 0.0483,
+      "away_gf_last10": 0.0436,
+      "home_gf_last10": 0.0379,
+      "away_away_gf_avg": 0.0375,
+      "home_pts_last10": 0.0332,
+      "home_home_gf_avg": 0.0325,
+      "away_gf_last5": 0.0286,
+      "combined_goal_env10": 0.0243,
+      "away_ga_last10": 0.023,
+      "home_ga_last10": 0.0229,
+      "away_away_ga_avg": 0.0227,
+      "home_home_ga_avg": 0.0216,
+      "home_ga_last5": 0.0201,
+      "home_pts_last5": 0.0191,
+      "away_pts_last5": 0.0189,
+      "away_clean_sheet_rate10": 0.0155,
+      "home_btts_rate10": 0.0146,
+      "away_ga_last5": 0.0144,
+      "home_gf_last5": 0.014,
+      "away_over25_rate10": 0.013,
+      "away_btts_rate10": 0.0112,
+      "h2h_home_advantage": 0.0111,
+      "home_clean_sheet_rate10": 0.0108,
+      "home_over25_rate10": 0.0105,
+      "rest_days_diff": 0.0082
+    },
+    "xgb_grid_on_val": [
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58849,
+        "val_brier": 0.56919,
+        "overfit_gap": -0.0193
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57843,
+        "val_brier": 0.56645,
+        "overfit_gap": -0.01198
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.5894,
+        "val_brier": 0.5693,
+        "overfit_gap": -0.0201
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57901,
+        "val_brier": 0.56681,
+        "overfit_gap": -0.0122
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58984,
+        "val_brier": 0.56913,
+        "overfit_gap": -0.02071
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.58083,
+        "val_brier": 0.56607,
+        "overfit_gap": -0.01476
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58896,
+        "val_brier": 0.56915,
+        "overfit_gap": -0.01981
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57883,
+        "val_brier": 0.56584,
+        "overfit_gap": -0.01299
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58957,
+        "val_brier": 0.56912,
+        "overfit_gap": -0.02045
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57976,
+        "val_brier": 0.56636,
+        "overfit_gap": -0.0134
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58997,
+        "val_brier": 0.56907,
+        "overfit_gap": -0.0209
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.58083,
+        "val_brier": 0.56757,
+        "overfit_gap": -0.01326
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58918,
+        "val_brier": 0.56898,
+        "overfit_gap": -0.0202
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57875,
+        "val_brier": 0.56743,
+        "overfit_gap": -0.01132
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58975,
+        "val_brier": 0.56909,
+        "overfit_gap": -0.02066
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.58036,
+        "val_brier": 0.56681,
+        "overfit_gap": -0.01355
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58997,
+        "val_brier": 0.56894,
+        "overfit_gap": -0.02103
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 2,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.58138,
+        "val_brier": 0.56665,
+        "overfit_gap": -0.01473
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57555,
+        "val_brier": 0.56976,
+        "overfit_gap": -0.00579
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56022,
+        "val_brier": 0.5672,
+        "overfit_gap": 0.00698
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57676,
+        "val_brier": 0.56964,
+        "overfit_gap": -0.00712
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56304,
+        "val_brier": 0.56617,
+        "overfit_gap": 0.00313
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57856,
+        "val_brier": 0.56959,
+        "overfit_gap": -0.00897
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56513,
+        "val_brier": 0.56758,
+        "overfit_gap": 0.00245
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57747,
+        "val_brier": 0.56987,
+        "overfit_gap": -0.0076
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56415,
+        "val_brier": 0.56752,
+        "overfit_gap": 0.00337
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57869,
+        "val_brier": 0.56982,
+        "overfit_gap": -0.00887
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56501,
+        "val_brier": 0.56785,
+        "overfit_gap": 0.00284
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57956,
+        "val_brier": 0.56963,
+        "overfit_gap": -0.00993
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56747,
+        "val_brier": 0.56759,
+        "overfit_gap": 0.00012
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57999,
+        "val_brier": 0.57004,
+        "overfit_gap": -0.00995
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56885,
+        "val_brier": 0.56794,
+        "overfit_gap": -0.00091
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58083,
+        "val_brier": 0.56992,
+        "overfit_gap": -0.01091
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56947,
+        "val_brier": 0.56871,
+        "overfit_gap": -0.00076
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.58111,
+        "val_brier": 0.56958,
+        "overfit_gap": -0.01153
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 3,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.57073,
+        "val_brier": 0.56892,
+        "overfit_gap": -0.00181
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.55898,
+        "val_brier": 0.57071,
+        "overfit_gap": 0.01173
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.54217,
+        "val_brier": 0.56726,
+        "overfit_gap": 0.02509
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.56068,
+        "val_brier": 0.57025,
+        "overfit_gap": 0.00957
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.54464,
+        "val_brier": 0.56692,
+        "overfit_gap": 0.02228
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.56348,
+        "val_brier": 0.57028,
+        "overfit_gap": 0.0068
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 5.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.54839,
+        "val_brier": 0.56642,
+        "overfit_gap": 0.01803
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.56607,
+        "val_brier": 0.57133,
+        "overfit_gap": 0.00526
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.54798,
+        "val_brier": 0.56833,
+        "overfit_gap": 0.02035
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.56746,
+        "val_brier": 0.57087,
+        "overfit_gap": 0.00341
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.55064,
+        "val_brier": 0.56864,
+        "overfit_gap": 0.018
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.56844,
+        "val_brier": 0.57032,
+        "overfit_gap": 0.00188
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 15.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.55375,
+        "val_brier": 0.56864,
+        "overfit_gap": 0.01489
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57038,
+        "val_brier": 0.57045,
+        "overfit_gap": 7e-05
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 3.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.55773,
+        "val_brier": 0.56794,
+        "overfit_gap": 0.01021
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57151,
+        "val_brier": 0.57066,
+        "overfit_gap": -0.00085
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 6.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.55958,
+        "val_brier": 0.56956,
+        "overfit_gap": 0.00998
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "sigmoid",
+        "train_brier": 0.57279,
+        "val_brier": 0.57067,
+        "overfit_gap": -0.00212
+      },
+      {
+        "n_estimators": 100,
+        "max_depth": 4,
+        "learning_rate": 0.03,
+        "min_child_weight": 25.0,
+        "reg_lambda": 10.0,
+        "calibration_method": "isotonic",
+        "train_brier": 0.56085,
+        "val_brier": 0.56983,
+        "overfit_gap": 0.00898
+      }
+    ],
+    "selected_xgb_config": {
+      "n_estimators": 100,
+      "max_depth": 2,
+      "learning_rate": 0.03,
+      "min_child_weight": 15.0,
+      "reg_lambda": 3.0,
+      "calibration_method": "isotonic",
+      "train_brier": 0.57883,
+      "val_brier": 0.56584,
+      "overfit_gap": -0.01299
+    },
+    "xgb_feature_importances": {
+      "elo_diff": 0.1645,
+      "league_pos_diff": 0.0771,
+      "away_elo_pre": 0.057,
+      "away_gf_last10": 0.0434,
+      "away_gf_last5": 0.0389,
+      "home_elo_pre": 0.0384,
+      "home_pts_last10": 0.0351,
+      "away_ga_last10": 0.034,
+      "home_home_gf_avg": 0.0335,
+      "away_away_gf_avg": 0.0328,
+      "home_gf_last10": 0.0321,
+      "rest_days_diff": 0.0306,
+      "away_pts_last10": 0.0293,
+      "home_ga_last5": 0.0272,
+      "home_ga_last10": 0.0262,
+      "home_home_ga_avg": 0.0242,
+      "home_btts_rate10": 0.0241,
+      "away_away_ga_avg": 0.0234,
+      "away_ga_last5": 0.0232,
+      "away_clean_sheet_rate10": 0.0228,
+      "away_pts_last5": 0.0226,
+      "h2h_home_advantage": 0.0226,
+      "away_over25_rate10": 0.0225,
+      "home_pts_last5": 0.0224,
+      "home_clean_sheet_rate10": 0.0222,
+      "away_btts_rate10": 0.0218,
+      "combined_goal_env10": 0.0209,
+      "home_gf_last5": 0.015,
+      "home_over25_rate10": 0.0123
+    }
+  },
+  "experiment_4_ensemble_and_comparison": {
+    "phase3_simplex_weights_on_val": {
+      "POISSON": 0.0842,
+      "ELO": 0.0,
+      "RANDOM_FOREST": 0.1589,
+      "XGBOOST": 0.7569
+    },
+    "phase3_excluded_models": {
+      "ELO": "Peso 0.0: No aporta reducción marginal de Brier Score en el ensamble sobre T_val (Brier individual=0.5767)."
+    },
+    "validation_metrics_phase3": {
+      "POISSON": {
+        "total_predictions": 865,
+        "accuracy": 0.5376,
+        "precision_macro": 0.3436,
+        "recall_macro": 0.4457,
+        "f1_macro": 0.3876,
+        "brier_score": 0.58259,
+        "log_loss": 0.97974,
+        "ece_calibration": 0.02506,
+        "baseline_brier_score": 0.63524,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56388,
+            0.6013
+          ],
+          "log_loss_ci_95": [
+            0.95328,
+            1.0062
+          ],
+          "accuracy_ci_95": [
+            0.5043,
+            0.5708
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 322,
+            "mean_predicted_prob": 0.1547,
+            "empirical_win_rate": 0.1366,
+            "calibration_gap": 0.0181
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1566,
+            "mean_predicted_prob": 0.2827,
+            "empirical_win_rate": 0.2656,
+            "calibration_gap": 0.017
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 538,
+            "mean_predicted_prob": 0.4834,
+            "empirical_win_rate": 0.5223,
+            "calibration_gap": 0.0389
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 158,
+            "mean_predicted_prob": 0.653,
+            "empirical_win_rate": 0.7152,
+            "calibration_gap": 0.0622
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 11,
+            "mean_predicted_prob": 0.8397,
+            "empirical_win_rate": 1.0,
+            "calibration_gap": 0.1603
+          }
+        ],
+        "by_competition": {
+          "Bundesliga": {
+            "matches": 176,
+            "accuracy": 0.5341,
+            "brier_score": 0.58527,
+            "log_loss": 0.98439
+          },
+          "LaLiga EA Sports": {
+            "matches": 242,
+            "accuracy": 0.5248,
+            "brier_score": 0.58344,
+            "log_loss": 0.97996
+          },
+          "Serie A": {
+            "matches": 223,
+            "accuracy": 0.5247,
+            "brier_score": 0.58862,
+            "log_loss": 0.98922
+          },
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.567,
+            "brier_score": 0.57357,
+            "log_loss": 0.9664
+          }
+        }
+      },
+      "ELO": {
+        "total_predictions": 865,
+        "accuracy": 0.548,
+        "precision_macro": 0.3524,
+        "recall_macro": 0.4635,
+        "f1_macro": 0.4003,
+        "brier_score": 0.5767,
+        "log_loss": 0.97266,
+        "ece_calibration": 0.03115,
+        "baseline_brier_score": 0.63524,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.5577,
+            0.59571
+          ],
+          "log_loss_ci_95": [
+            0.94588,
+            0.99943
+          ],
+          "accuracy_ci_95": [
+            0.5148,
+            0.5812
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 289,
+            "mean_predicted_prob": 0.16,
+            "empirical_win_rate": 0.1349,
+            "calibration_gap": 0.0251
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1547,
+            "mean_predicted_prob": 0.2729,
+            "empirical_win_rate": 0.2515,
+            "calibration_gap": 0.0214
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 605,
+            "mean_predicted_prob": 0.4873,
+            "empirical_win_rate": 0.5355,
+            "calibration_gap": 0.0482
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 152,
+            "mean_predicted_prob": 0.6586,
+            "empirical_win_rate": 0.7303,
+            "calibration_gap": 0.0716
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 2,
+            "mean_predicted_prob": 0.8194,
+            "empirical_win_rate": 1.0,
+            "calibration_gap": 0.1806
+          }
+        ],
+        "by_competition": {
+          "Bundesliga": {
+            "matches": 176,
+            "accuracy": 0.5284,
+            "brier_score": 0.57868,
+            "log_loss": 0.97322
+          },
+          "LaLiga EA Sports": {
+            "matches": 242,
+            "accuracy": 0.5331,
+            "brier_score": 0.5806,
+            "log_loss": 0.97838
+          },
+          "Serie A": {
+            "matches": 223,
+            "accuracy": 0.5605,
+            "brier_score": 0.59005,
+            "log_loss": 0.99492
+          },
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.567,
+            "brier_score": 0.55766,
+            "log_loss": 0.94387
+          }
+        }
+      },
+      "RANDOM_FOREST": {
+        "total_predictions": 865,
+        "accuracy": 0.5561,
+        "precision_macro": 0.5256,
+        "recall_macro": 0.4716,
+        "f1_macro": 0.4102,
+        "brier_score": 0.56769,
+        "log_loss": 0.96314,
+        "ece_calibration": 0.02171,
+        "baseline_brier_score": 0.63524,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.54572,
+            0.58967
+          ],
+          "log_loss_ci_95": [
+            0.93036,
+            0.99591
+          ],
+          "accuracy_ci_95": [
+            0.5229,
+            0.5892
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 447,
+            "mean_predicted_prob": 0.1471,
+            "empirical_win_rate": 0.1588,
+            "calibration_gap": 0.0118
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1352,
+            "mean_predicted_prob": 0.2667,
+            "empirical_win_rate": 0.2463,
+            "calibration_gap": 0.0204
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 570,
+            "mean_predicted_prob": 0.4982,
+            "empirical_win_rate": 0.5193,
+            "calibration_gap": 0.0211
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 218,
+            "mean_predicted_prob": 0.6794,
+            "empirical_win_rate": 0.7294,
+            "calibration_gap": 0.0499
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 8,
+            "mean_predicted_prob": 0.8252,
+            "empirical_win_rate": 0.75,
+            "calibration_gap": 0.0752
+          }
+        ],
+        "by_competition": {
+          "Bundesliga": {
+            "matches": 176,
+            "accuracy": 0.5284,
+            "brier_score": 0.56577,
+            "log_loss": 0.95449
+          },
+          "LaLiga EA Sports": {
+            "matches": 242,
+            "accuracy": 0.5496,
+            "brier_score": 0.57253,
+            "log_loss": 0.96933
+          },
+          "Serie A": {
+            "matches": 223,
+            "accuracy": 0.5561,
+            "brier_score": 0.57612,
+            "log_loss": 0.97776
+          },
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5848,
+            "brier_score": 0.55559,
+            "log_loss": 0.94869
+          }
+        }
+      },
+      "XGBOOST": {
+        "total_predictions": 865,
+        "accuracy": 0.5607,
+        "precision_macro": 0.4751,
+        "recall_macro": 0.4788,
+        "f1_macro": 0.421,
+        "brier_score": 0.56584,
+        "log_loss": 0.95943,
+        "ece_calibration": 0.01204,
+        "baseline_brier_score": 0.63524,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.54326,
+            0.58841
+          ],
+          "log_loss_ci_95": [
+            0.9265,
+            0.99236
+          ],
+          "accuracy_ci_95": [
+            0.5276,
+            0.5938
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 452,
+            "mean_predicted_prob": 0.1388,
+            "empirical_win_rate": 0.1416,
+            "calibration_gap": 0.0028
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1353,
+            "mean_predicted_prob": 0.2651,
+            "empirical_win_rate": 0.2535,
+            "calibration_gap": 0.0116
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 563,
+            "mean_predicted_prob": 0.5093,
+            "empirical_win_rate": 0.5204,
+            "calibration_gap": 0.0112
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 206,
+            "mean_predicted_prob": 0.6771,
+            "empirical_win_rate": 0.7136,
+            "calibration_gap": 0.0364
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 21,
+            "mean_predicted_prob": 0.8295,
+            "empirical_win_rate": 0.8571,
+            "calibration_gap": 0.0277
+          }
+        ],
+        "by_competition": {
+          "Bundesliga": {
+            "matches": 176,
+            "accuracy": 0.5398,
+            "brier_score": 0.5685,
+            "log_loss": 0.96166
+          },
+          "LaLiga EA Sports": {
+            "matches": 242,
+            "accuracy": 0.5496,
+            "brier_score": 0.56743,
+            "log_loss": 0.9589
+          },
+          "Serie A": {
+            "matches": 223,
+            "accuracy": 0.565,
+            "brier_score": 0.57207,
+            "log_loss": 0.97486
+          },
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5848,
+            "brier_score": 0.55581,
+            "log_loss": 0.94288
+          }
+        }
+      },
+      "ENSEMBLE": {
+        "total_predictions": 865,
+        "accuracy": 0.5584,
+        "precision_macro": 0.4179,
+        "recall_macro": 0.4738,
+        "f1_macro": 0.4132,
+        "brier_score": 0.56556,
+        "log_loss": 0.95801,
+        "ece_calibration": 0.01727,
+        "baseline_brier_score": 0.63524,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.54364,
+            0.58748
+          ],
+          "log_loss_ci_95": [
+            0.92641,
+            0.98961
+          ],
+          "accuracy_ci_95": [
+            0.5253,
+            0.5915
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 440,
+            "mean_predicted_prob": 0.1441,
+            "empirical_win_rate": 0.1409,
+            "calibration_gap": 0.0032
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1371,
+            "mean_predicted_prob": 0.267,
+            "empirical_win_rate": 0.2524,
+            "calibration_gap": 0.0147
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 563,
+            "mean_predicted_prob": 0.5048,
+            "empirical_win_rate": 0.5204,
+            "calibration_gap": 0.0156
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 209,
+            "mean_predicted_prob": 0.6764,
+            "empirical_win_rate": 0.7416,
+            "calibration_gap": 0.0652
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 12,
+            "mean_predicted_prob": 0.824,
+            "empirical_win_rate": 0.75,
+            "calibration_gap": 0.074
+          }
+        ],
+        "by_competition": {
+          "Bundesliga": {
+            "matches": 176,
+            "accuracy": 0.5227,
+            "brier_score": 0.56714,
+            "log_loss": 0.95798
+          },
+          "LaLiga EA Sports": {
+            "matches": 242,
+            "accuracy": 0.5537,
+            "brier_score": 0.56803,
+            "log_loss": 0.95992
+          },
+          "Serie A": {
+            "matches": 223,
+            "accuracy": 0.5605,
+            "brier_score": 0.57242,
+            "log_loss": 0.97299
+          },
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5893,
+            "brier_score": 0.55483,
+            "log_loss": 0.94105
+          }
+        }
+      }
+    },
+    "test_metrics_phase3": {
+      "POISSON": {
+        "total_predictions": 868,
+        "accuracy": 0.523,
+        "precision_macro": 0.4608,
+        "recall_macro": 0.4648,
+        "f1_macro": 0.3979,
+        "brier_score": 0.59239,
+        "log_loss": 0.99028,
+        "ece_calibration": 0.00486,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.57239,
+            0.61239
+          ],
+          "log_loss_ci_95": [
+            0.96228,
+            1.01829
+          ],
+          "accuracy_ci_95": [
+            0.4898,
+            0.5563
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 370,
+            "mean_predicted_prob": 0.1506,
+            "empirical_win_rate": 0.1351,
+            "calibration_gap": 0.0155
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1502,
+            "mean_predicted_prob": 0.2787,
+            "empirical_win_rate": 0.2783,
+            "calibration_gap": 0.0004
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 549,
+            "mean_predicted_prob": 0.4892,
+            "empirical_win_rate": 0.4918,
+            "calibration_gap": 0.0026
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 168,
+            "mean_predicted_prob": 0.671,
+            "empirical_win_rate": 0.6964,
+            "calibration_gap": 0.0254
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 15,
+            "mean_predicted_prob": 0.8255,
+            "empirical_win_rate": 0.8667,
+            "calibration_gap": 0.0411
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5625,
+            "brier_score": 0.56549,
+            "log_loss": 0.95354
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5133,
+            "brier_score": 0.58647,
+            "log_loss": 0.98196
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5064,
+            "brier_score": 0.61308,
+            "log_loss": 1.01656
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.5082,
+            "brier_score": 0.60605,
+            "log_loss": 1.01178
+          }
+        }
+      },
+      "ELO": {
+        "total_predictions": 868,
+        "accuracy": 0.5357,
+        "precision_macro": 0.3539,
+        "recall_macro": 0.4839,
+        "f1_macro": 0.4086,
+        "brier_score": 0.58332,
+        "log_loss": 0.97939,
+        "ece_calibration": 0.0154,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56303,
+            0.6036
+          ],
+          "log_loss_ci_95": [
+            0.95103,
+            1.00775
+          ],
+          "accuracy_ci_95": [
+            0.5025,
+            0.5689
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 345,
+            "mean_predicted_prob": 0.1538,
+            "empirical_win_rate": 0.0957,
+            "calibration_gap": 0.0581
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1502,
+            "mean_predicted_prob": 0.2716,
+            "empirical_win_rate": 0.2743,
+            "calibration_gap": 0.0027
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 559,
+            "mean_predicted_prob": 0.4913,
+            "empirical_win_rate": 0.5027,
+            "calibration_gap": 0.0114
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 198,
+            "mean_predicted_prob": 0.669,
+            "empirical_win_rate": 0.7172,
+            "calibration_gap": 0.0482
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.567,
+            "brier_score": 0.55502,
+            "log_loss": 0.94236
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5354,
+            "brier_score": 0.58842,
+            "log_loss": 0.98479
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5362,
+            "brier_score": 0.5986,
+            "log_loss": 0.99822
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4973,
+            "brier_score": 0.59202,
+            "log_loss": 0.99386
+          }
+        }
+      },
+      "RANDOM_FOREST": {
+        "total_predictions": 868,
+        "accuracy": 0.5265,
+        "precision_macro": 0.5156,
+        "recall_macro": 0.4741,
+        "f1_macro": 0.4036,
+        "brier_score": 0.57943,
+        "log_loss": 0.96989,
+        "ece_calibration": 0.023,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.55693,
+            0.60192
+          ],
+          "log_loss_ci_95": [
+            0.93818,
+            1.0016
+          ],
+          "accuracy_ci_95": [
+            0.4933,
+            0.5597
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 483,
+            "mean_predicted_prob": 0.1453,
+            "empirical_win_rate": 0.1242,
+            "calibration_gap": 0.0211
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1304,
+            "mean_predicted_prob": 0.2616,
+            "empirical_win_rate": 0.2799,
+            "calibration_gap": 0.0183
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 565,
+            "mean_predicted_prob": 0.5023,
+            "empirical_win_rate": 0.4673,
+            "calibration_gap": 0.035
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 240,
+            "mean_predicted_prob": 0.6792,
+            "empirical_win_rate": 0.7042,
+            "calibration_gap": 0.0249
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 12,
+            "mean_predicted_prob": 0.8271,
+            "empirical_win_rate": 0.8333,
+            "calibration_gap": 0.0062
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5446,
+            "brier_score": 0.55884,
+            "log_loss": 0.94445
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5398,
+            "brier_score": 0.57602,
+            "log_loss": 0.96552
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5106,
+            "brier_score": 0.59641,
+            "log_loss": 0.99089
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.5082,
+            "brier_score": 0.58703,
+            "log_loss": 0.97944
+          }
+        }
+      },
+      "XGBOOST": {
+        "total_predictions": 868,
+        "accuracy": 0.5253,
+        "precision_macro": 0.3487,
+        "recall_macro": 0.4747,
+        "f1_macro": 0.4017,
+        "brier_score": 0.58162,
+        "log_loss": 0.97254,
+        "ece_calibration": 0.03524,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.5587,
+            0.60454
+          ],
+          "log_loss_ci_95": [
+            0.94014,
+            1.00494
+          ],
+          "accuracy_ci_95": [
+            0.4921,
+            0.5586
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 472,
+            "mean_predicted_prob": 0.1372,
+            "empirical_win_rate": 0.1038,
+            "calibration_gap": 0.0334
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1322,
+            "mean_predicted_prob": 0.2606,
+            "empirical_win_rate": 0.2874,
+            "calibration_gap": 0.0268
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 559,
+            "mean_predicted_prob": 0.5117,
+            "empirical_win_rate": 0.458,
+            "calibration_gap": 0.0537
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 229,
+            "mean_predicted_prob": 0.675,
+            "empirical_win_rate": 0.7205,
+            "calibration_gap": 0.0455
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 22,
+            "mean_predicted_prob": 0.8214,
+            "empirical_win_rate": 0.8182,
+            "calibration_gap": 0.0032
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5536,
+            "brier_score": 0.56327,
+            "log_loss": 0.95121
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5354,
+            "brier_score": 0.58005,
+            "log_loss": 0.97251
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5191,
+            "brier_score": 0.59288,
+            "log_loss": 0.98563
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4863,
+            "brier_score": 0.59155,
+            "log_loss": 0.98186
+          }
+        }
+      },
+      "ENSEMBLE": {
+        "total_predictions": 868,
+        "accuracy": 0.5253,
+        "precision_macro": 0.3486,
+        "recall_macro": 0.4739,
+        "f1_macro": 0.4012,
+        "brier_score": 0.58036,
+        "log_loss": 0.97093,
+        "ece_calibration": 0.03121,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.55796,
+            0.60275
+          ],
+          "log_loss_ci_95": [
+            0.93948,
+            1.00238
+          ],
+          "accuracy_ci_95": [
+            0.4921,
+            0.5586
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 468,
+            "mean_predicted_prob": 0.1426,
+            "empirical_win_rate": 0.1111,
+            "calibration_gap": 0.0315
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1328,
+            "mean_predicted_prob": 0.2622,
+            "empirical_win_rate": 0.2854,
+            "calibration_gap": 0.0232
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 567,
+            "mean_predicted_prob": 0.5078,
+            "empirical_win_rate": 0.4621,
+            "calibration_gap": 0.0457
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 230,
+            "mean_predicted_prob": 0.6788,
+            "empirical_win_rate": 0.7217,
+            "calibration_gap": 0.0429
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 11,
+            "mean_predicted_prob": 0.818,
+            "empirical_win_rate": 0.8182,
+            "calibration_gap": 0.0001
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5536,
+            "brier_score": 0.56076,
+            "log_loss": 0.94718
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5398,
+            "brier_score": 0.57833,
+            "log_loss": 0.96964
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5149,
+            "brier_score": 0.59325,
+            "log_loss": 0.98639
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4863,
+            "brier_score": 0.5903,
+            "log_loss": 0.98174
+          }
+        }
+      }
+    },
+    "test_metrics_phase2_on_exact_same_split": {
+      "POISSON": {
+        "total_predictions": 868,
+        "accuracy": 0.5334,
+        "precision_macro": 0.4668,
+        "recall_macro": 0.4775,
+        "f1_macro": 0.4081,
+        "brier_score": 0.59406,
+        "log_loss": 0.99224,
+        "ece_calibration": 0.00599,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.57299,
+            0.61514
+          ],
+          "log_loss_ci_95": [
+            0.96249,
+            1.02198
+          ],
+          "accuracy_ci_95": [
+            0.5002,
+            0.5666
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 434,
+            "mean_predicted_prob": 0.147,
+            "empirical_win_rate": 0.1521,
+            "calibration_gap": 0.0051
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1444,
+            "mean_predicted_prob": 0.2803,
+            "empirical_win_rate": 0.2825,
+            "calibration_gap": 0.0022
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 516,
+            "mean_predicted_prob": 0.4925,
+            "empirical_win_rate": 0.4845,
+            "calibration_gap": 0.008
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 189,
+            "mean_predicted_prob": 0.6755,
+            "empirical_win_rate": 0.6561,
+            "calibration_gap": 0.0194
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 21,
+            "mean_predicted_prob": 0.8412,
+            "empirical_win_rate": 0.9524,
+            "calibration_gap": 0.1112
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5982,
+            "brier_score": 0.55491,
+            "log_loss": 0.93818
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.531,
+            "brier_score": 0.58644,
+            "log_loss": 0.98086
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5021,
+            "brier_score": 0.61592,
+            "log_loss": 1.02032
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4973,
+            "brier_score": 0.62334,
+            "log_loss": 1.03639
+          }
+        }
+      },
+      "ELO": {
+        "total_predictions": 868,
+        "accuracy": 0.5253,
+        "precision_macro": 0.351,
+        "recall_macro": 0.468,
+        "f1_macro": 0.3983,
+        "brier_score": 0.58479,
+        "log_loss": 0.97861,
+        "ece_calibration": 0.02853,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56848,
+            0.60111
+          ],
+          "log_loss_ci_95": [
+            0.95564,
+            1.00158
+          ],
+          "accuracy_ci_95": [
+            0.4921,
+            0.5586
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 283,
+            "mean_predicted_prob": 0.1489,
+            "empirical_win_rate": 0.0777,
+            "calibration_gap": 0.0711
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1673,
+            "mean_predicted_prob": 0.2941,
+            "empirical_win_rate": 0.2839,
+            "calibration_gap": 0.0102
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 534,
+            "mean_predicted_prob": 0.4856,
+            "empirical_win_rate": 0.5393,
+            "calibration_gap": 0.0537
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 114,
+            "mean_predicted_prob": 0.6539,
+            "empirical_win_rate": 0.7281,
+            "calibration_gap": 0.0742
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.567,
+            "brier_score": 0.56276,
+            "log_loss": 0.95099
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.531,
+            "brier_score": 0.58907,
+            "log_loss": 0.98525
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5106,
+            "brier_score": 0.5967,
+            "log_loss": 0.98955
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4863,
+            "brier_score": 0.5912,
+            "log_loss": 0.99018
+          }
+        }
+      },
+      "RANDOM_FOREST": {
+        "total_predictions": 868,
+        "accuracy": 0.5242,
+        "precision_macro": 0.3474,
+        "recall_macro": 0.471,
+        "f1_macro": 0.399,
+        "brier_score": 0.58206,
+        "log_loss": 0.97572,
+        "ece_calibration": 0.02946,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56147,
+            0.60265
+          ],
+          "log_loss_ci_95": [
+            0.9473,
+            1.00414
+          ],
+          "accuracy_ci_95": [
+            0.4909,
+            0.5574
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 376,
+            "mean_predicted_prob": 0.1628,
+            "empirical_win_rate": 0.0957,
+            "calibration_gap": 0.067
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1422,
+            "mean_predicted_prob": 0.2599,
+            "empirical_win_rate": 0.2764,
+            "calibration_gap": 0.0164
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 599,
+            "mean_predicted_prob": 0.5061,
+            "empirical_win_rate": 0.4841,
+            "calibration_gap": 0.022
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 207,
+            "mean_predicted_prob": 0.6474,
+            "empirical_win_rate": 0.7198,
+            "calibration_gap": 0.0724
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5491,
+            "brier_score": 0.56373,
+            "log_loss": 0.95307
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.531,
+            "brier_score": 0.58147,
+            "log_loss": 0.97573
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5106,
+            "brier_score": 0.59348,
+            "log_loss": 0.98862
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.5027,
+            "brier_score": 0.59056,
+            "log_loss": 0.98688
+          }
+        }
+      },
+      "XGBOOST": {
+        "total_predictions": 868,
+        "accuracy": 0.53,
+        "precision_macro": 0.3515,
+        "recall_macro": 0.4767,
+        "f1_macro": 0.4038,
+        "brier_score": 0.58278,
+        "log_loss": 0.97684,
+        "ece_calibration": 0.0307,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56307,
+            0.60249
+          ],
+          "log_loss_ci_95": [
+            0.94954,
+            1.00414
+          ],
+          "accuracy_ci_95": [
+            0.4967,
+            0.5632
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 325,
+            "mean_predicted_prob": 0.1585,
+            "empirical_win_rate": 0.0831,
+            "calibration_gap": 0.0754
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1462,
+            "mean_predicted_prob": 0.2604,
+            "empirical_win_rate": 0.2743,
+            "calibration_gap": 0.0139
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 641,
+            "mean_predicted_prob": 0.5062,
+            "empirical_win_rate": 0.4821,
+            "calibration_gap": 0.0241
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 176,
+            "mean_predicted_prob": 0.6328,
+            "empirical_win_rate": 0.7443,
+            "calibration_gap": 0.1115
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5446,
+            "brier_score": 0.56692,
+            "log_loss": 0.95693
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5531,
+            "brier_score": 0.58153,
+            "log_loss": 0.97619
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5149,
+            "brier_score": 0.59282,
+            "log_loss": 0.98768
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.5027,
+            "brier_score": 0.59085,
+            "log_loss": 0.98808
+          }
+        }
+      },
+      "ENSEMBLE": {
+        "total_predictions": 868,
+        "accuracy": 0.523,
+        "precision_macro": 0.3468,
+        "recall_macro": 0.4698,
+        "f1_macro": 0.3981,
+        "brier_score": 0.5817,
+        "log_loss": 0.97524,
+        "ece_calibration": 0.0314,
+        "baseline_brier_score": 0.65331,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56123,
+            0.60217
+          ],
+          "log_loss_ci_95": [
+            0.94699,
+            1.00348
+          ],
+          "accuracy_ci_95": [
+            0.4898,
+            0.5563
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 375,
+            "mean_predicted_prob": 0.1632,
+            "empirical_win_rate": 0.088,
+            "calibration_gap": 0.0752
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1420,
+            "mean_predicted_prob": 0.2602,
+            "empirical_win_rate": 0.2782,
+            "calibration_gap": 0.0179
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 611,
+            "mean_predicted_prob": 0.5052,
+            "empirical_win_rate": 0.4845,
+            "calibration_gap": 0.0207
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 198,
+            "mean_predicted_prob": 0.6495,
+            "empirical_win_rate": 0.7273,
+            "calibration_gap": 0.0778
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5446,
+            "brier_score": 0.56227,
+            "log_loss": 0.95088
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.531,
+            "brier_score": 0.58088,
+            "log_loss": 0.97482
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5106,
+            "brier_score": 0.59368,
+            "log_loss": 0.98909
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.5027,
+            "brier_score": 0.5911,
+            "log_loss": 0.98779
+          }
+        }
+      }
+    },
+    "phase2_original_report_metrics": {}
+  },
+  "section_5_statistical_significance_audit": {
+    "ensemble_vs_rf_test": {
+      "model_a": "ENSEMBLE_P3",
+      "model_b": "RANDOM_FOREST_P3",
+      "n_matches": 868,
+      "block_size": 20,
+      "n_bootstrap": 1000,
+      "brier_a": 0.58036,
+      "brier_b": 0.57943,
+      "mean_diff_brier": 0.00093,
+      "ci_95_diff": [
+        -0.00271,
+        0.0041
+      ],
+      "boot_std_error": 0.0017,
+      "z_statistic": 0.5477,
+      "p_value_two_sided": 0.572,
+      "statistically_significant_95": false,
+      "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_P3 y RANDOM_FOREST_P3 (Δ Brier = +0.00093, IC95% [-0.00271, +0.00410], p = 0.5720; el 0 está dentro del IC)."
+    },
+    "ensemble_vs_rf_val": {
+      "model_a": "ENSEMBLE_P3 (Val)",
+      "model_b": "RANDOM_FOREST_P3 (Val)",
+      "n_matches": 865,
+      "block_size": 20,
+      "n_bootstrap": 1000,
+      "brier_a": 0.56556,
+      "brier_b": 0.56769,
+      "mean_diff_brier": -0.00213,
+      "ci_95_diff": [
+        -0.00636,
+        0.00155
+      ],
+      "boot_std_error": 0.00204,
+      "z_statistic": -1.0445,
+      "p_value_two_sided": 0.298,
+      "statistically_significant_95": false,
+      "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_P3 (Val) y RANDOM_FOREST_P3 (Val) (Δ Brier = -0.00213, IC95% [-0.00636, +0.00155], p = 0.2980; el 0 está dentro del IC)."
+    },
+    "p2_94_5_combo_vs_rf_p2_test": {
+      "model_a": "ENSEMBLE_P2 (94.62% RF + 5.38% Pois)",
+      "model_b": "RANDOM_FOREST_P2",
+      "n_matches": 868,
+      "block_size": 20,
+      "n_bootstrap": 1000,
+      "brier_a": 0.5817,
+      "brier_b": 0.58206,
+      "mean_diff_brier": -0.00036,
+      "ci_95_diff": [
+        -0.00094,
+        0.00018
+      ],
+      "boot_std_error": 0.00028,
+      "z_statistic": -1.2661,
+      "p_value_two_sided": 0.214,
+      "statistically_significant_95": false,
+      "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_P2 (94.62% RF + 5.38% Pois) y RANDOM_FOREST_P2 (Δ Brier = -0.00036, IC95% [-0.00094, +0.00018], p = 0.2140; el 0 está dentro del IC)."
+    },
+    "ensemble_vs_poisson_test": {
+      "model_a": "ENSEMBLE_P3",
+      "model_b": "POISSON_P3",
+      "n_matches": 868,
+      "block_size": 20,
+      "n_bootstrap": 1000,
+      "brier_a": 0.58036,
+      "brier_b": 0.59239,
+      "mean_diff_brier": -0.01203,
+      "ci_95_diff": [
+        -0.02077,
+        -0.00313
+      ],
+      "boot_std_error": 0.00444,
+      "z_statistic": -2.7096,
+      "p_value_two_sided": 0.006,
+      "statistically_significant_95": true,
+      "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_P3 sobre POISSON_P3 al 95% (Δ Brier = -0.01203, IC95% [-0.02077, -0.00313], p = 0.0060)."
+    },
+    "ensemble_vs_elo_test": {
+      "model_a": "ENSEMBLE_P3",
+      "model_b": "ELO_P3",
+      "n_matches": 868,
+      "block_size": 20,
+      "n_bootstrap": 1000,
+      "brier_a": 0.58036,
+      "brier_b": 0.58332,
+      "mean_diff_brier": -0.00296,
+      "ci_95_diff": [
+        -0.00938,
+        0.0025
+      ],
+      "boot_std_error": 0.00308,
+      "z_statistic": -0.9595,
+      "p_value_two_sided": 0.329,
+      "statistically_significant_95": false,
+      "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_P3 y ELO_P3 (Δ Brier = -0.00296, IC95% [-0.00938, +0.00250], p = 0.3290; el 0 está dentro del IC)."
+    },
+    "ensemble_vs_xgboost_test": {
+      "model_a": "ENSEMBLE_P3",
+      "model_b": "XGBOOST_P3",
+      "n_matches": 868,
+      "block_size": 20,
+      "n_bootstrap": 1000,
+      "brier_a": 0.58036,
+      "brier_b": 0.58162,
+      "mean_diff_brier": -0.00126,
+      "ci_95_diff": [
+        -0.00228,
+        -0.00012
+      ],
+      "boot_std_error": 0.00055,
+      "z_statistic": -2.3131,
+      "p_value_two_sided": 0.019,
+      "statistically_significant_95": true,
+      "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_P3 sobre XGBOOST_P3 al 95% (Δ Brier = -0.00126, IC95% [-0.00228, -0.00012], p = 0.0190)."
+    },
+    "all_vs_baseline_test": {
+      "POISSON": {
+        "model_a": "POISSON_P3",
+        "model_b": "NAIVE_BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.59239,
+        "brier_b": 0.65331,
+        "mean_diff_brier": -0.06092,
+        "ci_95_diff": [
+          -0.07573,
+          -0.04889
+        ],
+        "boot_std_error": 0.00664,
+        "z_statistic": -9.1792,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de POISSON_P3 sobre NAIVE_BASELINE al 95% (Δ Brier = -0.06092, IC95% [-0.07573, -0.04889], p = 0.0000)."
+      },
+      "ELO": {
+        "model_a": "ELO_P3",
+        "model_b": "NAIVE_BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.58332,
+        "brier_b": 0.65331,
+        "mean_diff_brier": -0.07,
+        "ci_95_diff": [
+          -0.08516,
+          -0.05593
+        ],
+        "boot_std_error": 0.0072,
+        "z_statistic": -9.7252,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de ELO_P3 sobre NAIVE_BASELINE al 95% (Δ Brier = -0.07000, IC95% [-0.08516, -0.05593], p = 0.0000)."
+      },
+      "RANDOM_FOREST": {
+        "model_a": "RANDOM_FOREST_P3",
+        "model_b": "NAIVE_BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.57943,
+        "brier_b": 0.65331,
+        "mean_diff_brier": -0.07388,
+        "ci_95_diff": [
+          -0.09195,
+          -0.0574
+        ],
+        "boot_std_error": 0.00849,
+        "z_statistic": -8.7058,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de RANDOM_FOREST_P3 sobre NAIVE_BASELINE al 95% (Δ Brier = -0.07388, IC95% [-0.09195, -0.05740], p = 0.0000)."
+      },
+      "XGBOOST": {
+        "model_a": "XGBOOST_P3",
+        "model_b": "NAIVE_BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.58162,
+        "brier_b": 0.65331,
+        "mean_diff_brier": -0.07169,
+        "ci_95_diff": [
+          -0.09035,
+          -0.05618
+        ],
+        "boot_std_error": 0.00849,
+        "z_statistic": -8.4399,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de XGBOOST_P3 sobre NAIVE_BASELINE al 95% (Δ Brier = -0.07169, IC95% [-0.09035, -0.05618], p = 0.0000)."
+      },
+      "ENSEMBLE": {
+        "model_a": "ENSEMBLE_P3",
+        "model_b": "NAIVE_BASELINE",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.58036,
+        "brier_b": 0.65331,
+        "mean_diff_brier": -0.07296,
+        "ci_95_diff": [
+          -0.09107,
+          -0.05768
+        ],
+        "boot_std_error": 0.00821,
+        "z_statistic": -8.888,
+        "p_value_two_sided": 0.0,
+        "statistically_significant_95": true,
+        "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_P3 sobre NAIVE_BASELINE al 95% (Δ Brier = -0.07296, IC95% [-0.09107, -0.05768], p = 0.0000)."
+      }
+    },
+    "phase3_vs_phase2_same_test_split": {
+      "POISSON": {
+        "model_a": "POISSON_FASE3",
+        "model_b": "POISSON_FASE2",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.59239,
+        "brier_b": 0.59406,
+        "mean_diff_brier": -0.00167,
+        "ci_95_diff": [
+          -0.00493,
+          0.00203
+        ],
+        "boot_std_error": 0.00183,
+        "z_statistic": -0.9137,
+        "p_value_two_sided": 0.369,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON_FASE3 y POISSON_FASE2 (Δ Brier = -0.00167, IC95% [-0.00493, +0.00203], p = 0.3690; el 0 está dentro del IC)."
+      },
+      "ELO": {
+        "model_a": "ELO_FASE3",
+        "model_b": "ELO_FASE2",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.58332,
+        "brier_b": 0.58479,
+        "mean_diff_brier": -0.00148,
+        "ci_95_diff": [
+          -0.00733,
+          0.00421
+        ],
+        "boot_std_error": 0.003,
+        "z_statistic": -0.4923,
+        "p_value_two_sided": 0.621,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre ELO_FASE3 y ELO_FASE2 (Δ Brier = -0.00148, IC95% [-0.00733, +0.00421], p = 0.6210; el 0 está dentro del IC)."
+      },
+      "RANDOM_FOREST": {
+        "model_a": "RANDOM_FOREST_FASE3",
+        "model_b": "RANDOM_FOREST_FASE2",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.57943,
+        "brier_b": 0.58206,
+        "mean_diff_brier": -0.00263,
+        "ci_95_diff": [
+          -0.00549,
+          1e-05
+        ],
+        "boot_std_error": 0.00146,
+        "z_statistic": -1.8058,
+        "p_value_two_sided": 0.062,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre RANDOM_FOREST_FASE3 y RANDOM_FOREST_FASE2 (Δ Brier = -0.00263, IC95% [-0.00549, +0.00001], p = 0.0620; el 0 está dentro del IC)."
+      },
+      "XGBOOST": {
+        "model_a": "XGBOOST_FASE3",
+        "model_b": "XGBOOST_FASE2",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.58162,
+        "brier_b": 0.58278,
+        "mean_diff_brier": -0.00116,
+        "ci_95_diff": [
+          -0.00636,
+          0.00393
+        ],
+        "boot_std_error": 0.00255,
+        "z_statistic": -0.4557,
+        "p_value_two_sided": 0.669,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGBOOST_FASE3 y XGBOOST_FASE2 (Δ Brier = -0.00116, IC95% [-0.00636, +0.00393], p = 0.6690; el 0 está dentro del IC)."
+      },
+      "ENSEMBLE": {
+        "model_a": "ENSEMBLE_FASE3",
+        "model_b": "ENSEMBLE_FASE2",
+        "n_matches": 868,
+        "block_size": 20,
+        "n_bootstrap": 1000,
+        "brier_a": 0.58036,
+        "brier_b": 0.5817,
+        "mean_diff_brier": -0.00134,
+        "ci_95_diff": [
+          -0.00525,
+          0.00212
+        ],
+        "boot_std_error": 0.00185,
+        "z_statistic": -0.7275,
+        "p_value_two_sided": 0.454,
+        "statistically_significant_95": false,
+        "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_FASE3 y ENSEMBLE_FASE2 (Δ Brier = -0.00134, IC95% [-0.00525, +0.00212], p = 0.4540; el 0 está dentro del IC)."
+      }
+    }
+  },
+  "section_6_goal_markets_validation": {
+    "OVER_1_5": {
+      "train_empirical_rate": 0.7601,
+      "test_empirical_rate": 0.7903,
+      "ensemble_weights_on_val": {
+        "POISSON": 1.0,
+        "RF_GOALS": 0.0,
+        "XGB_GOALS": 0.0
+      },
+      "models_test_evaluation": {
+        "POISSON": {
+          "market_code": "OVER_1_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7654,
+          "brier_score": 0.15973,
+          "brier_ci_95": [
+            0.14578,
+            0.17368
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.4961,
+          "ece_calibration": 0.02488,
+          "accuracy": 0.7903,
+          "f1_score": 0.8826,
+          "test_vs_baseline": {
+            "model_a": "POISSON (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.0069,
+            "ci_95_diff": [
+              -0.01198,
+              -0.00189
+            ],
+            "boot_std_error": 0.0026,
+            "z_statistic": -2.653,
+            "p_value_two_sided": 0.01,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00690, IC95% [-0.01198, -0.00189], p = 0.0100)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS": {
+          "market_code": "OVER_1_5",
+          "model_name": "RF_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7734,
+          "brier_score": 0.16056,
+          "brier_ci_95": [
+            0.14605,
+            0.17506
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.49803,
+          "ece_calibration": 0.01781,
+          "accuracy": 0.788,
+          "f1_score": 0.8813,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16056,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.00607,
+            "ci_95_diff": [
+              -0.01177,
+              -0.00028
+            ],
+            "boot_std_error": 0.00288,
+            "z_statistic": -2.1043,
+            "p_value_two_sided": 0.038,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00607, IC95% [-0.01177, -0.00028], p = 0.0380)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16056,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.00083,
+            "ci_95_diff": [
+              -0.0009,
+              0.00266
+            ],
+            "boot_std_error": 0.00092,
+            "z_statistic": 0.9019,
+            "p_value_two_sided": 0.383,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00083, IC95% [-0.00090, +0.00266], p = 0.3830; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS": {
+          "market_code": "OVER_1_5",
+          "model_name": "XGB_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7679,
+          "brier_score": 0.16124,
+          "brier_ci_95": [
+            0.1469,
+            0.17558
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.50002,
+          "ece_calibration": 0.02239,
+          "accuracy": 0.788,
+          "f1_score": 0.8811,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16124,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.00539,
+            "ci_95_diff": [
+              -0.01153,
+              0.00061
+            ],
+            "boot_std_error": 0.00302,
+            "z_statistic": -1.7841,
+            "p_value_two_sided": 0.077,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS (OVER_1_5) y Baseline (OVER_1_5) (Δ Brier = -0.00539, IC95% [-0.01153, +0.00061], p = 0.0770; el 0 está dentro del IC)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.16124,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.00151,
+            "ci_95_diff": [
+              -0.00102,
+              0.00388
+            ],
+            "boot_std_error": 0.00124,
+            "z_statistic": 1.2121,
+            "p_value_two_sided": 0.22,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00151, IC95% [-0.00102, +0.00388], p = 0.2200; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS": {
+          "market_code": "OVER_1_5",
+          "model_name": "ENSEMBLE_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.7903,
+          "mean_predicted_prob": 0.7654,
+          "brier_score": 0.15973,
+          "brier_ci_95": [
+            0.14578,
+            0.17368
+          ],
+          "baseline_brier_score": 0.16663,
+          "log_loss": 0.4961,
+          "ece_calibration": 0.02488,
+          "accuracy": 0.7903,
+          "f1_score": 0.8826,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS (OVER_1_5)",
+            "model_b": "Baseline (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.16663,
+            "mean_diff_brier": -0.0069,
+            "ci_95_diff": [
+              -0.01198,
+              -0.00189
+            ],
+            "boot_std_error": 0.0026,
+            "z_statistic": -2.653,
+            "p_value_two_sided": 0.01,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS (OVER_1_5) sobre Baseline (OVER_1_5) al 95% (Δ Brier = -0.00690, IC95% [-0.01198, -0.00189], p = 0.0100)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS (OVER_1_5)",
+            "model_b": "Poisson (OVER_1_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.15973,
+            "brier_b": 0.15973,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS (OVER_1_5) y Poisson (OVER_1_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        }
+      },
+      "top_features_rf": {
+        "poisson_market_prob": 0.234,
+        "poisson_lambda_total": 0.1982,
+        "poisson_lambda_home": 0.0703,
+        "poisson_lambda_away": 0.0552,
+        "combined_goal_env10": 0.0315,
+        "home_home_gf_avg": 0.0299,
+        "elo_diff": 0.029,
+        "home_elo_pre": 0.0261
+      },
+      "top_features_xgb": {
+        "poisson_lambda_total": 0.0929,
+        "poisson_market_prob": 0.0672,
+        "poisson_lambda_home": 0.0497,
+        "poisson_lambda_away": 0.0449,
+        "rest_days_diff": 0.0383,
+        "away_pts_last10": 0.0363,
+        "away_away_gf_avg": 0.0363,
+        "home_btts_rate10": 0.0321
+      }
+    },
+    "OVER_2_5": {
+      "train_empirical_rate": 0.5159,
+      "test_empirical_rate": 0.5426,
+      "ensemble_weights_on_val": {
+        "POISSON": 0.5519,
+        "RF_GOALS": 0.4481,
+        "XGB_GOALS": 0.0
+      },
+      "models_test_evaluation": {
+        "POISSON": {
+          "market_code": "OVER_2_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5283,
+          "brier_score": 0.23396,
+          "brier_ci_95": [
+            0.22654,
+            0.24138
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66085,
+          "ece_calibration": 0.03893,
+          "accuracy": 0.6037,
+          "f1_score": 0.6518,
+          "test_vs_baseline": {
+            "model_a": "POISSON (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01493,
+            "ci_95_diff": [
+              -0.02225,
+              -0.00821
+            ],
+            "boot_std_error": 0.00352,
+            "z_statistic": -4.2397,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01493, IC95% [-0.02225, -0.00821], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS": {
+          "market_code": "OVER_2_5",
+          "model_name": "RF_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5351,
+          "brier_score": 0.23362,
+          "brier_ci_95": [
+            0.22593,
+            0.2413
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.65997,
+          "ece_calibration": 0.03256,
+          "accuracy": 0.6106,
+          "f1_score": 0.6457,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23362,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01528,
+            "ci_95_diff": [
+              -0.02256,
+              -0.00826
+            ],
+            "boot_std_error": 0.00365,
+            "z_statistic": -4.1841,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01528, IC95% [-0.02256, -0.00826], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23362,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00035,
+            "ci_95_diff": [
+              -0.00232,
+              0.00168
+            ],
+            "boot_std_error": 0.001,
+            "z_statistic": -0.3472,
+            "p_value_two_sided": 0.742,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = -0.00035, IC95% [-0.00232, +0.00168], p = 0.7420; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS": {
+          "market_code": "OVER_2_5",
+          "model_name": "XGB_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.53,
+          "brier_score": 0.23469,
+          "brier_ci_95": [
+            0.22751,
+            0.24186
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66186,
+          "ece_calibration": 0.02334,
+          "accuracy": 0.6037,
+          "f1_score": 0.6387,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23469,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01421,
+            "ci_95_diff": [
+              -0.02067,
+              -0.00755
+            ],
+            "boot_std_error": 0.00344,
+            "z_statistic": -4.1259,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01421, IC95% [-0.02067, -0.00755], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23469,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00072,
+            "ci_95_diff": [
+              -0.0017,
+              0.00316
+            ],
+            "boot_std_error": 0.00123,
+            "z_statistic": 0.5852,
+            "p_value_two_sided": 0.563,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = +0.00072, IC95% [-0.00170, +0.00316], p = 0.5630; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS": {
+          "market_code": "OVER_2_5",
+          "model_name": "ENSEMBLE_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5426,
+          "mean_predicted_prob": 0.5313,
+          "brier_score": 0.23352,
+          "brier_ci_95": [
+            0.22605,
+            0.24098
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.65979,
+          "ece_calibration": 0.03813,
+          "accuracy": 0.6094,
+          "f1_score": 0.653,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS (OVER_2_5)",
+            "model_b": "Baseline (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23352,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01538,
+            "ci_95_diff": [
+              -0.02263,
+              -0.00859
+            ],
+            "boot_std_error": 0.00355,
+            "z_statistic": -4.3376,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS (OVER_2_5) sobre Baseline (OVER_2_5) al 95% (Δ Brier = -0.01538, IC95% [-0.02263, -0.00859], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS (OVER_2_5)",
+            "model_b": "Poisson (OVER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23352,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00045,
+            "ci_95_diff": [
+              -0.00133,
+              0.00045
+            ],
+            "boot_std_error": 0.00045,
+            "z_statistic": -0.9932,
+            "p_value_two_sided": 0.298,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS (OVER_2_5) y Poisson (OVER_2_5) (Δ Brier = -0.00045, IC95% [-0.00133, +0.00045], p = 0.2980; el 0 está dentro del IC)."
+          }
+        }
+      },
+      "top_features_rf": {
+        "poisson_market_prob": 0.2442,
+        "poisson_lambda_total": 0.2207,
+        "poisson_lambda_home": 0.0929,
+        "poisson_lambda_away": 0.0644,
+        "combined_goal_env10": 0.0351,
+        "home_home_gf_avg": 0.0272,
+        "home_elo_pre": 0.0265,
+        "elo_diff": 0.0222
+      },
+      "top_features_xgb": {
+        "poisson_lambda_total": 0.1033,
+        "poisson_market_prob": 0.076,
+        "poisson_lambda_home": 0.0649,
+        "poisson_lambda_away": 0.037,
+        "away_pts_last10": 0.0323,
+        "home_elo_pre": 0.0303,
+        "combined_goal_env10": 0.0301,
+        "rest_days_diff": 0.0299
+      }
+    },
+    "UNDER_2_5": {
+      "train_empirical_rate": 0.4841,
+      "test_empirical_rate": 0.4574,
+      "ensemble_weights_on_val": {
+        "POISSON": 0.5784,
+        "RF_GOALS": 0.4216,
+        "XGB_GOALS": 0.0
+      },
+      "models_test_evaluation": {
+        "POISSON": {
+          "market_code": "UNDER_2_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4717,
+          "brier_score": 0.23396,
+          "brier_ci_95": [
+            0.22654,
+            0.24138
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66085,
+          "ece_calibration": 0.03893,
+          "accuracy": 0.6037,
+          "f1_score": 0.5401,
+          "test_vs_baseline": {
+            "model_a": "POISSON (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01493,
+            "ci_95_diff": [
+              -0.02225,
+              -0.00821
+            ],
+            "boot_std_error": 0.00352,
+            "z_statistic": -4.2397,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01493, IC95% [-0.02225, -0.00821], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23396,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS": {
+          "market_code": "UNDER_2_5",
+          "model_name": "RF_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4655,
+          "brier_score": 0.23375,
+          "brier_ci_95": [
+            0.22607,
+            0.24142
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66023,
+          "ece_calibration": 0.03054,
+          "accuracy": 0.6071,
+          "f1_score": 0.5667,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23375,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01515,
+            "ci_95_diff": [
+              -0.02242,
+              -0.00811
+            ],
+            "boot_std_error": 0.00365,
+            "z_statistic": -4.1477,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01515, IC95% [-0.02242, -0.00811], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23375,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00022,
+            "ci_95_diff": [
+              -0.00224,
+              0.00178
+            ],
+            "boot_std_error": 0.00101,
+            "z_statistic": -0.2142,
+            "p_value_two_sided": 0.842,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = -0.00022, IC95% [-0.00224, +0.00178], p = 0.8420; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS": {
+          "market_code": "UNDER_2_5",
+          "model_name": "XGB_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4703,
+          "brier_score": 0.23465,
+          "brier_ci_95": [
+            0.22747,
+            0.24183
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.66181,
+          "ece_calibration": 0.02593,
+          "accuracy": 0.5991,
+          "f1_score": 0.555,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23465,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.01424,
+            "ci_95_diff": [
+              -0.02067,
+              -0.00756
+            ],
+            "boot_std_error": 0.00345,
+            "z_statistic": -4.1271,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01424, IC95% [-0.02067, -0.00756], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23465,
+            "brier_b": 0.23396,
+            "mean_diff_brier": 0.00069,
+            "ci_95_diff": [
+              -0.0018,
+              0.00312
+            ],
+            "boot_std_error": 0.00125,
+            "z_statistic": 0.5539,
+            "p_value_two_sided": 0.595,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = +0.00069, IC95% [-0.00180, +0.00312], p = 0.5950; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS": {
+          "market_code": "UNDER_2_5",
+          "model_name": "ENSEMBLE_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.4574,
+          "mean_predicted_prob": 0.4691,
+          "brier_score": 0.23359,
+          "brier_ci_95": [
+            0.22613,
+            0.24105
+          ],
+          "baseline_brier_score": 0.2489,
+          "log_loss": 0.65995,
+          "ece_calibration": 0.03701,
+          "accuracy": 0.6037,
+          "f1_score": 0.5486,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS (UNDER_2_5)",
+            "model_b": "Baseline (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23359,
+            "brier_b": 0.2489,
+            "mean_diff_brier": -0.0153,
+            "ci_95_diff": [
+              -0.02253,
+              -0.00848
+            ],
+            "boot_std_error": 0.00354,
+            "z_statistic": -4.3201,
+            "p_value_two_sided": 0.0,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS (UNDER_2_5) sobre Baseline (UNDER_2_5) al 95% (Δ Brier = -0.01530, IC95% [-0.02253, -0.00848], p = 0.0000)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS (UNDER_2_5)",
+            "model_b": "Poisson (UNDER_2_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.23359,
+            "brier_b": 0.23396,
+            "mean_diff_brier": -0.00037,
+            "ci_95_diff": [
+              -0.00123,
+              0.00047
+            ],
+            "boot_std_error": 0.00043,
+            "z_statistic": -0.865,
+            "p_value_two_sided": 0.378,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS (UNDER_2_5) y Poisson (UNDER_2_5) (Δ Brier = -0.00037, IC95% [-0.00123, +0.00047], p = 0.3780; el 0 está dentro del IC)."
+          }
+        }
+      },
+      "top_features_rf": {
+        "poisson_market_prob": 0.2437,
+        "poisson_lambda_total": 0.2174,
+        "poisson_lambda_home": 0.0934,
+        "poisson_lambda_away": 0.0652,
+        "combined_goal_env10": 0.0369,
+        "home_elo_pre": 0.0276,
+        "home_home_gf_avg": 0.0267,
+        "elo_diff": 0.0249
+      },
+      "top_features_xgb": {
+        "poisson_lambda_total": 0.102,
+        "poisson_market_prob": 0.0848,
+        "poisson_lambda_home": 0.0551,
+        "poisson_lambda_away": 0.0359,
+        "combined_goal_env10": 0.0314,
+        "rest_days_diff": 0.031,
+        "away_pts_last5": 0.0308,
+        "away_pts_last10": 0.0308
+      }
+    },
+    "OVER_3_5": {
+      "train_empirical_rate": 0.3013,
+      "test_empirical_rate": 0.341,
+      "ensemble_weights_on_val": {
+        "POISSON": 1.0,
+        "RF_GOALS": 0.0,
+        "XGB_GOALS": 0.0
+      },
+      "models_test_evaluation": {
+        "POISSON": {
+          "market_code": "OVER_3_5",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3152,
+          "brier_score": 0.21648,
+          "brier_ci_95": [
+            0.20399,
+            0.22897
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62212,
+          "ece_calibration": 0.0454,
+          "accuracy": 0.6509,
+          "f1_score": 0.1318,
+          "test_vs_baseline": {
+            "model_a": "POISSON (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00982,
+            "ci_95_diff": [
+              -0.0153,
+              -0.00462
+            ],
+            "boot_std_error": 0.00266,
+            "z_statistic": -3.6863,
+            "p_value_two_sided": 0.002,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de POISSON (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00982, IC95% [-0.01530, -0.00462], p = 0.0020)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS": {
+          "market_code": "OVER_3_5",
+          "model_name": "RF_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3225,
+          "brier_score": 0.21812,
+          "brier_ci_95": [
+            0.20533,
+            0.23091
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.626,
+          "ece_calibration": 0.04062,
+          "accuracy": 0.6452,
+          "f1_score": 0.277,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21812,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00818,
+            "ci_95_diff": [
+              -0.01492,
+              -0.00209
+            ],
+            "boot_std_error": 0.00329,
+            "z_statistic": -2.4845,
+            "p_value_two_sided": 0.013,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00818, IC95% [-0.01492, -0.00209], p = 0.0130)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21812,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.00164,
+            "ci_95_diff": [
+              -0.00089,
+              0.00427
+            ],
+            "boot_std_error": 0.00135,
+            "z_statistic": 1.2123,
+            "p_value_two_sided": 0.238,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00164, IC95% [-0.00089, +0.00427], p = 0.2380; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS": {
+          "market_code": "OVER_3_5",
+          "model_name": "XGB_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3183,
+          "brier_score": 0.21916,
+          "brier_ci_95": [
+            0.20621,
+            0.23212
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62897,
+          "ece_calibration": 0.04468,
+          "accuracy": 0.6486,
+          "f1_score": 0.2356,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21916,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00713,
+            "ci_95_diff": [
+              -0.01322,
+              -0.00097
+            ],
+            "boot_std_error": 0.00315,
+            "z_statistic": -2.2622,
+            "p_value_two_sided": 0.019,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00713, IC95% [-0.01322, -0.00097], p = 0.0190)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21916,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.00269,
+            "ci_95_diff": [
+              -0.00021,
+              0.0061
+            ],
+            "boot_std_error": 0.00156,
+            "z_statistic": 1.7245,
+            "p_value_two_sided": 0.085,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00269, IC95% [-0.00021, +0.00610], p = 0.0850; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS": {
+          "market_code": "OVER_3_5",
+          "model_name": "ENSEMBLE_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.341,
+          "mean_predicted_prob": 0.3152,
+          "brier_score": 0.21648,
+          "brier_ci_95": [
+            0.20399,
+            0.22897
+          ],
+          "baseline_brier_score": 0.2263,
+          "log_loss": 0.62212,
+          "ece_calibration": 0.0454,
+          "accuracy": 0.6509,
+          "f1_score": 0.1318,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS (OVER_3_5)",
+            "model_b": "Baseline (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.2263,
+            "mean_diff_brier": -0.00982,
+            "ci_95_diff": [
+              -0.0153,
+              -0.00462
+            ],
+            "boot_std_error": 0.00266,
+            "z_statistic": -3.6863,
+            "p_value_two_sided": 0.002,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS (OVER_3_5) sobre Baseline (OVER_3_5) al 95% (Δ Brier = -0.00982, IC95% [-0.01530, -0.00462], p = 0.0020)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS (OVER_3_5)",
+            "model_b": "Poisson (OVER_3_5)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.21648,
+            "brier_b": 0.21648,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS (OVER_3_5) y Poisson (OVER_3_5) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        }
+      },
+      "top_features_rf": {
+        "poisson_market_prob": 0.2508,
+        "poisson_lambda_total": 0.2193,
+        "poisson_lambda_home": 0.0908,
+        "poisson_lambda_away": 0.0627,
+        "home_elo_pre": 0.0305,
+        "combined_goal_env10": 0.0283,
+        "home_home_gf_avg": 0.0266,
+        "elo_diff": 0.0229
+      },
+      "top_features_xgb": {
+        "poisson_lambda_total": 0.1356,
+        "poisson_market_prob": 0.0823,
+        "poisson_lambda_home": 0.0451,
+        "poisson_lambda_away": 0.0418,
+        "away_btts_rate10": 0.0325,
+        "home_clean_sheet_rate10": 0.0323,
+        "home_home_gf_avg": 0.0311,
+        "rest_days_diff": 0.0288
+      }
+    },
+    "BTTS": {
+      "train_empirical_rate": 0.5267,
+      "test_empirical_rate": 0.5553,
+      "ensemble_weights_on_val": {
+        "POISSON": 0.3333,
+        "RF_GOALS": 0.3333,
+        "XGB_GOALS": 0.3333
+      },
+      "models_test_evaluation": {
+        "POISSON": {
+          "market_code": "BTTS",
+          "model_name": "POISSON",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.534,
+          "brier_score": 0.24283,
+          "brier_ci_95": [
+            0.2369,
+            0.24876
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67883,
+          "ece_calibration": 0.03185,
+          "accuracy": 0.576,
+          "f1_score": 0.6468,
+          "test_vs_baseline": {
+            "model_a": "POISSON (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24283,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00493,
+            "ci_95_diff": [
+              -0.00985,
+              0.00012
+            ],
+            "boot_std_error": 0.00249,
+            "z_statistic": -1.9833,
+            "p_value_two_sided": 0.055,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (BTTS) y Baseline (BTTS) (Δ Brier = -0.00493, IC95% [-0.00985, +0.00012], p = 0.0550; el 0 está dentro del IC)."
+          },
+          "test_vs_poisson": {
+            "model_a": "POISSON (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24283,
+            "brier_b": 0.24283,
+            "mean_diff_brier": 0.0,
+            "ci_95_diff": [
+              0.0,
+              0.0
+            ],
+            "boot_std_error": 0.0,
+            "z_statistic": 0.0,
+            "p_value_two_sided": 1.0,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre POISSON (BTTS) y Poisson (BTTS) (Δ Brier = +0.00000, IC95% [+0.00000, +0.00000], p = 1.0000; el 0 está dentro del IC)."
+          }
+        },
+        "RF_GOALS": {
+          "market_code": "BTTS",
+          "model_name": "RF_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5348,
+          "brier_score": 0.24219,
+          "brier_ci_95": [
+            0.23664,
+            0.24774
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67746,
+          "ece_calibration": 0.02051,
+          "accuracy": 0.5841,
+          "f1_score": 0.661,
+          "test_vs_baseline": {
+            "model_a": "RF_GOALS (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24219,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00557,
+            "ci_95_diff": [
+              -0.01061,
+              -0.00095
+            ],
+            "boot_std_error": 0.00243,
+            "z_statistic": -2.2913,
+            "p_value_two_sided": 0.021,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de RF_GOALS (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00557, IC95% [-0.01061, -0.00095], p = 0.0210)."
+          },
+          "test_vs_poisson": {
+            "model_a": "RF_GOALS (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24219,
+            "brier_b": 0.24283,
+            "mean_diff_brier": -0.00064,
+            "ci_95_diff": [
+              -0.003,
+              0.00147
+            ],
+            "boot_std_error": 0.00112,
+            "z_statistic": -0.5712,
+            "p_value_two_sided": 0.547,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre RF_GOALS (BTTS) y Poisson (BTTS) (Δ Brier = -0.00064, IC95% [-0.00300, +0.00147], p = 0.5470; el 0 está dentro del IC)."
+          }
+        },
+        "XGB_GOALS": {
+          "market_code": "BTTS",
+          "model_name": "XGB_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5324,
+          "brier_score": 0.24266,
+          "brier_ci_95": [
+            0.23738,
+            0.24794
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67835,
+          "ece_calibration": 0.02286,
+          "accuracy": 0.5818,
+          "f1_score": 0.6546,
+          "test_vs_baseline": {
+            "model_a": "XGB_GOALS (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24266,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.0051,
+            "ci_95_diff": [
+              -0.00963,
+              -0.00081
+            ],
+            "boot_std_error": 0.00217,
+            "z_statistic": -2.3505,
+            "p_value_two_sided": 0.025,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de XGB_GOALS (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00510, IC95% [-0.00963, -0.00081], p = 0.0250)."
+          },
+          "test_vs_poisson": {
+            "model_a": "XGB_GOALS (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.24266,
+            "brier_b": 0.24283,
+            "mean_diff_brier": -0.00017,
+            "ci_95_diff": [
+              -0.0029,
+              0.00236
+            ],
+            "boot_std_error": 0.00132,
+            "z_statistic": -0.1255,
+            "p_value_two_sided": 0.898,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre XGB_GOALS (BTTS) y Poisson (BTTS) (Δ Brier = -0.00017, IC95% [-0.00290, +0.00236], p = 0.8980; el 0 está dentro del IC)."
+          }
+        },
+        "ENSEMBLE_GOALS": {
+          "market_code": "BTTS",
+          "model_name": "ENSEMBLE_GOALS",
+          "n_matches": 868,
+          "empirical_positive_rate": 0.5553,
+          "mean_predicted_prob": 0.5337,
+          "brier_score": 0.2422,
+          "brier_ci_95": [
+            0.23675,
+            0.24765
+          ],
+          "baseline_brier_score": 0.24776,
+          "log_loss": 0.67746,
+          "ece_calibration": 0.02471,
+          "accuracy": 0.5841,
+          "f1_score": 0.6591,
+          "test_vs_baseline": {
+            "model_a": "ENSEMBLE_GOALS (BTTS)",
+            "model_b": "Baseline (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.2422,
+            "brier_b": 0.24776,
+            "mean_diff_brier": -0.00556,
+            "ci_95_diff": [
+              -0.01009,
+              -0.00116
+            ],
+            "boot_std_error": 0.00228,
+            "z_statistic": -2.4356,
+            "p_value_two_sided": 0.017,
+            "statistically_significant_95": true,
+            "verdict": "Superioridad estadísticamente significativa de ENSEMBLE_GOALS (BTTS) sobre Baseline (BTTS) al 95% (Δ Brier = -0.00556, IC95% [-0.01009, -0.00116], p = 0.0170)."
+          },
+          "test_vs_poisson": {
+            "model_a": "ENSEMBLE_GOALS (BTTS)",
+            "model_b": "Poisson (BTTS)",
+            "n_matches": 868,
+            "block_size": 20,
+            "n_bootstrap": 1000,
+            "brier_a": 0.2422,
+            "brier_b": 0.24283,
+            "mean_diff_brier": -0.00062,
+            "ci_95_diff": [
+              -0.00218,
+              0.00084
+            ],
+            "boot_std_error": 0.00077,
+            "z_statistic": -0.8161,
+            "p_value_two_sided": 0.41,
+            "statistically_significant_95": false,
+            "verdict": "Diferencia NO estadísticamente significativa al 95% entre ENSEMBLE_GOALS (BTTS) y Poisson (BTTS) (Δ Brier = -0.00062, IC95% [-0.00218, +0.00084], p = 0.4100; el 0 está dentro del IC)."
+          }
+        }
+      },
+      "top_features_rf": {
+        "poisson_market_prob": 0.2098,
+        "poisson_lambda_away": 0.128,
+        "poisson_lambda_total": 0.1097,
+        "poisson_lambda_home": 0.0563,
+        "away_elo_pre": 0.0404,
+        "elo_diff": 0.0339,
+        "combined_goal_env10": 0.0314,
+        "home_elo_pre": 0.029
+      },
+      "top_features_xgb": {
+        "poisson_market_prob": 0.0715,
+        "poisson_lambda_away": 0.0537,
+        "poisson_lambda_total": 0.0437,
+        "poisson_lambda_home": 0.0404,
+        "home_btts_rate10": 0.0384,
+        "home_elo_pre": 0.0368,
+        "away_elo_pre": 0.0363,
+        "away_away_gf_avg": 0.0345
+      }
+    }
+  },
+  "section_7_version_tracking": {
+    "previous_versions_preserved_count": 15,
+    "all_versions_in_db": [
+      {
+        "version": "v1.0.0-mvp",
+        "model_code": "POISSON",
+        "is_active": false,
+        "test_brier_score": 0.62604
+      },
+      {
+        "version": "v1.0.0-mvp",
+        "model_code": "ELO",
+        "is_active": false,
+        "test_brier_score": 0.64583
+      },
+      {
+        "version": "v1.0.0-mvp",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "test_brier_score": 0.68457
+      },
+      {
+        "version": "v1.0.0-mvp",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "test_brier_score": 0.67487
+      },
+      {
+        "version": "v1.0.0-mvp",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "test_brier_score": 0.64825
+      },
+      {
+        "version": "v1.1.0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "test_brier_score": 0.62604
+      },
+      {
+        "version": "v1.1.0",
+        "model_code": "ELO",
+        "is_active": false,
+        "test_brier_score": 0.64583
+      },
+      {
+        "version": "v1.1.0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "test_brier_score": 0.68457
+      },
+      {
+        "version": "v1.1.0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "test_brier_score": 0.67487
+      },
+      {
+        "version": "v1.1.0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "test_brier_score": 0.64825
+      },
+      {
+        "version": "v2.0.0-real-cc0",
+        "model_code": "POISSON",
+        "is_active": false,
+        "test_brier_score": 0.58981
+      },
+      {
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ELO",
+        "is_active": false,
+        "test_brier_score": 0.58467
+      },
+      {
+        "version": "v2.0.0-real-cc0",
+        "model_code": "RANDOM_FOREST",
+        "is_active": false,
+        "test_brier_score": 0.58168
+      },
+      {
+        "version": "v2.0.0-real-cc0",
+        "model_code": "XGBOOST",
+        "is_active": false,
+        "test_brier_score": 0.58336
+      },
+      {
+        "version": "v2.0.0-real-cc0",
+        "model_code": "ENSEMBLE",
+        "is_active": false,
+        "test_brier_score": 0.58131
+      },
+      {
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "POISSON",
+        "is_active": true,
+        "test_brier_score": 0.59239
+      },
+      {
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ELO",
+        "is_active": true,
+        "test_brier_score": 0.58332
+      },
+      {
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "RANDOM_FOREST",
+        "is_active": true,
+        "test_brier_score": 0.57943
+      },
+      {
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "XGBOOST",
+        "is_active": true,
+        "test_brier_score": 0.58162
+      },
+      {
+        "version": "v3.0.0-phase3-scientific",
+        "model_code": "ENSEMBLE",
+        "is_active": true,
+        "test_brier_score": 0.58036
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+:root {
+  --brand-navy-950: #070d1f;
+  --brand-navy-900: #0b132b;
+  --brand-navy-800: #1c2541;
+  --brand-navy-700: #3a506b;
+  --bg-clean: #f8fafc;
+  --text-main: #0f172a;
+}
+
+body {
+  background-color: var(--bg-clean);
+  color: var(--text-main);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

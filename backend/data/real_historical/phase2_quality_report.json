@@ -1,0 +1,28 @@
+{
+  "source_provider": "OPENFOOTBALL_CC0",
+  "license": "CC0-1.0 Universal Public Domain (Apto para SaaS Comercial)",
+  "files_fetched": 12,
+  "raw_records_inspected": 4338,
+  "valid_matches_inserted": 4338,
+  "already_in_db_skipped": 0,
+  "duplicates_in_source_removed": 0,
+  "missing_scores_rejected": 0,
+  "missing_time_defaulted_to_15utc": 0,
+  "missing_ht_score_count": 272,
+  "invalid_score_anomalies": 0,
+  "team_names_normalized_count": 5684,
+  "distinct_teams_normalized": 95,
+  "by_competition": {
+    "Premier League": 1140,
+    "LaLiga EA Sports": 1140,
+    "Serie A": 1140,
+    "Bundesliga": 918
+  },
+  "by_season": {
+    "2021-22": 1446,
+    "2022-23": 1446,
+    "2023-24": 1446
+  },
+  "statsbomb_catalog_checked": true,
+  "statsbomb_competitions_found": 80
+}

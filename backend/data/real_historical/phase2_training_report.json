@@ -1,0 +1,610 @@
+{
+  "version": "v2.0.0-real-cc0",
+  "real_only": true,
+  "total_matches_used": 4338,
+  "artifact_path": "F:\\Proyectos\\Predicciones\\backend\\artifacts\\models\\sportpredict_models_v2.0.0-real-cc0.joblib",
+  "chronological_splits": {
+    "train": "2021-08-13 -> 2023-04-22 (2602 partidos)",
+    "validation": "2023-04-22 -> 2023-12-10 (868 partidos)",
+    "test": "2023-12-10 -> 2024-06-02 (868 partidos)"
+  },
+  "baseline_probabilities": {
+    "HOME": 0.43582,
+    "DRAW": 0.25327,
+    "AWAY": 0.31091
+  },
+  "ensemble_weights": {
+    "POISSON": 0.0538,
+    "ELO": 0.0,
+    "RANDOM_FOREST": 0.9462,
+    "XGBOOST": 0.0
+  },
+  "excluded_models": {
+    "ELO": "Peso 0.0: No aporta reducción marginal de Brier Score en el ensamble sobre T_val (Brier individual=0.5821).",
+    "XGBOOST": "Peso 0.0: No aporta reducción marginal de Brier Score en el ensamble sobre T_val (Brier individual=0.5725)."
+  },
+  "models": {
+    "POISSON": {
+      "model_code": "POISSON",
+      "display_name": "Modelo A: Poisson / Dixon-Coles",
+      "version": "v2.0.0-real-cc0",
+      "ensemble_weight": 0.0538,
+      "validation_brier": 0.58403,
+      "validation_log_loss": 0.98168,
+      "test_metrics": {
+        "total_predictions": 868,
+        "accuracy": 0.5207,
+        "precision_macro": 0.3877,
+        "recall_macro": 0.4657,
+        "f1_macro": 0.3981,
+        "brier_score": 0.58981,
+        "log_loss": 0.98714,
+        "ece_calibration": 0.00437,
+        "baseline_brier_score": 0.65334,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.57013,
+            0.60948
+          ],
+          "log_loss_ci_95": [
+            0.95945,
+            1.01482
+          ],
+          "accuracy_ci_95": [
+            0.4875,
+            0.554
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 372,
+            "mean_predicted_prob": 0.1523,
+            "empirical_win_rate": 0.1398,
+            "calibration_gap": 0.0125
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1497,
+            "mean_predicted_prob": 0.2797,
+            "empirical_win_rate": 0.2792,
+            "calibration_gap": 0.0004
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 567,
+            "mean_predicted_prob": 0.4899,
+            "empirical_win_rate": 0.4974,
+            "calibration_gap": 0.0075
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 154,
+            "mean_predicted_prob": 0.6712,
+            "empirical_win_rate": 0.6688,
+            "calibration_gap": 0.0023
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 14,
+            "mean_predicted_prob": 0.8255,
+            "empirical_win_rate": 0.9286,
+            "calibration_gap": 0.103
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5491,
+            "brier_score": 0.55829,
+            "log_loss": 0.94348
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5354,
+            "brier_score": 0.58473,
+            "log_loss": 0.97981
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.4979,
+            "brier_score": 0.61082,
+            "log_loss": 1.01558
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4973,
+            "brier_score": 0.60768,
+            "log_loss": 1.01311
+          }
+        }
+      },
+      "feature_importance": {
+        "expected_goals_attack_defense": 0.65,
+        "xg_recent_5": 0.25,
+        "missing_players": 0.1
+      }
+    },
+    "ELO": {
+      "model_code": "ELO",
+      "display_name": "Modelo B: Calificación Dinámica Elo",
+      "version": "v2.0.0-real-cc0",
+      "ensemble_weight": 0.0,
+      "validation_brier": 0.58208,
+      "validation_log_loss": 0.97928,
+      "test_metrics": {
+        "total_predictions": 868,
+        "accuracy": 0.5288,
+        "precision_macro": 0.3537,
+        "recall_macro": 0.4703,
+        "f1_macro": 0.4004,
+        "brier_score": 0.58467,
+        "log_loss": 0.97831,
+        "ece_calibration": 0.0312,
+        "baseline_brier_score": 0.65334,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56821,
+            0.60113
+          ],
+          "log_loss_ci_95": [
+            0.95513,
+            1.00148
+          ],
+          "accuracy_ci_95": [
+            0.4956,
+            0.562
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 290,
+            "mean_predicted_prob": 0.1486,
+            "empirical_win_rate": 0.0828,
+            "calibration_gap": 0.0658
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1660,
+            "mean_predicted_prob": 0.2937,
+            "empirical_win_rate": 0.2807,
+            "calibration_gap": 0.013
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 538,
+            "mean_predicted_prob": 0.4857,
+            "empirical_win_rate": 0.5446,
+            "calibration_gap": 0.0589
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 116,
+            "mean_predicted_prob": 0.6558,
+            "empirical_win_rate": 0.7328,
+            "calibration_gap": 0.077
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.567,
+            "brier_score": 0.56238,
+            "log_loss": 0.95042
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5354,
+            "brier_score": 0.58878,
+            "log_loss": 0.98482
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5106,
+            "brier_score": 0.59685,
+            "log_loss": 0.98946
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4973,
+            "brier_score": 0.59123,
+            "log_loss": 0.99007
+          }
+        }
+      },
+      "feature_importance": {
+        "elo_rating_differential": 0.78,
+        "home_field_advantage": 0.22
+      }
+    },
+    "RANDOM_FOREST": {
+      "model_code": "RANDOM_FOREST",
+      "display_name": "Modelo C: Random Forest Calibrado",
+      "version": "v2.0.0-real-cc0",
+      "ensemble_weight": 0.9462,
+      "validation_brier": 0.56963,
+      "validation_log_loss": 0.96228,
+      "test_metrics": {
+        "total_predictions": 868,
+        "accuracy": 0.5253,
+        "precision_macro": 0.3483,
+        "recall_macro": 0.4731,
+        "f1_macro": 0.4006,
+        "brier_score": 0.58168,
+        "log_loss": 0.9746,
+        "ece_calibration": 0.0381,
+        "baseline_brier_score": 0.65334,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56083,
+            0.60253
+          ],
+          "log_loss_ci_95": [
+            0.94582,
+            1.00337
+          ],
+          "accuracy_ci_95": [
+            0.4921,
+            0.5586
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 364,
+            "mean_predicted_prob": 0.1575,
+            "empirical_win_rate": 0.0852,
+            "calibration_gap": 0.0723
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1418,
+            "mean_predicted_prob": 0.2567,
+            "empirical_win_rate": 0.2786,
+            "calibration_gap": 0.0218
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 604,
+            "mean_predicted_prob": 0.5054,
+            "empirical_win_rate": 0.4669,
+            "calibration_gap": 0.0385
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 218,
+            "mean_predicted_prob": 0.6484,
+            "empirical_win_rate": 0.7339,
+            "calibration_gap": 0.0855
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5491,
+            "brier_score": 0.56468,
+            "log_loss": 0.95396
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5442,
+            "brier_score": 0.57802,
+            "log_loss": 0.97011
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5064,
+            "brier_score": 0.59388,
+            "log_loss": 0.9884
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4973,
+            "brier_score": 0.59134,
+            "log_loss": 0.98768
+          }
+        }
+      },
+      "feature_importance": {
+        "elo_diff": 0.1919,
+        "league_pos_diff": 0.0883,
+        "away_elo_pre": 0.0829,
+        "home_elo_pre": 0.0807,
+        "away_pts_last10": 0.0554,
+        "away_gf_last10": 0.0518,
+        "home_gf_last10": 0.0428,
+        "home_pts_last10": 0.0381,
+        "home_home_gf_avg": 0.0348,
+        "away_away_gf_avg": 0.0302,
+        "away_gf_last5": 0.0285,
+        "away_ga_last10": 0.0283,
+        "away_xg_last5": 0.0283,
+        "home_ga_last10": 0.0263,
+        "home_home_ga_avg": 0.026,
+        "home_ga_last5": 0.0244,
+        "away_away_ga_avg": 0.0227,
+        "home_pts_last5": 0.0206,
+        "home_gf_last5": 0.0199,
+        "away_pts_last5": 0.0188,
+        "away_ga_last5": 0.0182,
+        "home_xg_last5": 0.0182,
+        "h2h_home_advantage": 0.013,
+        "rest_days_diff": 0.0098,
+        "home_cards_last5": 0.0001,
+        "away_cards_last5": 0.0001,
+        "home_sot_last5": 0.0,
+        "away_sot_last5": 0.0,
+        "home_corners_last5": 0.0,
+        "away_corners_last5": 0.0,
+        "missing_players_diff": 0.0
+      }
+    },
+    "XGBOOST": {
+      "model_code": "XGBOOST",
+      "display_name": "Modelo D: XGBoost Calibrado",
+      "version": "v2.0.0-real-cc0",
+      "ensemble_weight": 0.0,
+      "validation_brier": 0.57249,
+      "validation_log_loss": 0.96676,
+      "test_metrics": {
+        "total_predictions": 868,
+        "accuracy": 0.5288,
+        "precision_macro": 0.3505,
+        "recall_macro": 0.4758,
+        "f1_macro": 0.4029,
+        "brier_score": 0.58336,
+        "log_loss": 0.97742,
+        "ece_calibration": 0.03573,
+        "baseline_brier_score": 0.65334,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56351,
+            0.6032
+          ],
+          "log_loss_ci_95": [
+            0.95,
+            1.00484
+          ],
+          "accuracy_ci_95": [
+            0.4956,
+            0.562
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 326,
+            "mean_predicted_prob": 0.1597,
+            "empirical_win_rate": 0.0828,
+            "calibration_gap": 0.0768
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1459,
+            "mean_predicted_prob": 0.2589,
+            "empirical_win_rate": 0.2755,
+            "calibration_gap": 0.0166
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 644,
+            "mean_predicted_prob": 0.5085,
+            "empirical_win_rate": 0.4752,
+            "calibration_gap": 0.0333
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 175,
+            "mean_predicted_prob": 0.6327,
+            "empirical_win_rate": 0.76,
+            "calibration_gap": 0.1273
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.558,
+            "brier_score": 0.56669,
+            "log_loss": 0.9563
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5487,
+            "brier_score": 0.57643,
+            "log_loss": 0.96881
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5064,
+            "brier_score": 0.59784,
+            "log_loss": 0.99418
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4973,
+            "brier_score": 0.5937,
+            "log_loss": 0.99238
+          }
+        }
+      },
+      "feature_importance": {
+        "elo_diff": 0.1783,
+        "league_pos_diff": 0.074,
+        "away_elo_pre": 0.0518,
+        "away_gf_last10": 0.0451,
+        "home_elo_pre": 0.0408,
+        "away_gf_last5": 0.0391,
+        "away_pts_last10": 0.0385,
+        "home_gf_last10": 0.0364,
+        "away_ga_last10": 0.036,
+        "home_ga_last5": 0.034,
+        "home_pts_last10": 0.0336,
+        "home_home_gf_avg": 0.0336,
+        "home_home_ga_avg": 0.0331,
+        "home_pts_last5": 0.0317,
+        "away_pts_last5": 0.0316,
+        "away_xg_last5": 0.031,
+        "rest_days_diff": 0.031,
+        "away_away_gf_avg": 0.0301,
+        "away_ga_last5": 0.0299,
+        "away_away_ga_avg": 0.0298,
+        "home_xg_last5": 0.029,
+        "home_ga_last10": 0.029,
+        "home_gf_last5": 0.0285,
+        "h2h_home_advantage": 0.0242,
+        "home_sot_last5": 0.0,
+        "away_sot_last5": 0.0,
+        "home_corners_last5": 0.0,
+        "away_corners_last5": 0.0,
+        "home_cards_last5": 0.0,
+        "away_cards_last5": 0.0,
+        "missing_players_diff": 0.0
+      }
+    },
+    "ENSEMBLE": {
+      "model_code": "ENSEMBLE",
+      "display_name": "Modelo E: Ensamble Ponderado Temporal",
+      "version": "v2.0.0-real-cc0",
+      "ensemble_weight": 1.0,
+      "validation_brier": 0.56959,
+      "validation_log_loss": 0.96215,
+      "test_metrics": {
+        "total_predictions": 868,
+        "accuracy": 0.5276,
+        "precision_macro": 0.3499,
+        "recall_macro": 0.4749,
+        "f1_macro": 0.4022,
+        "brier_score": 0.58131,
+        "log_loss": 0.97416,
+        "ece_calibration": 0.03651,
+        "baseline_brier_score": 0.65334,
+        "market_brier_score": null,
+        "simulated_bets_count": 0,
+        "simulated_roi_pct": 0.0,
+        "simulated_yield_pct": 0.0,
+        "confidence_intervals_95": {
+          "brier_ci_95": [
+            0.56065,
+            0.60198
+          ],
+          "log_loss_ci_95": [
+            0.94563,
+            1.00268
+          ],
+          "accuracy_ci_95": [
+            0.4944,
+            0.5609
+          ]
+        },
+        "calibration_curve": [
+          {
+            "bin_range": "0.00-0.20",
+            "count": 375,
+            "mean_predicted_prob": 0.1598,
+            "empirical_win_rate": 0.0907,
+            "calibration_gap": 0.0692
+          },
+          {
+            "bin_range": "0.20-0.40",
+            "count": 1413,
+            "mean_predicted_prob": 0.2587,
+            "empirical_win_rate": 0.2788,
+            "calibration_gap": 0.0201
+          },
+          {
+            "bin_range": "0.40-0.60",
+            "count": 605,
+            "mean_predicted_prob": 0.5051,
+            "empirical_win_rate": 0.4694,
+            "calibration_gap": 0.0357
+          },
+          {
+            "bin_range": "0.60-0.80",
+            "count": 211,
+            "mean_predicted_prob": 0.649,
+            "empirical_win_rate": 0.7393,
+            "calibration_gap": 0.0904
+          },
+          {
+            "bin_range": "0.80-1.00",
+            "count": 0,
+            "mean_predicted_prob": 0.9,
+            "empirical_win_rate": 0.0,
+            "calibration_gap": 0.0
+          }
+        ],
+        "by_competition": {
+          "Premier League": {
+            "matches": 224,
+            "accuracy": 0.5536,
+            "brier_score": 0.56352,
+            "log_loss": 0.95229
+          },
+          "LaLiga EA Sports": {
+            "matches": 226,
+            "accuracy": 0.5442,
+            "brier_score": 0.57762,
+            "log_loss": 0.96943
+          },
+          "Serie A": {
+            "matches": 235,
+            "accuracy": 0.5106,
+            "brier_score": 0.59395,
+            "log_loss": 0.98882
+          },
+          "Bundesliga": {
+            "matches": 183,
+            "accuracy": 0.4973,
+            "brier_score": 0.59142,
+            "log_loss": 0.98793
+          }
+        }
+      },
+      "feature_importance": {
+        "POISSON": 0.0538,
+        "ELO": 0.0,
+        "RANDOM_FOREST": 0.9462,
+        "XGBOOST": 0.0
+      }
+    }
+  },
+  "is_demo_dataset": false
+}

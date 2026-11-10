@@ -1,0 +1,98 @@
+# =============================================================================
+# SPORTPREDICT AI - DOCKER COMPOSE MULTI-SERVICIO (PRODUCCIÓN / HOMELAB / VPS)
+# =============================================================================
+
+services:
+  # Base de datos PostgreSQL (activa por defecto para despliegues autónomos).
+  # Si utilizas Supabase externo, puedes detener este servicio y configurar DATABASE_URL
+  # directamente en el archivo .env.
+  db:
+    image: postgres:16-alpine
+    container_name: sportpredict_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sportpredict}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sportpredict_secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-sportpredict}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sportpredict} -d ${POSTGRES_DB:-sportpredict}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend FastAPI + Gunicorn + Uvicorn Workers
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sportpredict_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://sportpredict:sportpredict_secure_password@db:5432/sportpredict}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-}
+      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY:-}
+      SEED_DEMO_DATA: "false"
+      LOG_JSON: "true"
+      RATE_LIMIT_PER_MINUTE: "120"
+      TRUSTED_PROXY_HEADERS: "true"
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # Frontend Next.js 15 Standalone
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}
+    container_name: sportpredict_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # Demonio de sincronización y registro prospectivo de Fase 5 (cada 6 horas)
+  scheduler:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sportpredict_scheduler
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://sportpredict:sportpredict_secure_password@db:5432/sportpredict}
+      API_FOOTBALL_KEY: ${API_FOOTBALL_KEY:-}
+      SCHEDULER_INTERVAL_MINUTES: "360"
+    command: ["python", "-m", "app.services.scheduler_cron"]
+
+volumes:
+  postgres_data:
+    name: sportpredict_postgres_data
