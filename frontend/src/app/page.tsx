@@ -152,6 +152,49 @@ export default function SportPredictApp() {
     }
   };
 
+  const getMatchLiveStatus = (isoKickoff: string, backendStatus: string, homeGoals: number | null, awayGoals: number | null) => {
+    if (backendStatus === "FINISHED" || (homeGoals !== null && awayGoals !== null && backendStatus !== "SCHEDULED")) {
+      return {
+        code: "FINISHED",
+        label: "🏁 FINALIZADO",
+        colorClass: "bg-slate-800 text-slate-300 border-slate-700",
+        isBettingOpen: false,
+      };
+    }
+
+    try {
+      const kickoffTime = new Date(isoKickoff).getTime();
+      const nowTime = Date.now();
+      const diffMinutes = Math.floor((nowTime - kickoffTime) / (1000 * 60));
+
+      if (diffMinutes >= 0 && diffMinutes <= 115) {
+        return {
+          code: "LIVE",
+          label: `🔴 EN JUEGO (${diffMinutes}')`,
+          colorClass: "bg-red-950/80 text-red-400 border-red-800 animate-pulse",
+          isBettingOpen: false,
+        };
+      } else if (diffMinutes > 115) {
+        return {
+          code: "FINISHED",
+          label: "🏁 FINALIZADO",
+          colorClass: "bg-slate-800 text-slate-300 border-slate-700",
+          isBettingOpen: false,
+        };
+      }
+    } catch {}
+
+    return {
+      code: "SCHEDULED",
+      label: "⏳ POR JUGAR",
+      colorClass: "bg-emerald-950 text-emerald-400 border-emerald-800",
+      isBettingOpen: true,
+    };
+  };
+
+  const [expandedLineups, setExpandedLineups] = useState<Record<number, boolean>>({});
+  const toggleExpandedLineup = (id: number) => setExpandedLineups(prev => ({ ...prev, [id]: !prev[id] }));
+
   const formatColombiaMatchDate = (isoStr: string): { dayLabel: string; timeLabel: string; fullLabel: string } => {
     try {
       const d = new Date(isoStr);
@@ -912,13 +955,14 @@ export default function SportPredictApp() {
                               {m.competition_name} · Jornada {m.matchday ?? "—"}
                             </span>
                             <div className="flex items-center gap-2">
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                m.lineups_confirmed
-                                  ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
-                                  : "bg-amber-950/60 text-amber-300 border border-amber-800"
-                              }`}>
-                                {m.lineups_confirmed ? "🟢 Titulares Confirmados" : "⏳ Alineación 45m antes"}
-                              </span>
+                              {(() => {
+                                const st = getMatchLiveStatus(m.kickoff_utc, m.status, m.home_goals, m.away_goals);
+                                return (
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${st.colorClass}`}>
+                                    {st.label}
+                                  </span>
+                                );
+                              })()}
                               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
                                 {colDate.dayLabel}
                               </span>
@@ -1251,6 +1295,38 @@ export default function SportPredictApp() {
                                   </div>
                                 );
                               })}
+                            </div>
+                          )}
+
+                          {/* Botón rápido para ver alineaciones y reporte sin salir de la tarjeta */}
+                          <div className="flex items-center justify-between pt-1">
+                            <button
+                              onClick={() => toggleExpandedLineup(m.id)}
+                              className="text-[11px] font-semibold text-slate-400 hover:text-emerald-400 transition flex items-center gap-1"
+                            >
+                              <span>{expandedLineups[m.id] ? "▲ Ocultar" : "▼ Ver"} Alineación y Bajas</span>
+                              <span className={`w-2 h-2 rounded-full ${m.lineups_confirmed ? "bg-emerald-400" : "bg-amber-400"}`}></span>
+                            </button>
+                            <span className="text-[10px] text-slate-500">
+                              {m.lineups_confirmed ? "Oficial confirmada" : "Se confirma 45m antes"}
+                            </span>
+                          </div>
+
+                          {expandedLineups[m.id] && (
+                            <div className="p-3 rounded-lg bg-[#0B1120] border border-slate-800 text-xs space-y-2">
+                              <div className="flex items-center justify-between font-bold text-slate-300 border-b border-slate-800/80 pb-1.5">
+                                <span>📋 Estado de Alineación</span>
+                                <span className={`px-2 py-0.5 rounded text-[10px] ${
+                                  m.lineups_confirmed ? "bg-emerald-500/20 text-emerald-300" : "bg-amber-500/20 text-amber-300"
+                                }`}>
+                                  {m.lineups_confirmed ? "Titulares Oficiales Confirmados" : "Planilla Pendiente (45m antes)"}
+                                </span>
+                              </div>
+                              <p className="text-[11px] text-slate-400 leading-relaxed">
+                                {m.lineups_confirmed
+                                  ? "Los entrenadores ya entregaron la lista oficial a la federación. Ambos equipos cuentan con sus esquemas principales confirmados."
+                                  : "Los clubes entregan la alineación oficial 45-60 minutos antes del inicio. La app no muestra nombres inventados para cuidar tu dinero."}
+                              </p>
                             </div>
                           )}
 
@@ -1936,54 +2012,59 @@ export default function SportPredictApp() {
               MÓDULO 7: ESTADÍSTICAS DE EQUIPOS Y RANKING ELO
              =============================================================== */}
           {activeModule === "teams" && (
-            <div className="space-y-4">
-              <div className="border-b border-slate-200 pb-3">
-                <h1 className="text-lg font-bold text-slate-900">
-                  7. Estadísticas de Equipos y Calificación Dinámica Elo
+            <div className="space-y-5">
+              <div className="border-b border-slate-800 pb-4">
+                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                  📊 2. Estadísticas de Equipos y Rendimiento
                 </h1>
-                <p className="text-xs text-slate-600">
-                  Calificaciones actualizadas cronológicamente después de cada encuentro finalizado.
+                <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                  Puntuación de fuerza Elo en tiempo real, efectividad histórica y promedios de gol calculados por la IA.
                 </p>
               </div>
-              <div className="bg-white rounded border border-slate-200 overflow-x-auto">
-                <table className="w-full text-xs text-left">
-                  <thead className="bg-[#0B132B] text-white">
-                    <tr>
-                      <th className="py-2.5 px-3">#</th>
-                      <th className="py-2.5 px-3">Equipo</th>
-                      <th className="py-2.5 px-3">País</th>
-                      <th className="py-2.5 px-3">Elo Dinámico Actual</th>
-                      <th className="py-2.5 px-3">PJ</th>
-                      <th className="py-2.5 px-3">V / E / D</th>
-                      <th className="py-2.5 px-3">Goles Marcados Prom.</th>
-                      <th className="py-2.5 px-3">Goles Recibidos Prom.</th>
-                      <th className="py-2.5 px-3">Origen</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200 font-mono">
-                    {teamsList.map((t, idx) => (
-                      <tr key={t.id} className="hover:bg-slate-50">
-                        <td className="py-2.5 px-3 font-bold text-slate-500">{idx + 1}</td>
-                        <td className="py-2.5 px-3 font-sans font-bold text-slate-900">
-                          {t.canonical_name} <span className="text-slate-400 font-mono">({t.short_code})</span>
-                        </td>
-                        <td className="py-2.5 px-3 font-sans">{t.country}</td>
-                        <td className="py-2.5 px-3 font-bold text-blue-900">{t.current_elo}</td>
-                        <td className="py-2.5 px-3">{t.matches_played}</td>
-                        <td className="py-2.5 px-3">
-                          {t.wins} / {t.draws} / {t.losses}
-                        </td>
-                        <td className="py-2.5 px-3">{t.goals_for_avg}</td>
-                        <td className="py-2.5 px-3">{t.goals_against_avg}</td>
-                        <td className="py-2.5 px-3 font-sans">
-                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">
-                            OFICIAL
-                          </span>
-                        </td>
+
+              <div className="bg-[#10172A] rounded-xl border border-slate-800 shadow-xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs text-left">
+                    <thead className="bg-[#0B1120] text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800 font-bold">
+                      <tr>
+                        <th className="py-3 px-4">#</th>
+                        <th className="py-3 px-4">Equipo</th>
+                        <th className="py-3 px-4">País</th>
+                        <th className="py-3 px-4">Fuerza Elo Actual</th>
+                        <th className="py-3 px-4">Partidos</th>
+                        <th className="py-3 px-4">Victorias / Empates / Derrotas</th>
+                        <th className="py-3 px-4">Goles Favor (Prom)</th>
+                        <th className="py-3 px-4">Goles Contra (Prom)</th>
+                        <th className="py-3 px-4">Estado</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/80 text-slate-200 font-mono">
+                      {teamsList.map((t, idx) => (
+                        <tr key={t.id} className="hover:bg-slate-800/40 transition">
+                          <td className="py-3 px-4 font-bold text-slate-500">{idx + 1}</td>
+                          <td className="py-3 px-4 font-sans font-bold text-white text-sm">
+                            {t.canonical_name} <span className="text-slate-400 font-mono text-xs font-normal">({t.short_code})</span>
+                          </td>
+                          <td className="py-3 px-4 font-sans text-slate-300">{t.country}</td>
+                          <td className="py-3 px-4 font-extrabold text-emerald-400 text-sm">{t.current_elo}</td>
+                          <td className="py-3 px-4 font-bold text-white">{t.matches_played}</td>
+                          <td className="py-3 px-4 text-slate-300">
+                            <span className="text-emerald-400 font-bold">{t.wins}V</span> /{" "}
+                            <span className="text-slate-400">{t.draws}E</span> /{" "}
+                            <span className="text-red-400">{t.losses}D</span>
+                          </td>
+                          <td className="py-3 px-4 text-cyan-300 font-bold">{t.goals_for_avg}</td>
+                          <td className="py-3 px-4 text-amber-300">{t.goals_against_avg}</td>
+                          <td className="py-3 px-4 font-sans">
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">
+                              OFICIAL
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -1995,8 +2076,8 @@ export default function SportPredictApp() {
             <div className="space-y-4">
               <div className="border-b border-slate-800 pb-3 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h1 className="text-lg font-bold text-white">
-                    8. Registro Inmutable de Predicciones Pre-Partido
+                  <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                    📜 3. Historial de Predicciones Oficiales
                   </h1>
                   <p className="text-xs text-slate-400">{ledgerData.summary.immutability_policy}</p>
                 </div>
