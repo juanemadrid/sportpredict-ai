@@ -6,7 +6,6 @@ const nextConfig = {
   reactStrictMode: true,
   output: isGithubPages ? "export" : (process.env.DOCKER_BUILD === "1" ? "standalone" : undefined),
   basePath: basePath,
-  assetPrefix: basePath ? `${basePath}/` : undefined,
   images: {
     unoptimized: true,
   },
