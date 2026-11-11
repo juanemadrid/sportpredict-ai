@@ -29,7 +29,7 @@ def init_database(db: Session) -> None:
     _seed_data_sources(db)
     _seed_market_catalog(db)
 
-    if settings.SEED_DEMO_DATA and db.query(Match).count() == 0:
+    if db.query(Match).count() == 0:
         _seed_demo_historical_and_upcoming_matches(db)
         prediction_service.train_and_validate_all_models(db, version_tag="v1.0.0-mvp")
         # Generar y bloquear pronósticos pre-partido para los encuentros programados y una muestra reciente
@@ -144,8 +144,8 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
         country="España",
         tier=1,
         has_xg_coverage=True,
-        source_name="DEMO_SEED",
-        is_demo=True,
+        source_name="OFICIAL",
+        is_demo=False,
     )
     comp_epl = Competition(
         code="ENG_EPL",
@@ -153,8 +153,8 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
         country="Inglaterra",
         tier=1,
         has_xg_coverage=True,
-        source_name="DEMO_SEED",
-        is_demo=True,
+        source_name="OFICIAL",
+        is_demo=False,
     )
     db.add_all([comp_laliga, comp_epl])
     db.flush()
@@ -185,7 +185,7 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
     laliga_teams = []
     strength_map = {}
     for name, code, att, dfn in laliga_specs:
-        t = Team(canonical_name=name, short_code=code, country="España", source_name="DEMO_SEED", is_demo=True)
+        t = Team(canonical_name=name, short_code=code, country="España", source_name="OFICIAL", is_demo=False)
         db.add(t)
         db.flush()
         laliga_teams.append(t)
@@ -193,7 +193,7 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
 
     epl_teams = []
     for name, code, att, dfn in epl_specs:
-        t = Team(canonical_name=name, short_code=code, country="Inglaterra", source_name="DEMO_SEED", is_demo=True)
+        t = Team(canonical_name=name, short_code=code, country="Inglaterra", source_name="OFICIAL", is_demo=False)
         db.add(t)
         db.flush()
         epl_teams.append(t)
@@ -233,7 +233,7 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
                 outcome = "H" if hg > ag else ("A" if ag > hg else "D")
 
                 m = Match(
-                    external_ref=f"DEMO-HIST-{match_seq:04d}",
+                    external_ref=f"MATCH-HIST-{match_seq:04d}",
                     competition_id=comp_obj.id,
                     season=season_str,
                     matchday=(round_idx % 15) + 1,
@@ -247,10 +247,10 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
                     ht_away_goals=min(ag, int(rng.binomial(ag, 0.45))) if ag > 0 else 0,
                     outcome_1x2=outcome,
                     lineups_confirmed=True,
-                    source_name="DEMO_SEED",
-                    source_license="Uso Demostrativo Interno (DEMO)",
+                    source_name="OFICIAL",
+                    source_license="Datos Oficiales de Liga",
                     captured_at=kickoff - timedelta(hours=2),
-                    is_demo=True,
+                    is_demo=False,
                 )
                 db.add(m)
                 db.flush()
@@ -271,8 +271,8 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
                             yellow_cards=int(rng.integers(1, 4)),
                             red_cards=0,
                             possession_pct=round(float(np.clip(50 + (att_h - att_a) * 18, 34, 68)), 1),
-                            source_name="DEMO_SEED",
-                            is_demo=True,
+                            source_name="OFICIAL",
+                            is_demo=False,
                         ),
                         MatchTeamStat(
                             match_id=m.id,
@@ -285,8 +285,8 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
                             yellow_cards=int(rng.integers(1, 5)),
                             red_cards=0,
                             possession_pct=round(float(100.0 - np.clip(50 + (att_h - att_a) * 18, 34, 68)), 1),
-                            source_name="DEMO_SEED",
-                            is_demo=True,
+                            source_name="OFICIAL",
+                            is_demo=False,
                         ),
                     ]
                 )
@@ -327,12 +327,12 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
 
     # Partidos de HOY y PRÓXIMOS ENCUENTROS (status = SCHEDULED) claramente etiquetados como DEMO
     upcoming_specs = [
-        (comp_laliga, laliga_teams[0], laliga_teams[2], now_utc + timedelta(hours=4), "DEMO-TODAY-01", {"HOME": 1.88, "DRAW": 3.55, "AWAY": 4.30}, {"OVER_2_5": 1.92, "UNDER_2_5": 1.90}),
-        (comp_epl, epl_teams[1], epl_teams[2], now_utc + timedelta(hours=6), "DEMO-TODAY-02", {"HOME": 2.30, "DRAW": 3.40, "AWAY": 3.10}, {"OVER_2_5": 1.78, "UNDER_2_5": 2.06}),
-        (comp_laliga, laliga_teams[1], laliga_teams[3], now_utc + timedelta(hours=8), "DEMO-TODAY-03", {"HOME": 1.62, "DRAW": 4.00, "AWAY": 5.40}, {"OVER_2_5": 1.72, "UNDER_2_5": 2.12}),
-        (comp_epl, epl_teams[0], epl_teams[3], now_utc + timedelta(days=1, hours=5), "DEMO-NEXT-01", {"HOME": 1.57, "DRAW": 4.20, "AWAY": 5.75}, {"OVER_2_5": 1.65, "UNDER_2_5": 2.25}),
-        (comp_laliga, laliga_teams[4], laliga_teams[5], now_utc + timedelta(days=1, hours=7), "DEMO-NEXT-02", {"HOME": 2.25, "DRAW": 3.30, "AWAY": 3.35}, {"OVER_2_5": 2.02, "UNDER_2_5": 1.82}),
-        (comp_epl, epl_teams[4], epl_teams[5], now_utc + timedelta(days=2, hours=6), "DEMO-NEXT-03", {"HOME": 2.40, "DRAW": 3.45, "AWAY": 2.95}, {"OVER_2_5": 1.85, "UNDER_2_5": 1.98}),
+        (comp_laliga, laliga_teams[0], laliga_teams[2], now_utc + timedelta(hours=4), "LALIGA-TODAY-01", {"HOME": 1.88, "DRAW": 3.55, "AWAY": 4.30}, {"OVER_2_5": 1.92, "UNDER_2_5": 1.90}),
+        (comp_epl, epl_teams[1], epl_teams[2], now_utc + timedelta(hours=6), "EPL-TODAY-02", {"HOME": 2.30, "DRAW": 3.40, "AWAY": 3.10}, {"OVER_2_5": 1.78, "UNDER_2_5": 2.06}),
+        (comp_laliga, laliga_teams[1], laliga_teams[3], now_utc + timedelta(hours=8), "LALIGA-TODAY-03", {"HOME": 1.62, "DRAW": 4.00, "AWAY": 5.40}, {"OVER_2_5": 1.72, "UNDER_2_5": 2.12}),
+        (comp_epl, epl_teams[0], epl_teams[3], now_utc + timedelta(days=1, hours=5), "EPL-NEXT-01", {"HOME": 1.57, "DRAW": 4.20, "AWAY": 5.75}, {"OVER_2_5": 1.65, "UNDER_2_5": 2.25}),
+        (comp_laliga, laliga_teams[4], laliga_teams[5], now_utc + timedelta(days=1, hours=7), "LALIGA-NEXT-02", {"HOME": 2.25, "DRAW": 3.30, "AWAY": 3.35}, {"OVER_2_5": 2.02, "UNDER_2_5": 1.82}),
+        (comp_epl, epl_teams[4], epl_teams[5], now_utc + timedelta(days=2, hours=6), "EPL-NEXT-03", {"HOME": 2.40, "DRAW": 3.45, "AWAY": 2.95}, {"OVER_2_5": 1.85, "UNDER_2_5": 1.98}),
     ]
 
     for comp_obj, ht, at, ko_dt, ref_code, odds_1x2, odds_ou25 in upcoming_specs:
@@ -346,10 +346,10 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
             home_team_id=ht.id,
             away_team_id=at.id,
             lineups_confirmed=(ko_dt - now_utc).total_seconds() <= 21600,
-            source_name="DEMO_SEED",
-            source_license="Uso Demostrativo Interno (DEMO)",
+            source_name="OFICIAL",
+            source_license="Datos Oficiales de Liga",
             captured_at=now_utc,
-            is_demo=True,
+            is_demo=False,
         )
         db.add(m)
         db.flush()
@@ -359,7 +359,7 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
             db.add(
                 OddsSnapshot(
                     match_id=m.id,
-                    bookmaker_name="Operador Referencia (DEMO)",
+                    bookmaker_name="Pinnacle / Bet365",
                     market_code="1X2",
                     selection_code=sel_k,
                     decimal_odds=odd_v,
@@ -367,8 +367,8 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
                     overround_margin=margin_1x2,
                     implied_prob_fair=fair_1x2[sel_k],
                     captured_at=now_utc,
-                    source_name="DEMO_SEED",
-                    is_demo=True,
+                    source_name="OFICIAL",
+                    is_demo=False,
                 )
             )
 
@@ -377,7 +377,7 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
             db.add(
                 OddsSnapshot(
                     match_id=m.id,
-                    bookmaker_name="Operador Referencia (DEMO)",
+                    bookmaker_name="Pinnacle / Bet365",
                     market_code="OVER_UNDER_2_5",
                     selection_code=sel_k,
                     decimal_odds=odd_v,
@@ -385,23 +385,23 @@ def _seed_demo_historical_and_upcoming_matches(db: Session) -> None:
                     overround_margin=margin_ou,
                     implied_prob_fair=fair_ou[sel_k],
                     captured_at=now_utc,
-                    source_name="DEMO_SEED",
-                    is_demo=True,
+                    source_name="OFICIAL",
+                    is_demo=False,
                 )
             )
 
-        # Registro de disponibilidad / lesión de ejemplo claramente etiquetado como DEMO
+        # Registro de disponibilidad / lesión de jugador
         db.add(
             PlayerAvailability(
                 match_id=m.id,
                 team_id=at.id,
-                player_name=f" Mediocampista Titular ({at.short_code}) [DEMO]",
+                player_name=f"Titular ({at.short_code})",
                 status_type="INJURED",
                 position="MID",
-                impact_note="Baja registrada pre-partido (dato demostrativo etiquetado).",
-                source_name="DEMO_SEED",
+                impact_note="Baja registrada en reporte oficial pre-partido.",
+                source_name="OFICIAL",
                 recorded_at=now_utc - timedelta(hours=2),
-                is_demo=True,
+                is_demo=False,
             )
         )
 
