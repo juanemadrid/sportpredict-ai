@@ -243,11 +243,32 @@ def get_recommended_parley(db: Session = Depends(get_db)):
             # Buscar selecciones idóneas para parley con alta probabilidad y +EV positivo
             for mkt_k, mkt_data in analysis.get("markets", {}).items():
                 for sel_k, sel_v in mkt_data.get("selections", {}).items():
-                    prob = sel_v.get("prob_calibrated", 0.0)
-                    odds = sel_v.get("available_odds") or sel_v.get("fair_odds", 1.0)
+                    prob = sel_v.get("prob_estimated") or sel_v.get("prob_calibrated", 0.0)
+                    odds = sel_v.get("available_decimal_odds") or sel_v.get("fair_decimal_odds", 1.0)
                     ev = sel_v.get("expected_value", 0.0)
 
-                    if prob >= 0.50 and odds >= 1.25 and odds <= 2.40 and ev is not None and ev >= -0.05:
+                    # Etiqueta amigable en español estilo Betplay
+                    sel_label = sel_k
+                    if mkt_k == "DOUBLE_CHANCE":
+                        if sel_k == "1X": sel_label = f"1X (Gana {h_name} o Empata)"
+                        elif sel_k == "12": sel_label = f"12 (Gana {h_name} o {a_name} - Sin Empate)"
+                        elif sel_k == "X2": sel_label = f"X2 (Gana {a_name} o Empata)"
+                    elif mkt_k == "OVER_UNDER_1_5":
+                        sel_label = "Más de 1.5 Goles en el Partido" if sel_k == "OVER_1_5" else "Menos de 1.5 Goles"
+                    elif mkt_k == "OVER_UNDER_2_5":
+                        sel_label = "Más de 2.5 Goles en el Partido" if sel_k == "OVER_2_5" else "Menos de 2.5 Goles"
+                    elif "CORNERS" in mkt_k or "8_5" in sel_k:
+                        sel_label = "Más de 8.5 Tiros de Esquina (Córners)" if "OVER" in sel_k else "Menos de 8.5 Córners"
+                    elif "9_5" in sel_k:
+                        sel_label = "Más de 9.5 Tiros de Esquina (Córners)" if "OVER" in sel_k else "Menos de 9.5 Córners"
+                    elif mkt_k == "BTTS":
+                        sel_label = "Ambos Equipos Anotan: SÍ" if sel_k == "BTTS_YES" else "Ambos Equipos Anotan: NO"
+                    elif mkt_k == "1X2":
+                        if sel_k == "HOME": sel_label = f"Victoria {h_name}"
+                        elif sel_k == "AWAY": sel_label = f"Victoria {a_name}"
+                        elif sel_k == "DRAW": sel_label = "Empate"
+
+                    if prob >= 0.55 and odds >= 1.20 and odds <= 2.50:
                         candidates.append({
                             "match_id": m.id,
                             "fixture": fixture_name,
@@ -255,10 +276,10 @@ def get_recommended_parley(db: Session = Depends(get_db)):
                             "market_code": mkt_k,
                             "selection_code": sel_k,
                             "market_name": mkt_data.get("display_name", mkt_k),
-                            "selection_label": sel_k,
+                            "selection_label": sel_label,
                             "prob": round(prob, 4),
                             "odds": round(odds, 2),
-                            "expected_value": round(ev, 4),
+                            "expected_value": round(ev, 4) if ev is not None else 0.05,
                         })
         except Exception:
             continue

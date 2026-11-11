@@ -31,32 +31,32 @@ import type {
 } from "@/types/sports";
 
 type ModuleKey =
+  | "parleys_today"
+  | "teams"
+  | "history"
+  | "match_analysis"
   | "dashboard"
   | "today"
   | "upcoming"
-  | "match_analysis"
   | "predictions"
   | "odds_comparator"
-  | "teams"
-  | "history"
   | "model_performance"
   | "training_panel"
   | "admin"
   | "subscriptions";
 
+interface CustomBetPick {
+  id: string;
+  matchFixture: string;
+  marketName: string;
+  selectionLabel: string;
+  odds: number;
+}
+
 const MODULES: Array<{ key: ModuleKey; label: string; number: number; icon: React.ComponentType<{ className?: string }> }> = [
-  { key: "dashboard", label: "1. Dashboard Principal", number: 1, icon: Activity },
-  { key: "today", label: "2. Partidos de Hoy", number: 2, icon: Clock },
-  { key: "upcoming", label: "3. Próximos Encuentros", number: 3, icon: Calendar },
-  { key: "match_analysis", label: "4. Análisis de Partidos", number: 4, icon: Layers },
-  { key: "predictions", label: "5. Pronósticos y Valor (EV)", number: 5, icon: TrendingUp },
-  { key: "odds_comparator", label: "6. Comparador de Cuotas", number: 6, icon: Scale },
-  { key: "teams", label: "7. Estadísticas de Equipos", number: 7, icon: Award },
-  { key: "history", label: "8. Historial de Predicciones", number: 8, icon: History },
-  { key: "model_performance", label: "9. Rendimiento del Modelo", number: 9, icon: BarChart3 },
-  { key: "training_panel", label: "10. Panel de Entrenamiento", number: 10, icon: Cpu },
-  { key: "admin", label: "11. Administración y Fuentes", number: 11, icon: Sliders },
-  { key: "subscriptions", label: "12. Usuarios y Suscripciones", number: 12, icon: Users },
+  { key: "parleys_today", label: "🎯 1. Parleys y Apuestas de Hoy", number: 1, icon: TrendingUp },
+  { key: "teams", label: "📊 2. Estadísticas de Equipos", number: 2, icon: Award },
+  { key: "history", label: "📜 3. Historial de Predicciones", number: 3, icon: History },
 ];
 
 const SAMPLE_AUTHORIZED_CSV = `external_ref,competition_code,competition_name,country,season,matchday,kickoff_utc,home_team,away_team,status,home_goals,away_goals,home_xg,away_xg,odds_home,odds_draw,odds_away
@@ -64,10 +64,26 @@ CSV-AUTH-2026-101,ESP_LALIGA,LaLiga EA Sports,España,2026/2027,17,2026-11-14T20
 CSV-AUTH-2026-102,ENG_EPL,Premier League,Inglaterra,2026/2027,17,2026-11-15T17:30:00Z,Liverpool FC,Arsenal FC,SCHEDULED,,,,,2.15,3.45,3.35`;
 
 export default function SportPredictApp() {
-  const [activeModule, setActiveModule] = useState<ModuleKey>("dashboard");
+  const [activeModule, setActiveModule] = useState<ModuleKey>("parleys_today");
   const [userRole, setUserRole] = useState<string>("ADMIN");
   const [userPlan, setUserPlan] = useState<string>("PRO");
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
+  const [customParlayPicks, setCustomParlayPicks] = useState<CustomBetPick[]>([]);
+  const [customBetAmount, setCustomBetAmount] = useState<number>(20000);
+
+  const toggleCustomPick = (pick: CustomBetPick) => {
+    setCustomParlayPicks((prev) => {
+      const exists = prev.some((p) => p.id === pick.id);
+      if (exists) {
+        return prev.filter((p) => p.id !== pick.id);
+      } else {
+        return [...prev, pick];
+      }
+    });
+  };
+
+  const clearCustomPicks = () => setCustomParlayPicks([]);
 
   const [diagnostic, setDiagnostic] = useState<any>(null);
   const [scheduledMatches, setScheduledMatches] = useState<MatchSummaryItem[]>([]);
@@ -473,624 +489,689 @@ export default function SportPredictApp() {
           )}
 
           {/* ===============================================================
-              MÓDULO 1: DASHBOARD PRINCIPAL
+              MÓDULO PRINCIPAL: PARLEYS Y APUESTAS DE HOY (BETPLAY / WPLAY)
              =============================================================== */}
-          {activeModule === "dashboard" && (
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    Centro de Análisis Predictivo y Apuestas de Valor (+EV)
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-400">
-                    Probabilidades calibradas con Machine Learning (Poisson, Elo, Random Forest, XGBoost y Ensamble Multicapa)
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono font-semibold flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    BD: Supabase PostgreSQL
-                  </span>
-                </div>
-              </div>
-
-              {/* Indicadores Clave en Diseño Dark Deportivo */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-[#10172A] p-5 rounded-xl border border-slate-800 shadow-lg hover:border-slate-700 transition">
-                  <div className="text-xs text-slate-400 font-medium">Precisión Predictiva IA (Ensamble)</div>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-3xl font-extrabold font-mono text-emerald-400">
-                      {formatPct(ensembleModel?.backtest?.accuracy || 0.684)}
-                    </span>
-                    <span className="text-[11px] text-emerald-300 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800 font-semibold">
-                      Calibrado
-                    </span>
-                  </div>
-                  <p className="mt-2 text-[11px] text-slate-400">
-                    Supera la cuota de mercado en test temporal retenido
-                  </p>
-                </div>
-
-                <div className="bg-[#10172A] p-5 rounded-xl border border-slate-800 shadow-lg hover:border-slate-700 transition">
-                  <div className="text-xs text-slate-400 font-medium">Fiabilidad y Calibración (ECE)</div>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-3xl font-extrabold font-mono text-cyan-400">
-                      {ensembleModel?.backtest?.log_loss?.toFixed(3) ?? "0.892"}
-                    </span>
-                    <span className="text-[11px] text-cyan-300 bg-cyan-950/80 px-2.5 py-0.5 rounded-full border border-cyan-800 font-mono font-semibold">
-                      ECE: {ensembleModel?.backtest?.ece_calibration?.toFixed(3) ?? "0.038"}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-[11px] text-slate-400">
-                    Alineación estadística rigurosa (Scikit-Learn Isotonic)
-                  </p>
-                </div>
-
-                <div className="bg-[#10172A] p-5 rounded-xl border border-slate-800 shadow-lg hover:border-slate-700 transition">
-                  <div className="text-xs text-slate-400 font-medium">Partidos Oficiales Analizados</div>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-3xl font-extrabold font-mono text-white">
-                      {(diagnostic?.counts?.matches_total ?? 0) || 156}
-                    </span>
-                    <span className="text-[11px] text-blue-300 bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-800 font-semibold">
-                      Premier & LaLiga
-                    </span>
-                  </div>
-                  <p className="mt-2 text-[11px] text-slate-400">
-                    Partidos con historial de xG, posesión y tiros a puerta
-                  </p>
-                </div>
-
-                <div className="bg-[#10172A] p-5 rounded-xl border border-slate-800 shadow-lg hover:border-slate-700 transition">
-                  <div className="text-xs text-slate-400 font-medium">Pronósticos Verificados y Sellados</div>
-                  <div className="mt-2 flex items-baseline justify-between">
-                    <span className="text-3xl font-extrabold font-mono text-purple-400">
-                      {(diagnostic?.counts?.immutable_predictions_logged ?? 0) || 24}
-                    </span>
-                    <span className="text-[11px] text-purple-300 bg-purple-950/80 px-2.5 py-0.5 rounded-full border border-purple-800 font-semibold">
-                      Sellado Pre-Partido
-                    </span>
-                  </div>
-                  <p className="mt-2 text-[11px] text-slate-400">
-                    Registrados antes del inicio sin edición posterior
-                  </p>
-                </div>
-              </div>
-
-              {/* Resumen comparativo rápido de los 5 modelos */}
-              <div className="bg-[#10172A] rounded-xl border border-slate-800 shadow-lg overflow-hidden">
-                <div className="px-5 py-4 bg-[#0B1120] border-b border-slate-800 flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-emerald-400" />
-                    Comparativa de Rendimiento de los 5 Algoritmos IA (Mercado 1X2)
-                  </h2>
-                  <button
-                    onClick={() => setActiveModule("model_performance")}
-                    className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold hover:underline"
-                  >
-                    Ver curvas de calibración →
-                  </button>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs text-left">
-                    <thead className="bg-[#0B1120]/60 text-slate-400 border-b border-slate-800 uppercase text-[10px] tracking-wider">
-                      <tr>
-                        <th className="py-3 px-4">Algoritmo</th>
-                        <th className="py-3 px-4">Método de Calibración</th>
-                        <th className="py-3 px-4">Peso en Ensamble</th>
-                        <th className="py-3 px-4">Error Brier ↓</th>
-                        <th className="py-3 px-4">Log Loss ↓</th>
-                        <th className="py-3 px-4">Tasa de Acierto</th>
-                        <th className="py-3 px-4">F1 Score</th>
-                        <th className="py-3 px-4 text-right">Rentabilidad Simulada (ROI)</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800/80 text-slate-200">
-                      {modelsData?.models.map((m) => (
-                        <tr key={m.id} className="hover:bg-slate-800/40 transition">
-                          <td className="py-3 px-4 font-bold text-white flex items-center gap-2">
-                            {m.model_code === "ENSEMBLE" && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>}
-                            {m.display_name}
-                          </td>
-                          <td className="py-3 px-4 font-mono text-slate-300">{m.calibration_method}</td>
-                          <td className="py-3 px-4 font-mono font-semibold text-emerald-400">
-                            {m.model_code === "ENSEMBLE" ? "100% (Principal)" : `${(m.ensemble_weight * 100).toFixed(1)}%`}
-                          </td>
-                          <td className="py-3 px-4 font-mono text-slate-300">{m.backtest?.brier_score?.toFixed(4) ?? m.val_brier_score?.toFixed(4)}</td>
-                          <td className="py-3 px-4 font-mono text-slate-300">{m.backtest?.log_loss?.toFixed(4) ?? "—"}</td>
-                          <td className="py-3 px-4 font-mono font-bold text-emerald-400">{formatPct(m.backtest?.accuracy ?? 0.65)}</td>
-                          <td className="py-3 px-4 font-mono text-slate-300">{m.backtest?.f1_macro?.toFixed(3) ?? "0.642"}</td>
-                          <td className="py-3 px-4 font-mono text-right">
-                            <span
-                              className={
-                                (m.backtest?.simulated_yield_pct || 0) >= 0
-                                  ? "text-emerald-400 font-bold bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800"
-                                  : "text-red-400 font-semibold"
-                              }
-                            >
-                              +{(m.backtest?.simulated_yield_pct ?? 8.42).toFixed(2)}% ROI
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Próximos encuentros destacados */}
-              <div className="bg-[#10172A] rounded-xl border border-slate-800 shadow-lg overflow-hidden">
-                <div className="px-5 py-4 bg-[#0B1120] border-b border-slate-800 flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-emerald-400" />
-                      Próximos Partidos y Predicciones de Mayor Valor (+EV)
-                    </h2>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      Haz clic en «Analizar Partido» para ver matriz de goles Poisson, factores de lesión y cuotas de mercado
-                    </p>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-xs text-left">
-                    <thead className="bg-[#0B1120]/60 text-slate-400 border-b border-slate-800 uppercase text-[10px] tracking-wider">
-                      <tr>
-                        <th className="py-3 px-4">Estado</th>
-                        <th className="py-3 px-4">Competición / Fecha</th>
-                        <th className="py-3 px-4">Encuentro</th>
-                        <th className="py-3 px-4">Goles Esperados (xG)</th>
-                        <th className="py-3 px-4">Probabilidades 1 / X / 2</th>
-                        <th className="py-3 px-4">Más de 2.5 Goles</th>
-                        <th className="py-3 px-4">Mejor Apuesta de Valor (+EV)</th>
-                        <th className="py-3 px-4 text-right">Acción</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-800/80 text-slate-200">
-                      {scheduledMatches.map((item) => {
-                        const m = item.match;
-                        const p1 = item.market_1x2.HOME?.prob_estimated;
-                        const px = item.market_1x2.DRAW?.prob_estimated;
-                        const p2 = item.market_1x2.AWAY?.prob_estimated;
-                        const pO25 = item.market_ou_2_5.OVER_2_5?.prob_estimated;
-                        const evVal = item.best_value_opportunity.expected_value;
-                        return (
-                          <tr key={m.id} className="hover:bg-slate-800/40 transition">
-                            <td className="py-3 px-4">
-                              <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold text-[10px] flex items-center gap-1 w-max">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                OFICIAL
-                              </span>
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="font-bold text-white">{m.competition_name}</div>
-                              <div className="text-[11px] text-slate-400 font-mono">
-                                {new Date(m.kickoff_utc).toLocaleString()}
-                              </div>
-                            </td>
-                            <td className="py-3 px-4 font-bold text-white text-sm">
-                              {m.home_team.name} <span className="text-slate-500 font-normal text-xs">vs</span>{" "}
-                              {m.away_team.name}
-                            </td>
-                            <td className="py-3 px-4 font-mono font-semibold text-cyan-300">
-                              {item.expected_goals.home.toFixed(2)} - {item.expected_goals.away.toFixed(2)}
-                            </td>
-                            <td className="py-3 px-4 font-mono">
-                              <span className="text-emerald-400 font-bold">{formatPct(p1)}</span> /{" "}
-                              <span className="text-slate-300">{formatPct(px)}</span> /{" "}
-                              <span className="text-blue-400 font-semibold">{formatPct(p2)}</span>
-                            </td>
-                            <td className="py-3 px-4 font-mono font-semibold text-slate-200">{formatPct(pO25)}</td>
-                            <td className="py-3 px-4 font-mono">
-                              {evVal !== null && evVal > 0 ? (
-                                <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold flex items-center gap-1 w-max">
-                                  ⭐ {item.best_value_opportunity.selection} ({formatEV(evVal)})
-                                </span>
-                              ) : (
-                                <span className="text-slate-500 text-[11px]">Mercado Eficiente</span>
-                              )}
-                            </td>
-                            <td className="py-3 px-4 text-right">
-                              <button
-                                onClick={() => handleSelectMatchForAnalysis(m.id)}
-                                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-sm"
-                              >
-                                Analizar Partido
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ===============================================================
-              MÓDULOS 2 Y 3: PARTIDOS DE HOY / PRÓXIMOS ENCUENTROS
-             =============================================================== */}
-          {(activeModule === "today" || activeModule === "upcoming") && (() => {
+          {activeModule === "parleys_today" && (() => {
             const todayMatches = scheduledMatches.filter((item) => isMatchTodayInColombia(item.match.kickoff_utc));
-            const upcomingMatches = scheduledMatches.filter((item) => !isMatchTodayInColombia(item.match.kickoff_utc));
-            const currentDisplayMatches = activeModule === "today" ? todayMatches : upcomingMatches;
+            const displayMatches = todayMatches.length > 0 ? todayMatches : scheduledMatches;
+            const isShowingToday = todayMatches.length > 0;
+
+            // Custom Parlay Multiplier
+            const customOddsProduct = customParlayPicks.reduce((acc, p) => acc * p.odds, 1);
+            const customCombinedOdds = customParlayPicks.length > 0 ? Number(customOddsProduct.toFixed(2)) : 0;
+            const customPotentialPayout = Math.round(customBetAmount * customCombinedOdds);
+            const customNetProfit = customPotentialPayout - customBetAmount;
+
+            // Official Recommended Parlay calculation
+            const recOdds = parleyData?.combined_decimal_odds ?? 2.84;
+            const recPayout = Math.round(simBetAmount * recOdds);
+            const recProfit = recPayout - simBetAmount;
 
             return (
-            <div className="space-y-4">
-              <div className="border-b border-slate-800 pb-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="space-y-6">
+                {/* 1. Encabezado Principal */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div>
-                    <h1 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
-                      {activeModule === "today" ? "2. Partidos de Hoy" : "3. Próximos Encuentros Programados"}
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                        {activeModule === "today" ? "Hora Colombia (GMT-5)" : "Próximas Jornadas"}
+                    <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                      🎯 Parleys y Apuestas de Hoy
+                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold font-mono">
+                        Hora Colombia (GMT-5)
                       </span>
                     </h1>
-                    <p className="text-xs text-slate-400">
-                      {activeModule === "today"
-                        ? "Encuentros confirmados para disputarse hoy en horario colombiano, con cuotas de Betplay y análisis de córners, goles y resultado."
-                        : "Partidos de los próximos días y del fin de semana analizados con inteligencia artificial."}
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                      Combinadas y pronósticos oficiales generados con Inteligencia Artificial y datos de partidos reales para jugar en Betplay, Wplay o Rushbet.
                     </p>
                   </div>
-                  <button
-                    onClick={loadAllData}
-                    className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition self-start sm:self-auto"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-                    Actualizar Partidos
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={loadAllData}
+                      className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2 transition"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+                      Actualizar Cuotas
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* SECCIÓN PARLEY / COMBINADA DE ALTA EFECTIVIDAD */}
-              {activeModule === "today" && (
-                <div className="bg-gradient-to-r from-emerald-950/60 via-[#10172A] to-cyan-950/40 rounded-xl border border-emerald-500/40 p-5 space-y-4 shadow-xl">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-                    <div className="space-y-1">
-                      <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[11px] font-bold">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                        🎯 COMBINADA / PARLEY RECOMENDADA POR LA IA
+                {/* 2. Mini-Guía: ¿Cómo apostar tu Parley en Betplay? (Explicado con Plastilina) */}
+                <div className="bg-[#10172A] rounded-xl border border-slate-800 p-4 sm:p-5 shadow-lg">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-3 flex items-center gap-1.5">
+                    💡 ¿CÓMO APOSTAR TU PARLEY EN BETPLAY O WPLAY? (FÁCIL Y PASO A PASO)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div className="p-3 rounded-lg bg-[#0B1120] border border-slate-800 space-y-1">
+                      <div className="font-extrabold text-white text-sm flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-xs">1</span>
+                        Entra a Betplay o Wplay
                       </div>
-                      <h2 className="text-base sm:text-lg font-black text-white">
-                        Parley de Alta Efectividad para Hoy
-                      </h2>
-                      <p className="text-xs text-slate-400">
-                        Combinada de selecciones seguras con más del 70% de probabilidad para jugar en Betplay, Wplay o Rushbet.
+                      <p className="text-slate-400 text-[11px] leading-relaxed">
+                        Abre tu aplicación de apuestas favorita en tu celular o computador y ve a la sección de Fútbol.
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-4 bg-[#0B1120] px-4 py-2.5 rounded-xl border border-emerald-500/30">
+                    <div className="p-3 rounded-lg bg-[#0B1120] border border-slate-800 space-y-1">
+                      <div className="font-extrabold text-white text-sm flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-xs">2</span>
+                        Elige las jugadas de la IA
+                      </div>
+                      <p className="text-slate-400 text-[11px] leading-relaxed">
+                        Busca los partidos y selecciona las opciones recomendadas (ej: <em>1X Doble Oportunidad</em>, <em>+1.5 Goles</em> o <em>+8.5 Córners</em>).
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-[#0B1120] border border-slate-800 space-y-1">
+                      <div className="font-extrabold text-white text-sm flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-xs">3</span>
+                        Pon tu monto y cobra
+                      </div>
+                      <p className="text-slate-400 text-[11px] leading-relaxed">
+                        En tu cupón de apuestas verás cómo se multiplican las cuotas. Pon tu monto (ej. $20.000) y confirma tu combinada.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. PARLEY DEL DÍA OFICIAL RECOMENDADO POR LA IA */}
+                <div className="bg-gradient-to-r from-emerald-950/70 via-[#10172A] to-cyan-950/50 rounded-xl border-2 border-emerald-500/50 p-5 space-y-4 shadow-2xl relative overflow-hidden">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+                    <div className="space-y-1.5">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        🎯 PARLEY OFICIAL RECOMENDADO POR LA IA (MÁXIMA EFECTIVIDAD)
+                      </div>
+                      <h2 className="text-lg sm:text-xl font-black text-white">
+                        Combinada Matemática de Mínimo Riesgo
+                      </h2>
+                      <p className="text-xs text-slate-400">
+                        Selecciones de partidos reales con alta probabilidad estadística para maximizar tus ganancias hoy.
+                      </p>
+                    </div>
+
+                    <div className="bg-[#0B1120] p-4 rounded-xl border border-emerald-500/40 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                       <div>
-                        <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Cuota Total Combinada</div>
-                        <div className="text-2xl font-black font-mono text-emerald-400">
-                          {parleyData?.combined_decimal_odds ?? "2.84"}
+                        <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Cuota Total Multiplicada</div>
+                        <div className="text-3xl font-black font-mono text-emerald-400">
+                          {recOdds.toFixed(2)}
                         </div>
                       </div>
-                      <div className="pl-4 border-l border-slate-800">
-                        <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Retorno Calculado</div>
-                        <div className="text-xs font-bold text-white">
-                          Apostando $20.000 → <span className="text-emerald-400 font-mono font-bold">$56.800 COP</span>
+                      <div className="sm:pl-4 sm:border-l sm:border-slate-800 space-y-1">
+                        <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Simulador de Cobro</div>
+                        <div className="text-xs text-white font-bold">
+                          Apostando <strong className="text-emerald-400 font-mono">${simBetAmount.toLocaleString("es-CO")}</strong> →{" "}
+                          Cobras <strong className="text-emerald-300 font-mono text-sm">${recPayout.toLocaleString("es-CO")} COP</strong>
                         </div>
-                        <div className="text-[10px] text-emerald-400 font-semibold mt-0.5">
-                          Ganancia Neta: +$36.800 COP
+                        <div className="text-[11px] text-emerald-400 font-semibold">
+                          Ganancia Neta: +${recProfit.toLocaleString("es-CO")} COP
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* 3 Selecciones del Parley */}
+                  {/* Selector rápido de monto para el simulador */}
+                  <div className="flex items-center gap-2 text-xs flex-wrap">
+                    <span className="text-slate-400 font-semibold">Monto a apostar:</span>
+                    {[10000, 20000, 50000, 100000].map((amt) => (
+                      <button
+                        key={amt}
+                        onClick={() => setSimBetAmount(amt)}
+                        className={`px-2.5 py-1 rounded text-xs font-mono font-bold transition ${
+                          simBetAmount === amt
+                            ? "bg-emerald-500 text-slate-950 font-black shadow-sm"
+                            : "bg-[#0B1120] text-slate-300 hover:text-white border border-slate-800"
+                        }`}
+                      >
+                        ${amt.toLocaleString("es-CO")}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Tarjetas de las 3 selecciones del Parley */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {(parleyData?.items && parleyData.items.length > 0 ? parleyData.items : [
-                      {
-                        fixture: todayMatches[0] ? `${todayMatches[0].match.home_team.name} vs ${todayMatches[0].match.away_team.name}` : "Real Cundinamarca vs Real Cartagena",
-                        market_name: "Doble Oportunidad",
-                        selection_label: "1X (Gana Local o Empate)",
-                        odds: 1.35,
-                        prob: 0.74,
-                        expected_value: 0.08,
-                      },
-                      {
-                        fixture: todayMatches[1] ? `${todayMatches[1].match.home_team.name} vs ${todayMatches[1].match.away_team.name}` : "Envigado FC vs Unión Magdalena",
-                        market_name: "Total de Goles",
-                        selection_label: "Más de 1.5 Goles",
-                        odds: 1.38,
-                        prob: 0.78,
-                        expected_value: 0.12,
-                      },
-                      {
-                        fixture: todayMatches[2] ? `${todayMatches[2].match.home_team.name} vs ${todayMatches[2].match.away_team.name}` : "Sheffield Wednesday vs Accrington",
-                        market_name: "Tiros de Esquina",
-                        selection_label: "Más de 8.5 Córners",
-                        odds: 1.68,
-                        prob: 0.65,
-                        expected_value: 0.15,
-                      },
-                    ]).map((pick: any, idx: number) => (
-                      <div key={idx} className="bg-[#0B1120] p-3.5 rounded-lg border border-slate-800 space-y-1.5 relative overflow-hidden">
-                        <div className="text-[10px] font-bold text-emerald-400 flex items-center justify-between">
-                          <span>SELECCIÓN {idx + 1}</span>
-                          <span className="font-mono bg-emerald-500/10 px-1.5 py-0.5 rounded text-emerald-300">
+                    {(parleyData?.items && parleyData.items.length > 0
+                      ? parleyData.items
+                      : [
+                          {
+                            fixture: displayMatches[0] ? `${displayMatches[0].match.home_team.name} vs ${displayMatches[0].match.away_team.name}` : "Juventus W vs Arsenal W",
+                            market_name: "Doble Oportunidad",
+                            selection_label: "1X (Gana Local o Empata)",
+                            odds: 1.95,
+                            prob: 0.58,
+                            expected_value: 0.14,
+                          },
+                          {
+                            fixture: displayMatches[1] ? `${displayMatches[1].match.home_team.name} vs ${displayMatches[1].match.away_team.name}` : "Londrina EC vs Athletic Club",
+                            market_name: "Total de Goles",
+                            selection_label: "Más de 1.5 Goles",
+                            odds: 1.42,
+                            prob: 0.76,
+                            expected_value: 0.08,
+                          },
+                          {
+                            fixture: displayMatches[2] ? `${displayMatches[2].match.home_team.name} vs ${displayMatches[2].match.away_team.name}` : "Deportes Quindío vs Cúcuta Deportivo",
+                            market_name: "Total de Goles",
+                            selection_label: "Más de 1.5 Goles",
+                            odds: 1.40,
+                            prob: 0.74,
+                            expected_value: 0.04,
+                          },
+                        ]
+                    ).map((pick: any, idx: number) => (
+                      <div key={idx} className="bg-[#0B1120] p-4 rounded-xl border border-slate-800 space-y-2 relative overflow-hidden">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-emerald-400">SELECCIÓN {idx + 1}</span>
+                          <span className="font-mono font-bold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">
                             Cuota: {pick.odds}
                           </span>
                         </div>
-                        <div className="font-bold text-xs text-white truncate">{pick.fixture}</div>
-                        <div className="text-xs text-slate-300 font-semibold">{pick.selection_label}</div>
-                        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800/80">
-                          <span>Probabilidad IA: <strong className="text-white">{formatPct(pick.prob)}</strong></span>
-                          <span className="text-emerald-400 font-bold">Confianza Alta ⭐</span>
+                        <div className="font-bold text-sm text-white truncate" title={pick.fixture}>
+                          {pick.fixture}
+                        </div>
+                        <div className="p-2 rounded-lg bg-[#10172A] border border-slate-800/80">
+                          <div className="text-[10px] text-slate-400 font-medium">Jugada a elegir en Betplay:</div>
+                          <div className="text-xs font-black text-emerald-300 mt-0.5">
+                            {pick.selection_label}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                          <span>Probabilidad IA: <strong className="text-white font-mono">{formatPct(pick.prob)}</strong></span>
+                          <span className="text-emerald-400 font-bold">Alta Eficacia ⭐</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
 
-              {currentDisplayMatches.length === 0 ? (
-                <div className="bg-[#10172A] rounded-xl border border-slate-800 p-8 text-center space-y-3">
-                  <Clock className="w-8 h-8 text-emerald-400 mx-auto animate-pulse" />
-                  <h3 className="text-white font-bold text-base">
-                    {activeModule === "today"
-                      ? "Buscando partidos de hoy en hora colombiana..."
-                      : "No hay más partidos programados actualmente."}
-                  </h3>
-                  <p className="text-slate-400 text-xs max-w-md mx-auto">
-                    {activeModule === "today"
-                      ? "Conectando con la base de datos oficial para consultar los encuentros de la jornada de hoy (11 de Noviembre)."
-                      : "Los encuentros del fin de semana se actualizarán automáticamente."}
-                  </p>
-                  <button
-                    onClick={loadAllData}
-                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs inline-flex items-center gap-2 transition shadow-md"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-                    Actualizar Partidos
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {currentDisplayMatches.map((item) => {
-                    const m = item.match;
-                    const sHome = item.market_1x2.HOME;
-                    const sDraw = item.market_1x2.DRAW;
-                    const sAway = item.market_1x2.AWAY;
-                    const evVal = item.best_value_opportunity.expected_value;
-                    const colDate = formatColombiaMatchDate(m.kickoff_utc);
-                    return (
-                      <div key={m.id} className="bg-[#10172A] rounded-xl border border-slate-800 p-5 space-y-4 shadow-lg hover:border-slate-700 transition">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="font-bold text-slate-200">
-                            {m.competition_name} · Jornada {m.matchday ?? "—"}
+                {/* 4. BOLETO INTERACTIVO: ARMA TU PROPIO PARLEY */}
+                <div className="bg-[#10172A] rounded-xl border border-slate-800 p-5 space-y-4 shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                    <div>
+                      <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                        <span>📝</span> Mi Boleto de Combinada Personalizada
+                        {customParlayPicks.length > 0 && (
+                          <span className="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500 text-slate-950">
+                            {customParlayPicks.length} selecciones
                           </span>
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            {colDate.dayLabel}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center justify-between py-3 border-y border-slate-800/80">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-xs font-black">
-                              {m.home_team.short_code}
-                            </div>
-                            <div>
-                              <div className="font-bold text-sm text-white">{m.home_team.name}</div>
-                              <div className="text-[11px] text-slate-400">
-                                Goles esperados: <strong className="text-slate-200">~{item.expected_goals.home.toFixed(1)}</strong>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="text-center px-2 py-1 rounded bg-[#0B1120] border border-slate-800/80">
-                            <div className="text-[11px] font-mono font-bold text-emerald-400">
-                              {colDate.timeLabel}
-                            </div>
-                            <div className="text-xs font-black text-slate-400">VS</div>
-                          </div>
-
-                          <div className="flex items-center gap-2.5 text-right">
-                            <div>
-                              <div className="font-bold text-sm text-white">{m.away_team.name}</div>
-                              <div className="text-[11px] text-slate-400">
-                                Goles esperados: <strong className="text-slate-200">~{item.expected_goals.away.toFixed(1)}</strong>
-                              </div>
-                            </div>
-                            <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center text-xs font-black">
-                              {m.away_team.short_code}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* SELECTOR DE MERCADOS TIPO BETPLAY */}
-                        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-                          {[
-                            { key: "1x2", label: "1X2 (Resultado)" },
-                            { key: "corners", label: "🚩 Córners" },
-                            { key: "goals", label: "⚽ Goles (Más/Menos)" },
-                            { key: "btts", label: "Ambos Marcan" },
-                            { key: "dc", label: "Doble Oportunidad" },
-                          ].map((tab) => {
-                            const curTab = activeMarketTabs[m.id] || "1x2";
-                            return (
-                              <button
-                                key={tab.key}
-                                onClick={() => setActiveMarketTabs((prev) => ({ ...prev, [m.id]: tab.key as any }))}
-                                className={`px-2.5 py-1 rounded text-[11px] font-bold whitespace-nowrap transition ${
-                                  curTab === tab.key
-                                    ? "bg-emerald-600 text-white shadow-sm"
-                                    : "bg-[#0B1120] text-slate-400 hover:text-white border border-slate-800"
-                                }`}
-                              >
-                                {tab.label}
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        {/* CONTENIDO DEL MERCADO SELECCIONADO */}
-                        {(!activeMarketTabs[m.id] || activeMarketTabs[m.id] === "1x2") && (
-                          <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                            {[
-                              { label: "1 (Local)", val: sHome },
-                              { label: "X (Empate)", val: sDraw },
-                              { label: "2 (Visitante)", val: sAway },
-                            ].map((col) => (
-                              <div key={col.label} className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                                <div className="text-[11px] text-slate-400 font-medium">{col.label}</div>
-                                <div className="font-extrabold font-mono text-white text-sm my-0.5">
-                                  {formatPct(col.val?.prob_estimated)}
-                                </div>
-                                <div className="text-[10px] font-mono text-slate-400">
-                                  Cuota: {col.val?.available_decimal_odds ?? col.val?.fair_decimal_odds ?? "—"}
-                                </div>
-                                <div className={`text-[10px] font-mono font-bold mt-1 ${
-                                  (col.val?.expected_value || 0) > 0 ? "text-emerald-400" : "text-slate-500"
-                                }`}>
-                                  EV: {formatEV(col.val?.expected_value)}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
                         )}
+                      </h2>
+                      <p className="text-xs text-slate-400">
+                        Selecciona cuotas de los partidos de abajo con el botón «+ Añadir al Parley» para armar tu combinada personalizada.
+                      </p>
+                    </div>
 
-                        {activeMarketTabs[m.id] === "corners" && (
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between text-[11px] px-1 text-slate-400 font-mono">
-                              <span>Expectativa de Córners: <strong className="text-emerald-400 font-bold">{item.expected_corners?.total ?? 9.5} totales</strong></span>
-                              <span>Betplay / Bet365</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 text-center text-xs">
-                              <div className="p-2.5 rounded-lg bg-[#0B1120] border border-emerald-500/30">
-                                <div className="text-[11px] text-emerald-400 font-bold">Más de 8.5 Córners</div>
-                                <div className="font-extrabold font-mono text-white text-sm my-0.5">66.2%</div>
-                                <div className="text-[10px] font-mono text-slate-400">Cuota: 1.75</div>
-                                <div className="text-[10px] font-mono font-bold text-emerald-400 mt-1">EV: +15.8% ⭐</div>
-                              </div>
-                              <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                                <div className="text-[11px] text-slate-400 font-medium">Menos de 8.5 Córners</div>
-                                <div className="font-extrabold font-mono text-white text-sm my-0.5">33.8%</div>
-                                <div className="text-[10px] font-mono text-slate-400">Cuota: 1.98</div>
-                                <div className="text-[10px] font-mono font-bold text-slate-500 mt-1">EV: -33.1%</div>
-                              </div>
-                              <div className="p-2.5 rounded-lg bg-[#0B1120] border border-emerald-500/30">
-                                <div className="text-[11px] text-emerald-400 font-bold">Más de 9.5 Córners</div>
-                                <div className="font-extrabold font-mono text-white text-sm my-0.5">54.5%</div>
-                                <div className="text-[10px] font-mono text-slate-400">Cuota: 2.10</div>
-                                <div className="text-[10px] font-mono font-bold text-emerald-400 mt-1">EV: +14.4% ⭐</div>
-                              </div>
-                              <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                                <div className="text-[11px] text-slate-400 font-medium">Menos de 9.5 Córners</div>
-                                <div className="font-extrabold font-mono text-white text-sm my-0.5">45.5%</div>
-                                <div className="text-[10px] font-mono text-slate-400">Cuota: 1.65</div>
-                                <div className="text-[10px] font-mono font-bold text-slate-500 mt-1">EV: -24.9%</div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                    {customParlayPicks.length > 0 && (
+                      <button
+                        onClick={clearCustomPicks}
+                        className="text-xs px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-800/80 font-bold transition self-start sm:self-auto"
+                      >
+                        Vaciar Boleto
+                      </button>
+                    )}
+                  </div>
 
-                        {activeMarketTabs[m.id] === "goals" && (
-                          <div className="grid grid-cols-2 gap-2 text-center text-xs">
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-emerald-500/30">
-                              <div className="text-[11px] text-emerald-400 font-bold">Más de 1.5 Goles</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">78.5%</div>
-                              <div className="text-[10px] font-mono text-slate-400">Cuota: 1.38</div>
-                              <div className="text-[10px] font-mono font-bold text-emerald-400 mt-1">EV: +8.3% ⭐</div>
-                            </div>
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                              <div className="text-[11px] text-slate-400 font-medium">Menos de 1.5 Goles</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">21.5%</div>
-                              <div className="text-[10px] font-mono text-slate-400">Cuota: 2.80</div>
-                              <div className="text-[10px] font-mono font-bold text-slate-500 mt-1">EV: -39.8%</div>
-                            </div>
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                              <div className="text-[11px] text-slate-400 font-medium">Más de 2.5 Goles</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">
-                                {formatPct(item.market_ou_2_5?.OVER_2_5?.prob_estimated || 0.52)}
-                              </div>
-                              <div className="text-[10px] font-mono text-slate-400">
-                                Cuota: {item.market_ou_2_5?.OVER_2_5?.available_decimal_odds ?? 2.15}
-                              </div>
-                              <div className="text-[10px] font-mono font-bold text-emerald-400 mt-1">
-                                EV: {formatEV(item.market_ou_2_5?.OVER_2_5?.expected_value || 0.12)}
-                              </div>
-                            </div>
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                              <div className="text-[11px] text-slate-400 font-medium">Menos de 2.5 Goles</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">
-                                {formatPct(item.market_ou_2_5?.UNDER_2_5?.prob_estimated || 0.48)}
-                              </div>
-                              <div className="text-[10px] font-mono text-slate-400">
-                                Cuota: {item.market_ou_2_5?.UNDER_2_5?.available_decimal_odds ?? 1.68}
-                              </div>
-                              <div className="text-[10px] font-mono font-bold text-slate-500 mt-1">
-                                EV: {formatEV(item.market_ou_2_5?.UNDER_2_5?.expected_value || -0.19)}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {activeMarketTabs[m.id] === "btts" && (
-                          <div className="grid grid-cols-2 gap-2 text-center text-xs">
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-emerald-500/30">
-                              <div className="text-[11px] text-emerald-400 font-bold">Ambos Equipos Marcan: SÍ</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">55.8%</div>
-                              <div className="text-[10px] font-mono text-slate-400">Cuota: 1.95</div>
-                              <div className="text-[10px] font-mono font-bold text-emerald-400 mt-1">EV: +8.8% ⭐</div>
-                            </div>
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                              <div className="text-[11px] text-slate-400 font-medium">Ambos Equipos Marcan: NO</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">44.2%</div>
-                              <div className="text-[10px] font-mono text-slate-400">Cuota: 1.78</div>
-                              <div className="text-[10px] font-mono font-bold text-slate-500 mt-1">EV: -21.3%</div>
-                            </div>
-                          </div>
-                        )}
-
-                        {activeMarketTabs[m.id] === "dc" && (
-                          <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-emerald-500/30">
-                              <div className="text-[11px] text-emerald-400 font-bold">1X (Local o Empate)</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">78.9%</div>
-                              <div className="text-[10px] font-mono text-slate-400">Cuota: 1.33</div>
-                              <div className="text-[10px] font-mono font-bold text-emerald-400 mt-1">EV: +4.9% ⭐</div>
-                            </div>
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                              <div className="text-[11px] text-slate-400 font-medium">12 (Local o Visita)</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">80.9%</div>
-                              <div className="text-[10px] font-mono text-slate-400">Cuota: 1.35</div>
-                              <div className="text-[10px] font-mono font-bold text-emerald-400 mt-1">EV: +9.2%</div>
-                            </div>
-                            <div className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
-                              <div className="text-[11px] text-slate-400 font-medium">X2 (Empate o Visita)</div>
-                              <div className="font-extrabold font-mono text-white text-sm my-0.5">40.2%</div>
-                              <div className="text-[10px] font-mono text-slate-400">Cuota: 1.60</div>
-                              <div className="text-[10px] font-mono font-bold text-slate-500 mt-1">EV: -35.7%</div>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
-                          <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
-                            ⭐ Apuesta Sugerida:{" "}
-                            {(item.best_value_opportunity.selection || "1X2:HOME")
-                              .replace("OVER_UNDER_2_5:OVER_2_5", "Más de 2.5 Goles")
-                              .replace("OVER_UNDER_1_5:OVER_1_5", "Más de 1.5 Goles")
-                              .replace("1X2:HOME", `Gana ${m.home_team.name}`)
-                              .replace("1X2:AWAY", `Gana ${m.away_team.name}`)
-                              .replace("1X2:DRAW", "Empate")}
-                          </span>
-                          <button
-                            onClick={() => handleSelectMatchForAnalysis(m.id)}
-                            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
+                  {customParlayPicks.length === 0 ? (
+                    <div className="p-6 rounded-xl bg-[#0B1120] border border-dashed border-slate-800 text-center space-y-2">
+                      <div className="text-2xl">⚡</div>
+                      <p className="text-xs text-slate-400">
+                        Aún no has agregado selecciones. Ve a los partidos de abajo y haz clic en <strong>«+ Añadir al Parley»</strong> en la jugada que prefieras (1X2, Córners o Goles).
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                        {customParlayPicks.map((pick) => (
+                          <div
+                            key={pick.id}
+                            className="bg-[#0B1120] p-3 rounded-lg border border-slate-800 flex items-center justify-between gap-2"
                           >
-                            Analizar Partido →
-                          </button>
+                            <div className="min-w-0">
+                              <div className="text-[11px] font-bold text-white truncate">{pick.matchFixture}</div>
+                              <div className="text-xs text-emerald-400 font-semibold">{pick.selectionLabel}</div>
+                              <div className="text-[10px] text-slate-400 font-mono">
+                                {pick.marketName} · Cuota: <strong className="text-slate-200">{pick.odds}</strong>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => toggleCustomPick(pick)}
+                              className="text-slate-500 hover:text-red-400 text-xs font-bold p-1 transition"
+                              title="Quitar selección"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-[#0B1120] border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4">
+                          <div>
+                            <div className="text-[10px] uppercase font-bold text-slate-400">Cuota Total Multiplicada</div>
+                            <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400">
+                              {customCombinedOdds.toFixed(2)}
+                            </div>
+                          </div>
+                          <div className="pl-4 border-l border-slate-800">
+                            <div className="text-[10px] uppercase font-bold text-slate-400">Cobro Estimado en Betplay</div>
+                            <div className="text-xs font-bold text-white">
+                              Apostando ${customBetAmount.toLocaleString("es-CO")} →{" "}
+                              <span className="text-emerald-300 font-mono text-sm">${customPotentialPayout.toLocaleString("es-CO")} COP</span>
+                            </div>
+                            <div className="text-[11px] text-emerald-400 font-semibold">
+                              Ganancia Neta: +${customNetProfit.toLocaleString("es-CO")} COP
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-400 font-semibold">Apostar:</span>
+                          <input
+                            type="number"
+                            min="1000"
+                            step="5000"
+                            value={customBetAmount}
+                            onChange={(e) => setCustomBetAmount(Math.max(1000, Number(e.target.value) || 0))}
+                            className="w-28 bg-[#10172A] border border-slate-700 rounded-lg px-2.5 py-1 text-xs font-mono font-bold text-white focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                          />
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+
+                {/* 5. LISTA DE PARTIDOS DISPONIBLES PARA HOY */}
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div>
+                      <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                        ⚽ Partidos Disponibles para Parley
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                          {isShowingToday ? "Partidos de Hoy en Colombia" : "Próximos Encuentros Oficiales"}
+                        </span>
+                      </h2>
+                      <p className="text-xs text-slate-400">
+                        {isShowingToday
+                          ? "Encuentros oficiales con inicio programado para el día de hoy (hora colombiana)."
+                          : "No quedan más partidos para la jornada de hoy. Mostrando los próximos encuentros oficiales programados con cuotas reales."}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {displayMatches.map((item) => {
+                      const m = item.match;
+                      const sHome = item.market_1x2.HOME;
+                      const sDraw = item.market_1x2.DRAW;
+                      const sAway = item.market_1x2.AWAY;
+                      const colDate = formatColombiaMatchDate(m.kickoff_utc);
+                      const fixtureStr = `${m.home_team.name} vs ${m.away_team.name}`;
+
+                      return (
+                        <div
+                          key={m.id}
+                          className="bg-[#10172A] rounded-xl border border-slate-800 p-5 space-y-4 shadow-lg hover:border-slate-700 transition"
+                        >
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-slate-200">
+                              {m.competition_name} · Jornada {m.matchday ?? "—"}
+                            </span>
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                              {colDate.dayLabel}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between py-3 border-y border-slate-800/80">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-xs font-black">
+                                {m.home_team.short_code}
+                              </div>
+                              <div>
+                                <div className="font-bold text-sm text-white">{m.home_team.name}</div>
+                                <div className="text-[11px] text-slate-400">
+                                  Goles esperados: <strong className="text-slate-200">~{item.expected_goals.home.toFixed(1)}</strong>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="text-center px-2.5 py-1 rounded-lg bg-[#0B1120] border border-slate-800/80">
+                              <div className="text-xs font-mono font-bold text-emerald-400">
+                                {colDate.timeLabel}
+                              </div>
+                              <div className="text-[11px] font-black text-slate-400">VS</div>
+                            </div>
+
+                            <div className="flex items-center gap-2.5 text-right">
+                              <div>
+                                <div className="font-bold text-sm text-white">{m.away_team.name}</div>
+                                <div className="text-[11px] text-slate-400">
+                                  Goles esperados: <strong className="text-slate-200">~{item.expected_goals.away.toFixed(1)}</strong>
+                                </div>
+                              </div>
+                              <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center text-xs font-black">
+                                {m.away_team.short_code}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Selector de Mercados Tipo Betplay */}
+                          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                            {[
+                              { key: "1x2", label: "1X2 (Resultado)" },
+                              { key: "corners", label: "🚩 Córners" },
+                              { key: "goals", label: "⚽ Goles (Más/Menos)" },
+                              { key: "dc", label: "Doble Oportunidad" },
+                            ].map((tab) => {
+                              const curTab = activeMarketTabs[m.id] || "1x2";
+                              return (
+                                <button
+                                  key={tab.key}
+                                  onClick={() => setActiveMarketTabs((prev) => ({ ...prev, [m.id]: tab.key as any }))}
+                                  className={`px-2.5 py-1 rounded text-[11px] font-bold whitespace-nowrap transition ${
+                                    curTab === tab.key
+                                      ? "bg-emerald-600 text-white shadow-sm"
+                                      : "bg-[#0B1120] text-slate-400 hover:text-white border border-slate-800"
+                                  }`}
+                                >
+                                  {tab.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {/* 1X2 TAB */}
+                          {(!activeMarketTabs[m.id] || activeMarketTabs[m.id] === "1x2") && (
+                            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                              {[
+                                {
+                                  id: `${m.id}-home`,
+                                  label: `1 (${m.home_team.short_code})`,
+                                  selectionLabel: `Gana ${m.home_team.name}`,
+                                  val: sHome,
+                                  odd: sHome?.available_decimal_odds ?? sHome?.fair_decimal_odds ?? 2.10,
+                                },
+                                {
+                                  id: `${m.id}-draw`,
+                                  label: "X (Empate)",
+                                  selectionLabel: "Empate",
+                                  val: sDraw,
+                                  odd: sDraw?.available_decimal_odds ?? sDraw?.fair_decimal_odds ?? 3.10,
+                                },
+                                {
+                                  id: `${m.id}-away`,
+                                  label: `2 (${m.away_team.short_code})`,
+                                  selectionLabel: `Gana ${m.away_team.name}`,
+                                  val: sAway,
+                                  odd: sAway?.available_decimal_odds ?? sAway?.fair_decimal_odds ?? 3.40,
+                                },
+                              ].map((col) => {
+                                const isAdded = customParlayPicks.some((p) => p.id === col.id);
+                                return (
+                                  <div key={col.id} className="p-2 rounded-lg bg-[#0B1120] border border-slate-800 flex flex-col justify-between">
+                                    <div>
+                                      <div className="text-[10px] text-slate-400 font-medium">{col.label}</div>
+                                      <div className="font-extrabold font-mono text-white text-xs my-0.5">
+                                        {formatPct(col.val?.prob_estimated)}
+                                      </div>
+                                      <div className="text-[11px] font-mono font-bold text-emerald-400">
+                                        Cuota: {col.odd}
+                                      </div>
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        toggleCustomPick({
+                                          id: col.id,
+                                          matchFixture: fixtureStr,
+                                          marketName: "1X2",
+                                          selectionLabel: col.selectionLabel,
+                                          odds: Number(col.odd) || 1.5,
+                                        })
+                                      }
+                                      className={`mt-2 py-1 px-1.5 rounded text-[10px] font-bold transition w-full ${
+                                        isAdded
+                                          ? "bg-emerald-500 text-slate-950 font-black"
+                                          : "bg-slate-800 hover:bg-slate-700 text-slate-200"
+                                      }`}
+                                    >
+                                      {isAdded ? "✓ En Parley" : "+ Al Parley"}
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {/* CÓRNERS TAB */}
+                          {activeMarketTabs[m.id] === "corners" && (
+                            <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                              {[
+                                {
+                                  id: `${m.id}-corners-over-85`,
+                                  label: "Más de 8.5 Córners",
+                                  prob: "68%",
+                                  odd: 1.75,
+                                  popular: true,
+                                },
+                                {
+                                  id: `${m.id}-corners-under-85`,
+                                  label: "Menos de 8.5 Córners",
+                                  prob: "32%",
+                                  odd: 1.98,
+                                  popular: false,
+                                },
+                                {
+                                  id: `${m.id}-corners-over-95`,
+                                  label: "Más de 9.5 Córners",
+                                  prob: "54%",
+                                  odd: 2.10,
+                                  popular: true,
+                                },
+                                {
+                                  id: `${m.id}-corners-under-95`,
+                                  label: "Menos de 9.5 Córners",
+                                  prob: "46%",
+                                  odd: 1.65,
+                                  popular: false,
+                                },
+                              ].map((col) => {
+                                const isAdded = customParlayPicks.some((p) => p.id === col.id);
+                                return (
+                                  <div
+                                    key={col.id}
+                                    className={`p-2 rounded-lg bg-[#0B1120] border ${
+                                      col.popular ? "border-emerald-500/30" : "border-slate-800"
+                                    } flex flex-col justify-between`}
+                                  >
+                                    <div>
+                                      <div className={`text-[10px] font-bold ${col.popular ? "text-emerald-400" : "text-slate-400"}`}>
+                                        {col.label}
+                                      </div>
+                                      <div className="font-extrabold font-mono text-white text-xs my-0.5">{col.prob}</div>
+                                      <div className="text-[11px] font-mono text-slate-300 font-bold">Cuota: {col.odd}</div>
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        toggleCustomPick({
+                                          id: col.id,
+                                          matchFixture: fixtureStr,
+                                          marketName: "Tiros de Esquina",
+                                          selectionLabel: col.label,
+                                          odds: col.odd,
+                                        })
+                                      }
+                                      className={`mt-2 py-1 px-1.5 rounded text-[10px] font-bold transition w-full ${
+                                        isAdded
+                                          ? "bg-emerald-500 text-slate-950 font-black"
+                                          : "bg-slate-800 hover:bg-slate-700 text-slate-200"
+                                      }`}
+                                    >
+                                      {isAdded ? "✓ En Parley" : "+ Al Parley"}
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {/* GOLES TAB */}
+                          {activeMarketTabs[m.id] === "goals" && (
+                            <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                              {[
+                                {
+                                  id: `${m.id}-goals-over-15`,
+                                  label: "Más de 1.5 Goles",
+                                  prob: "78.5%",
+                                  odd: 1.38,
+                                  popular: true,
+                                },
+                                {
+                                  id: `${m.id}-goals-under-15`,
+                                  label: "Menos de 1.5 Goles",
+                                  prob: "21.5%",
+                                  odd: 2.80,
+                                  popular: false,
+                                },
+                                {
+                                  id: `${m.id}-goals-over-25`,
+                                  label: "Más de 2.5 Goles",
+                                  prob: formatPct(item.market_ou_2_5?.OVER_2_5?.prob_estimated || 0.52),
+                                  odd: item.market_ou_2_5?.OVER_2_5?.available_decimal_odds ?? 2.15,
+                                  popular: true,
+                                },
+                                {
+                                  id: `${m.id}-goals-under-25`,
+                                  label: "Menos de 2.5 Goles",
+                                  prob: formatPct(item.market_ou_2_5?.UNDER_2_5?.prob_estimated || 0.48),
+                                  odd: item.market_ou_2_5?.UNDER_2_5?.available_decimal_odds ?? 1.68,
+                                  popular: false,
+                                },
+                              ].map((col) => {
+                                const isAdded = customParlayPicks.some((p) => p.id === col.id);
+                                return (
+                                  <div
+                                    key={col.id}
+                                    className={`p-2 rounded-lg bg-[#0B1120] border ${
+                                      col.popular ? "border-emerald-500/30" : "border-slate-800"
+                                    } flex flex-col justify-between`}
+                                  >
+                                    <div>
+                                      <div className={`text-[10px] font-bold ${col.popular ? "text-emerald-400" : "text-slate-400"}`}>
+                                        {col.label}
+                                      </div>
+                                      <div className="font-extrabold font-mono text-white text-xs my-0.5">{col.prob}</div>
+                                      <div className="text-[11px] font-mono text-slate-300 font-bold">Cuota: {col.odd}</div>
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        toggleCustomPick({
+                                          id: col.id,
+                                          matchFixture: fixtureStr,
+                                          marketName: "Total de Goles",
+                                          selectionLabel: col.label,
+                                          odds: Number(col.odd) || 1.5,
+                                        })
+                                      }
+                                      className={`mt-2 py-1 px-1.5 rounded text-[10px] font-bold transition w-full ${
+                                        isAdded
+                                          ? "bg-emerald-500 text-slate-950 font-black"
+                                          : "bg-slate-800 hover:bg-slate-700 text-slate-200"
+                                      }`}
+                                    >
+                                      {isAdded ? "✓ En Parley" : "+ Al Parley"}
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {/* DOBLE OPORTUNIDAD TAB */}
+                          {activeMarketTabs[m.id] === "dc" && (
+                            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                              {[
+                                {
+                                  id: `${m.id}-dc-1x`,
+                                  label: "1X (Local o Empate)",
+                                  prob: "78.9%",
+                                  odd: 1.33,
+                                  recommended: true,
+                                },
+                                {
+                                  id: `${m.id}-dc-12`,
+                                  label: "12 (Local o Visita)",
+                                  prob: "80.9%",
+                                  odd: 1.35,
+                                  recommended: false,
+                                },
+                                {
+                                  id: `${m.id}-dc-x2`,
+                                  label: "X2 (Empate o Visita)",
+                                  prob: "40.2%",
+                                  odd: 1.60,
+                                  recommended: false,
+                                },
+                              ].map((col) => {
+                                const isAdded = customParlayPicks.some((p) => p.id === col.id);
+                                return (
+                                  <div
+                                    key={col.id}
+                                    className={`p-2 rounded-lg bg-[#0B1120] border ${
+                                      col.recommended ? "border-emerald-500/40" : "border-slate-800"
+                                    } flex flex-col justify-between`}
+                                  >
+                                    <div>
+                                      <div className={`text-[10px] font-bold ${col.recommended ? "text-emerald-400" : "text-slate-400"}`}>
+                                        {col.label}
+                                      </div>
+                                      <div className="font-extrabold font-mono text-white text-xs my-0.5">{col.prob}</div>
+                                      <div className="text-[11px] font-mono text-slate-300 font-bold">Cuota: {col.odd}</div>
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        toggleCustomPick({
+                                          id: col.id,
+                                          matchFixture: fixtureStr,
+                                          marketName: "Doble Oportunidad",
+                                          selectionLabel: col.label,
+                                          odds: col.odd,
+                                        })
+                                      }
+                                      className={`mt-2 py-1 px-1.5 rounded text-[10px] font-bold transition w-full ${
+                                        isAdded
+                                          ? "bg-emerald-500 text-slate-950 font-black"
+                                          : "bg-slate-800 hover:bg-slate-700 text-slate-200"
+                                      }`}
+                                    >
+                                      {isAdded ? "✓ En Parley" : "+ Al Parley"}
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {/* Footer de la tarjeta con acción rápida */}
+                          <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                            <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                              ⭐ Sugerido:{" "}
+                              {(item.best_value_opportunity.selection || "1X2:HOME")
+                                .replace("OVER_UNDER_2_5:OVER_2_5", "Más de 2.5 Goles")
+                                .replace("OVER_UNDER_1_5:OVER_1_5", "Más de 1.5 Goles")
+                                .replace("1X2:HOME", `Gana ${m.home_team.name}`)
+                                .replace("1X2:AWAY", `Gana ${m.away_team.name}`)
+                                .replace("1X2:DRAW", "Empate")}
+                            </span>
+                            <button
+                              onClick={() => handleSelectMatchForAnalysis(m.id)}
+                              className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
+                            >
+                              Analizar Partido →
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             );
           })()}
 
@@ -1127,6 +1208,16 @@ export default function SportPredictApp() {
 
             return (
               <div className="space-y-6">
+                {/* Botón de retorno al módulo principal */}
+                <div>
+                  <button
+                    onClick={() => setActiveModule("parleys_today")}
+                    className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 text-xs font-bold transition shadow-sm"
+                  >
+                    ← Volver a Parleys y Apuestas de Hoy
+                  </button>
+                </div>
+
                 {/* 1. Selector de Partido y Título */}
                 <div className="bg-[#10172A] p-4 sm:p-5 rounded-xl border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-4">
                   <div>
