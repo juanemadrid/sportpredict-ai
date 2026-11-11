@@ -23,6 +23,11 @@ def main() -> None:
         phase4_market_service.ensure_phase4_tables_and_triggers(db)
         from app.services.prediction_service import prediction_service
         prediction_service.train_and_validate_all_models(db, version_tag="v1.0.0-prod")
+        try:
+            from app.ingestion.sync_real_today_matches import sync_real_matches
+            sync_real_matches()
+        except Exception as sync_exc:
+            logger.warning("Sincronización inicial de partidos reales diferida: %s", sync_exc)
         logger.info("Base de datos, modelos IA y catálogos inicializados exitosamente.")
     except Exception as exc:
         logger.error("Error durante ensure_db: %s", exc, exc_info=True)

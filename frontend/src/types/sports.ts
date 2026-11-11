@@ -34,12 +34,44 @@ export interface MatchSummaryItem {
   };
   model_version: string;
   expected_goals: { home: number; away: number };
+  expected_corners?: { home: number; away: number; total: number };
   market_1x2: Record<string, SelectionValuation>;
   market_ou_2_5: Record<string, SelectionValuation>;
+  market_ou_1_5?: Record<string, SelectionValuation>;
+  market_btts?: Record<string, SelectionValuation>;
+  market_double_chance?: Record<string, SelectionValuation>;
+  market_corners?: {
+    expected_total: number;
+    over_under_8_5: Record<string, SelectionValuation>;
+    over_under_9_5: Record<string, SelectionValuation>;
+  };
   best_value_opportunity: {
     selection: string | null;
     expected_value: number | null;
   };
+}
+
+export interface ParleyRecommendation {
+  title: string;
+  recommended_bookmaker: string;
+  combined_decimal_odds: number;
+  combined_probability_pct: number;
+  implied_house_prob_pct: number;
+  combined_expected_value_pct: number;
+  safety_rating: string;
+  selections_count: number;
+  items: Array<{
+    match_id: number;
+    fixture: string;
+    competition: string;
+    market_code: string;
+    selection_code: string;
+    market_name: string;
+    selection_label: string;
+    prob: number;
+    odds: number;
+    expected_value: number;
+  }>;
 }
 
 export interface DetailedMatchAnalysis {

@@ -80,6 +80,18 @@ def sync_api_football_date(
     )
 
 
+@router.post("/today-real/sync")
+def sync_today_real_fixtures_endpoint(
+    db: Session = Depends(get_db),
+    ctx: RequestContext = Depends(get_request_context),
+):
+    """Sincroniza los partidos reales de hoy y carga mercados de Betplay (Córners, Goles, BTTS, 1X2)."""
+    require_admin_role(ctx)
+    from app.ingestion.sync_real_today_matches import sync_real_matches
+    sync_real_matches()
+    return {"status": "SUCCESS", "message": "Partidos reales de hoy y cuotas de Betplay sincronizados."}
+
+
 @router.get("/logs")
 def get_ingestion_sync_logs(
     db: Session = Depends(get_db),

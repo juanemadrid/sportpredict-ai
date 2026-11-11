@@ -250,6 +250,17 @@ class PoissonDixonColesModel:
         p_btts_yes = float(np.sum(matrix[1:, 1:]))
         p_btts_no = 1.0 - p_btts_yes
 
+        # Modelo Poisson de Tiros de Esquina (Córners estilo Betplay / Casas de Apuestas)
+        lam_corners_h = max(2.5, min(9.0, 5.2 * (1.0 + 0.12 * (lam_h - 1.35))))
+        lam_corners_a = max(2.0, min(8.0, 4.3 * (1.0 + 0.12 * (lam_a - 1.15))))
+        lam_corners_total = lam_corners_h + lam_corners_a
+        corners_range = np.arange(0, 30)
+        pmf_corners = poisson.pmf(corners_range, lam_corners_total)
+        p_under_8_5_corners = float(np.sum(pmf_corners[:9]))   # 0 hasta 8
+        p_over_8_5_corners = float(1.0 - p_under_8_5_corners)  # 9 o más
+        p_under_9_5_corners = float(np.sum(pmf_corners[:10]))  # 0 hasta 9
+        p_over_9_5_corners = float(1.0 - p_under_9_5_corners)  # 10 o más
+
         scorelines = []
         for i in range(6):
             for j in range(6):
@@ -295,6 +306,17 @@ class PoissonDixonColesModel:
                 "12": round(p_home + p_away, 5),
                 "X2": round(p_draw + p_away, 5),
             },
+            "OVER_UNDER_8_5_CORNERS": {
+                "OVER_8_5": round(p_over_8_5_corners, 5),
+                "UNDER_8_5": round(p_under_8_5_corners, 5),
+            },
+            "OVER_UNDER_9_5_CORNERS": {
+                "OVER_9_5": round(p_over_9_5_corners, 5),
+                "UNDER_9_5": round(p_under_9_5_corners, 5),
+            },
+            "expected_corners_home": round(lam_corners_h, 2),
+            "expected_corners_away": round(lam_corners_a, 2),
+            "expected_corners_total": round(lam_corners_total, 2),
             "top_exact_scores": scorelines[:6],
         }
 

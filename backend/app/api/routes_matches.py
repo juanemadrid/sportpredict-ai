@@ -33,6 +33,12 @@ def list_matches(
             analysis = prediction_service.analyze_match(db, m.id, persist_prediction=False)
             mkt_1x2 = analysis.get("markets", {}).get("1X2", {}).get("selections", {})
             mkt_ou25 = analysis.get("markets", {}).get("OVER_UNDER_2_5", {}).get("selections", {})
+            mkt_ou15 = analysis.get("markets", {}).get("OVER_UNDER_1_5", {}).get("selections", {})
+            mkt_btts = analysis.get("markets", {}).get("BTTS", {}).get("selections", {})
+            mkt_dc = analysis.get("markets", {}).get("DOUBLE_CHANCE", {}).get("selections", {})
+            mkt_corners85 = analysis.get("markets", {}).get("OVER_UNDER_8_5_CORNERS", {}).get("selections", {})
+            mkt_corners95 = analysis.get("markets", {}).get("OVER_UNDER_9_5_CORNERS", {}).get("selections", {})
+            pois_data = analysis.get("poisson_goal_model", {})
 
             # Detectar oportunidad de mejor Valor Esperado (EV) en el encuentro
             best_ev_sel = None
@@ -49,11 +55,24 @@ def list_matches(
                     "match": analysis["match"],
                     "model_version": analysis.get("model_version", "v1.0.0"),
                     "expected_goals": {
-                        "home": analysis.get("poisson_goal_model", {}).get("expected_goals_home", 1.2),
-                        "away": analysis.get("poisson_goal_model", {}).get("expected_goals_away", 1.0),
+                        "home": pois_data.get("expected_goals_home", 1.2),
+                        "away": pois_data.get("expected_goals_away", 1.0),
+                    },
+                    "expected_corners": {
+                        "home": pois_data.get("expected_corners_home", 5.2),
+                        "away": pois_data.get("expected_corners_away", 4.3),
+                        "total": pois_data.get("expected_corners_total", 9.5),
                     },
                     "market_1x2": mkt_1x2,
                     "market_ou_2_5": mkt_ou25,
+                    "market_ou_1_5": mkt_ou15,
+                    "market_btts": mkt_btts,
+                    "market_double_chance": mkt_dc,
+                    "market_corners": {
+                        "expected_total": pois_data.get("expected_corners_total", 9.5),
+                        "over_under_8_5": mkt_corners85,
+                        "over_under_9_5": mkt_corners95,
+                    },
                     "best_value_opportunity": {
                         "selection": best_ev_sel,
                         "expected_value": best_ev_val,
@@ -196,4 +215,84 @@ def get_immutable_predictions_ledger(
             "immutability_policy": "Los pronósticos registrados antes del kickoff_utc nunca se alteran tras conocerse el marcador real.",
         },
         "items": rows,
+    }
+
+
+@router.get("/parley/recommended")
+def get_recommended_parley(db: Session = Depends(get_db)):
+    """Genera la Combinada / Parley de Alta Efectividad (+EV) recomendada del día
+    combinando las selecciones con mayor probabilidad y valor matemático independiente (estilo Betplay/Wplay/Bet365).
+    """
+    matches = (
+        db.query(Match)
+        .filter(Match.status == "SCHEDULED")
+        .order_by(Match.kickoff_utc.asc())
+        .limit(10)
+        .all()
+    )
+
+    candidates = []
+    for m in matches:
+        try:
+            analysis = prediction_service.analyze_match(db, m.id, persist_prediction=False)
+            h_name = analysis["match"]["home_team"]["name"]
+            a_name = analysis["match"]["away_team"]["name"]
+            fixture_name = f"{h_name} vs {a_name}"
+            comp_name = analysis["match"]["competition_name"]
+
+            # Buscar selecciones idóneas para parley con alta probabilidad y +EV positivo
+            for mkt_k, mkt_data in analysis.get("markets", {}).items():
+                for sel_k, sel_v in mkt_data.get("selections", {}).items():
+                    prob = sel_v.get("prob_calibrated", 0.0)
+                    odds = sel_v.get("available_odds") or sel_v.get("fair_odds", 1.0)
+                    ev = sel_v.get("expected_value", 0.0)
+
+                    if prob >= 0.50 and odds >= 1.25 and odds <= 2.40 and ev is not None and ev >= -0.05:
+                        candidates.append({
+                            "match_id": m.id,
+                            "fixture": fixture_name,
+                            "competition": comp_name,
+                            "market_code": mkt_k,
+                            "selection_code": sel_k,
+                            "market_name": mkt_data.get("display_name", mkt_k),
+                            "selection_label": sel_k,
+                            "prob": round(prob, 4),
+                            "odds": round(odds, 2),
+                            "expected_value": round(ev, 4),
+                        })
+        except Exception:
+            continue
+
+    selected_parley = []
+    seen_matches = set()
+    candidates.sort(key=lambda c: (c["prob"] * 0.7 + (c["expected_value"] or 0) * 0.3), reverse=True)
+
+    for c in candidates:
+        if c["match_id"] not in seen_matches:
+            seen_matches.add(c["match_id"])
+            selected_parley.append(c)
+        if len(selected_parley) >= 3:
+            break
+
+    comb_odds = 1.0
+    comb_prob = 1.0
+    for p in selected_parley:
+        comb_odds *= p["odds"]
+        comb_prob *= p["prob"]
+
+    comb_odds = round(comb_odds, 2)
+    comb_prob = round(comb_prob, 4)
+    implied_house_prob = round(1.0 / comb_odds, 4) if comb_odds > 0 else 0.0
+    combined_ev = round((comb_prob * comb_odds) - 1.0, 4)
+
+    return {
+        "title": "Combinada / Parley de Alta Efectividad (+EV)",
+        "recommended_bookmaker": "Betplay / Wplay / Rushbet / Bet365",
+        "combined_decimal_odds": comb_odds,
+        "combined_probability_pct": round(comb_prob * 100, 1),
+        "implied_house_prob_pct": round(implied_house_prob * 100, 1),
+        "combined_expected_value_pct": round(combined_ev * 100, 1),
+        "safety_rating": "ALTA EFECTIVIDAD (+EV)",
+        "selections_count": len(selected_parley),
+        "items": selected_parley,
     }

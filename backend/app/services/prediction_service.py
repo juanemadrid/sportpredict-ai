@@ -534,6 +534,8 @@ class PredictionAndTrainingService:
             ("BTTS", "Ambos Equipos Marcan (BTTS)", 1),
             ("OVER_UNDER_3_5", "Más / Menos 3.5 Goles", 2),
             ("DOUBLE_CHANCE", "Doble Oportunidad (1X / 12 / X2)", 2),
+            ("OVER_UNDER_8_5_CORNERS", "Tiros de Esquina Más / Menos 8.5", 1),
+            ("OVER_UNDER_9_5_CORNERS", "Tiros de Esquina Más / Menos 9.5", 1),
         ]:
             mkt_probs = poisson_dist[mkt_code]
             per_mod = {sel: [prob_val] for sel, prob_val in mkt_probs.items()}
