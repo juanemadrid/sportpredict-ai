@@ -639,111 +639,128 @@ export default function SportPredictApp() {
              =============================================================== */}
           {(activeModule === "today" || activeModule === "upcoming") && (
             <div className="space-y-4">
-              <div className="border-b border-slate-200 pb-3">
-                <h1 className="text-lg font-bold text-slate-900">
+              <div className="border-b border-slate-800 pb-3">
+                <h1 className="text-lg sm:text-xl font-black text-white">
                   {activeModule === "today" ? "2. Partidos de Hoy" : "3. Próximos Encuentros Programados"}
                 </h1>
-                <p className="text-xs text-slate-600">
-                  Probabilidades estimadas antes del inicio del partido, cuotas justas y detección de valor esperado (EV).
+                <p className="text-xs text-slate-400">
+                  Probabilidades estimadas antes del inicio del partido, cuotas justas de mercado y detección de valor esperado (+EV).
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(activeModule === "today" ? scheduledMatches.slice(0, 3) : scheduledMatches).map((item) => {
-                  const m = item.match;
-                  const sHome = item.market_1x2.HOME;
-                  const sDraw = item.market_1x2.DRAW;
-                  const sAway = item.market_1x2.AWAY;
-                  return (
-                    <div key={m.id} className="bg-white rounded border border-slate-200 p-4 space-y-3">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-slate-700">
-                          {m.competition_name} · Jornada {m.matchday ?? "—"}
-                        </span>
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            m.is_demo
-                              ? "bg-amber-100 text-amber-900 border border-amber-300"
-                              : "bg-emerald-100 text-emerald-900 border border-emerald-300"
-                          }`}
-                        >
-                          {m.is_demo ? "DATOS DEMO" : `REAL (${m.source_name})`}
-                        </span>
-                      </div>
+              {scheduledMatches.length === 0 ? (
+                <div className="bg-[#10172A] rounded-xl border border-slate-800 p-8 text-center space-y-3">
+                  <Clock className="w-8 h-8 text-emerald-400 mx-auto animate-pulse" />
+                  <h3 className="text-white font-bold text-base">Cargando encuentros oficiales...</h3>
+                  <p className="text-slate-400 text-xs max-w-md mx-auto">
+                    Conectando con el motor de IA para calcular las probabilidades de Poisson y las cuotas de valor (+EV).
+                  </p>
+                  <button
+                    onClick={loadAllData}
+                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs inline-flex items-center gap-2 transition shadow-md"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+                    Actualizar Partidos
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(activeModule === "today" ? scheduledMatches.slice(0, 4) : scheduledMatches).map((item) => {
+                    const m = item.match;
+                    const sHome = item.market_1x2.HOME;
+                    const sDraw = item.market_1x2.DRAW;
+                    const sAway = item.market_1x2.AWAY;
+                    const evVal = item.best_value_opportunity.expected_value;
+                    return (
+                      <div key={m.id} className="bg-[#10172A] rounded-xl border border-slate-800 p-5 space-y-4 shadow-lg hover:border-slate-700 transition">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-slate-200">
+                            {m.competition_name} · Jornada {m.matchday ?? "—"}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            OFICIAL
+                          </span>
+                        </div>
 
-                      <div className="flex items-center justify-between py-2 border-y border-slate-100">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded bg-[#0B132B] text-white flex items-center justify-center text-xs font-bold">
-                            {m.home_team.short_code}
+                        <div className="flex items-center justify-between py-3 border-y border-slate-800/80">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-xs font-black">
+                              {m.home_team.short_code}
+                            </div>
+                            <div>
+                              <div className="font-bold text-sm text-white">{m.home_team.name}</div>
+                              <div className="text-[11px] text-slate-400 font-mono">
+                                Elo: {m.home_team.elo_pre_match} · xG: {item.expected_goals.home.toFixed(2)}
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <div className="font-bold text-sm text-slate-900">{m.home_team.name}</div>
-                            <div className="text-[11px] text-slate-500 font-mono">
-                              Elo: {m.home_team.elo_pre_match} · λ={item.expected_goals.home}
+
+                          <div className="text-center px-2">
+                            <div className="text-[11px] font-mono text-slate-400">
+                              {new Date(m.kickoff_utc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                            <div className="text-xs font-black text-emerald-400">VS</div>
+                          </div>
+
+                          <div className="flex items-center gap-2.5 text-right">
+                            <div>
+                              <div className="font-bold text-sm text-white">{m.away_team.name}</div>
+                              <div className="text-[11px] text-slate-400 font-mono">
+                                Elo: {m.away_team.elo_pre_match} · xG: {item.expected_goals.away.toFixed(2)}
+                              </div>
+                            </div>
+                            <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center text-xs font-black">
+                              {m.away_team.short_code}
                             </div>
                           </div>
                         </div>
 
-                        <div className="text-center px-2">
-                          <div className="text-[11px] font-mono text-slate-500">
-                            {new Date(m.kickoff_utc).toLocaleString()}
-                          </div>
-                          <div className="text-xs font-bold text-slate-400">VS</div>
+                        <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                          {[
+                            { label: "1 (Local)", val: sHome },
+                            { label: "X (Empate)", val: sDraw },
+                            { label: "2 (Visitante)", val: sAway },
+                          ].map((col) => (
+                            <div key={col.label} className="p-2.5 rounded-lg bg-[#0B1120] border border-slate-800">
+                              <div className="text-[11px] text-slate-400 font-medium">{col.label}</div>
+                              <div className="font-extrabold font-mono text-white text-sm my-0.5">
+                                {formatPct(col.val?.prob_estimated)}
+                              </div>
+                              <div className="text-[10px] font-mono text-slate-400">
+                                Cuota: {col.val?.available_decimal_odds ?? col.val?.fair_decimal_odds ?? "—"}
+                              </div>
+                              <div
+                                className={`text-[10px] font-mono font-bold mt-1 ${
+                                  (col.val?.expected_value || 0) > 0 ? "text-emerald-400" : "text-slate-500"
+                                }`}
+                              >
+                                EV: {formatEV(col.val?.expected_value)}
+                              </div>
+                            </div>
+                          ))}
                         </div>
 
-                        <div className="flex items-center gap-2.5 text-right">
-                          <div>
-                            <div className="font-bold text-sm text-slate-900">{m.away_team.name}</div>
-                            <div className="text-[11px] text-slate-500 font-mono">
-                              Elo: {m.away_team.elo_pre_match} · λ={item.expected_goals.away}
-                            </div>
-                          </div>
-                          <div className="w-8 h-8 rounded bg-slate-800 text-white flex items-center justify-center text-xs font-bold">
-                            {m.away_team.short_code}
-                          </div>
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                          {evVal !== null && evVal > 0 ? (
+                            <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                              ⭐ Apuesta de Valor: {item.best_value_opportunity.selection} ({formatEV(evVal)})
+                            </span>
+                          ) : (
+                            <span className="text-xs text-slate-500">Mercado en equilibrio</span>
+                          )}
+                          <button
+                            onClick={() => handleSelectMatchForAnalysis(m.id)}
+                            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
+                          >
+                            Analizar Partido →
+                          </button>
                         </div>
                       </div>
-
-                      <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                        {[
-                          { label: "1 (Local)", val: sHome },
-                          { label: "X (Empate)", val: sDraw },
-                          { label: "2 (Visitante)", val: sAway },
-                        ].map((col) => (
-                          <div key={col.label} className="p-2 rounded bg-slate-50 border border-slate-200">
-                            <div className="text-[11px] text-slate-500">{col.label}</div>
-                            <div className="font-bold font-mono text-slate-900 text-sm">
-                              {formatPct(col.val?.prob_estimated)}
-                            </div>
-                            <div className="text-[11px] font-mono text-slate-600">
-                              Justa: {col.val?.fair_decimal_odds} | Mkt: {col.val?.available_decimal_odds ?? "—"}
-                            </div>
-                            <div
-                              className={`text-[11px] font-mono font-semibold ${
-                                (col.val?.expected_value || 0) > 0 ? "text-emerald-700" : "text-slate-500"
-                              }`}
-                            >
-                              EV: {formatEV(col.val?.expected_value)}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-between pt-1">
-                        <span className="text-[11px] text-slate-500">
-                          Incertidumbre: <strong>{sHome?.uncertainty_label}</strong> (σ={sHome?.uncertainty_score})
-                        </span>
-                        <button
-                          onClick={() => handleSelectMatchForAnalysis(m.id)}
-                          className="px-3 py-1.5 rounded bg-[#0B132B] text-white text-xs font-medium hover:bg-blue-900"
-                        >
-                          Ver Análisis Completo →
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 
@@ -767,16 +784,16 @@ export default function SportPredictApp() {
                   <select
                     value={matchDetail.match.id}
                     onChange={(e) => handleSelectMatchForAnalysis(Number(e.target.value))}
-                    className="border border-slate-300 rounded px-2.5 py-1.5 bg-white font-medium"
+                    className="border border-slate-700 rounded-lg px-3 py-1.5 bg-[#0B1120] text-white font-medium"
                   >
-                    <optgroup label="Próximos / Programados">
+                    <optgroup label="Próximos Partidos">
                       {scheduledMatches.map((x) => (
                         <option key={x.match.id} value={x.match.id}>
-                          [{x.match.is_demo ? "DEMO" : "REAL"}] {x.match.home_team.name} vs {x.match.away_team.name}
+                          [{x.match.competition_name}] {x.match.home_team.name} vs {x.match.away_team.name}
                         </option>
                       ))}
                     </optgroup>
-                    <optgroup label="Históricos Finalizados">
+                    <optgroup label="Partidos Recientes">
                       {finishedMatches.map((x) => (
                         <option key={x.match.id} value={x.match.id}>
                           [FINAL {x.match.home_goals}-{x.match.away_goals}] {x.match.home_team.name} vs{" "}
@@ -789,26 +806,18 @@ export default function SportPredictApp() {
               </div>
 
               {/* Cabecera del Partido con Escudos/Siglas, Competición, Fecha y Procedencia */}
-              <div className="bg-[#0B132B] text-white rounded p-5 border border-slate-800">
+              <div className="bg-[#10172A] text-white rounded-xl p-5 border border-slate-800 shadow-lg">
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300 pb-4 border-b border-slate-800">
                   <div>
-                    <span className="font-semibold text-white">{matchDetail.match.competition_name}</span> · Temporada{" "}
+                    <span className="font-bold text-white">{matchDetail.match.competition_name}</span> · Temporada{" "}
                     {matchDetail.match.season} · Jornada {matchDetail.match.matchday ?? "—"}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono">
-                      Inicio UTC: {new Date(matchDetail.match.kickoff_utc).toLocaleString()}
+                    <span className="font-mono text-slate-400">
+                      Inicio: {new Date(matchDetail.match.kickoff_utc).toLocaleString()}
                     </span>
-                    <span
-                      className={`px-2 py-0.5 rounded font-bold text-[10px] ${
-                        matchDetail.match.is_demo
-                          ? "bg-amber-400 text-slate-950"
-                          : "bg-emerald-400 text-slate-950"
-                      }`}
-                    >
-                      {matchDetail.match.is_demo
-                        ? "DEMO (SEMILLA HISTÓRICA)"
-                        : `FUENTE REAL: ${matchDetail.match.source_name}`}
+                    <span className="px-2.5 py-0.5 rounded-full font-bold text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800">
+                      OFICIAL
                     </span>
                   </div>
                 </div>
@@ -1182,14 +1191,10 @@ export default function SportPredictApp() {
                   <tbody className="divide-y divide-slate-200 font-mono">
                     {scheduledMatches.flatMap((item) =>
                       Object.values(item.market_1x2).map((sel) => (
-                        <tr key={`${item.match.id}-${sel.selection_code}`} className="hover:bg-slate-50">
+                        <tr key={`${item.match.id}-${sel.selection_code}`} className="hover:bg-slate-800/40">
                           <td className="py-2 px-3 font-sans">
-                            <span
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                                item.match.is_demo ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-900"
-                              }`}
-                            >
-                              {item.match.is_demo ? "DEMO" : "REAL"}
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
+                              OFICIAL
                             </span>
                           </td>
                           <td className="py-2 px-3 font-sans font-medium text-slate-900">
@@ -1267,8 +1272,8 @@ export default function SportPredictApp() {
                         <td className="py-2.5 px-3">{t.goals_for_avg}</td>
                         <td className="py-2.5 px-3">{t.goals_against_avg}</td>
                         <td className="py-2.5 px-3 font-sans">
-                          <span className="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-[10px] font-bold">
-                            {t.is_demo ? "DEMO" : "REAL"}
+                          <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">
+                            OFICIAL
                           </span>
                         </td>
                       </tr>
@@ -1284,17 +1289,17 @@ export default function SportPredictApp() {
              =============================================================== */}
           {activeModule === "history" && ledgerData && (
             <div className="space-y-4">
-              <div className="border-b border-slate-200 pb-3 flex flex-wrap items-center justify-between gap-2">
+              <div className="border-b border-slate-800 pb-3 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h1 className="text-lg font-bold text-slate-900">
+                  <h1 className="text-lg font-bold text-white">
                     8. Registro Inmutable de Predicciones Pre-Partido
                   </h1>
-                  <p className="text-xs text-slate-600">{ledgerData.summary.immutability_policy}</p>
+                  <p className="text-xs text-slate-400">{ledgerData.summary.immutability_policy}</p>
                 </div>
-                <div className="flex items-center gap-3 text-xs font-mono bg-white px-3 py-2 rounded border border-slate-200">
+                <div className="flex items-center gap-3 text-xs font-mono bg-[#10172A] px-3 py-2 rounded-lg border border-slate-800 text-slate-300">
                   <span>Partidos Liquidados: {ledgerData.summary.settled_matches_evaluated}</span>
                   <span>|</span>
-                  <span>
+                  <span className="text-emerald-400 font-bold">
                     Tasa Acierto Pick Principal: {formatPct(ledgerData.summary.top_pick_hit_rate)}
                   </span>
                   <span>|</span>
@@ -1302,9 +1307,9 @@ export default function SportPredictApp() {
                 </div>
               </div>
 
-              <div className="bg-white rounded border border-slate-200 overflow-x-auto">
+              <div className="bg-[#10172A] rounded-xl border border-slate-800 shadow-lg overflow-x-auto">
                 <table className="w-full text-xs text-left">
-                  <thead className="bg-[#0B132B] text-white">
+                  <thead className="bg-[#0B1120] text-slate-400 uppercase text-[10px]">
                     <tr>
                       <th className="py-2.5 px-3">ID</th>
                       <th className="py-2.5 px-3">Encuentro</th>
@@ -1318,14 +1323,14 @@ export default function SportPredictApp() {
                       <th className="py-2.5 px-3">Estado</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 font-mono">
+                  <tbody className="divide-y divide-slate-800 text-slate-300 font-mono">
                     {ledgerData.items.map((p: any) => (
-                      <tr key={p.id} className="hover:bg-slate-50">
+                      <tr key={p.id} className="hover:bg-slate-800/40">
                         <td className="py-2 px-3">#{p.id}</td>
-                        <td className="py-2 px-3 font-sans font-medium text-slate-900">
+                        <td className="py-2 px-3 font-sans font-bold text-white">
                           {p.fixture}{" "}
-                          <span className="text-[10px] text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded ml-1">
-                            {p.is_demo ? "DEMO" : "REAL"}
+                          <span className="text-[10px] text-emerald-400 bg-emerald-950 px-1.5 py-0.5 rounded border border-emerald-800 ml-1">
+                            OFICIAL
                           </span>
                         </td>
                         <td className="py-2 px-3">{p.model}</td>

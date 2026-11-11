@@ -32,6 +32,23 @@ class DynamicEloModel:
         self.last_season_by_team: Dict[int, str] = {}
         self.history: Dict[int, List[Dict[str, Any]]] = {}
 
+    def __setstate__(self, state: Dict[str, Any]) -> None:
+        self.__dict__.update(state)
+        if "use_competition_hfa" not in self.__dict__:
+            self.use_competition_hfa = False
+        if "comp_home_advantage" not in self.__dict__:
+            self.comp_home_advantage = {}
+        if "comp_draw_nu" not in self.__dict__:
+            self.comp_draw_nu = {}
+        if "season_regression_theta" not in self.__dict__:
+            self.season_regression_theta = 0.0
+        if "last_season_by_team" not in self.__dict__:
+            self.last_season_by_team = {}
+        if "home_advantage" not in self.__dict__:
+            self.home_advantage = 65.0
+        if "draw_nu" not in self.__dict__:
+            self.draw_nu = 0.70
+
     def calibrate_competition_parameters(self, train_matches: List[HistoricalMatchRecord]) -> None:
         """Calibra la ventaja de localía (en puntos Elo) y el parámetro de empate (draw_nu)
         de forma independiente para cada competición exclusivamente sobre T_train.
@@ -86,14 +103,14 @@ class DynamicEloModel:
         return round(self.ratings.get(team_id, self.base_rating), 2)
 
     def get_hfa(self, competition_id: Optional[int] = None) -> float:
-        if self.use_competition_hfa and competition_id is not None and competition_id in self.comp_home_advantage:
+        if getattr(self, "use_competition_hfa", False) and competition_id is not None and competition_id in getattr(self, "comp_home_advantage", {}):
             return self.comp_home_advantage[competition_id]
-        return self.home_advantage
+        return getattr(self, "home_advantage", 65.0)
 
     def get_draw_nu(self, competition_id: Optional[int] = None) -> float:
-        if self.use_competition_hfa and competition_id is not None and competition_id in self.comp_draw_nu:
+        if getattr(self, "use_competition_hfa", False) and competition_id is not None and competition_id in getattr(self, "comp_draw_nu", {}):
             return self.comp_draw_nu[competition_id]
-        return self.draw_nu
+        return getattr(self, "draw_nu", 0.70)
 
     def predict_1x2(
         self,

@@ -47,6 +47,19 @@ class PoissonDixonColesModel:
         self.reference_date: Optional[datetime] = None
         self.is_fitted: bool = False
 
+    def __setstate__(self, state: Dict[str, Any]) -> None:
+        self.__dict__.update(state)
+        if "use_competition_hfa" not in self.__dict__:
+            self.use_competition_hfa = False
+        if "comp_home_avg" not in self.__dict__:
+            self.comp_home_avg = {}
+        if "comp_away_avg" not in self.__dict__:
+            self.comp_away_avg = {}
+        if "team_competition" not in self.__dict__:
+            self.team_competition = {}
+        if "xi" not in self.__dict__:
+            self.xi = 0.0018
+
     def _compute_time_weight(self, match_dt: datetime, ref_dt: datetime) -> float:
         if self.xi <= 0.0:
             return 1.0

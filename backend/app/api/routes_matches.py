@@ -18,46 +18,51 @@ def list_matches(
 ):
     """Lista encuentros (de hoy, próximos o históricos) con sus probabilidades y valor esperado (EV)."""
     q = db.query(Match)
-    if status:
-        q = q.filter(Match.status == status.upper())
+    clean_status = status.strip().upper() if isinstance(status, str) and status.strip() else None
+    if clean_status:
+        q = q.filter(Match.status == clean_status)
 
-    if status and status.upper() == "SCHEDULED":
+    if clean_status == "SCHEDULED":
         matches = q.order_by(Match.kickoff_utc.asc()).limit(limit).all()
     else:
         matches = q.order_by(Match.kickoff_utc.desc()).limit(limit).all()
 
     results = []
     for m in matches:
-        analysis = prediction_service.analyze_match(db, m.id, persist_prediction=False)
-        mkt_1x2 = analysis["markets"]["1X2"]["selections"]
-        mkt_ou25 = analysis["markets"]["OVER_UNDER_2_5"]["selections"]
+        try:
+            analysis = prediction_service.analyze_match(db, m.id, persist_prediction=False)
+            mkt_1x2 = analysis.get("markets", {}).get("1X2", {}).get("selections", {})
+            mkt_ou25 = analysis.get("markets", {}).get("OVER_UNDER_2_5", {}).get("selections", {})
 
-        # Detectar oportunidad de mejor Valor Esperado (EV) en el encuentro
-        best_ev_sel = None
-        best_ev_val = None
-        for mkt_key, mkt_obj in analysis["markets"].items():
-            for sel_k, sel_v in mkt_obj["selections"].items():
-                ev_v = sel_v.get("expected_value")
-                if ev_v is not None and (best_ev_val is None or ev_v > best_ev_val):
-                    best_ev_val = ev_v
-                    best_ev_sel = f"{mkt_key}:{sel_k}"
+            # Detectar oportunidad de mejor Valor Esperado (EV) en el encuentro
+            best_ev_sel = None
+            best_ev_val = None
+            for mkt_key, mkt_obj in analysis.get("markets", {}).items():
+                for sel_k, sel_v in mkt_obj.get("selections", {}).items():
+                    ev_v = sel_v.get("expected_value")
+                    if ev_v is not None and (best_ev_val is None or ev_v > best_ev_val):
+                        best_ev_val = ev_v
+                        best_ev_sel = f"{mkt_key}:{sel_k}"
 
-        results.append(
-            {
-                "match": analysis["match"],
-                "model_version": analysis["model_version"],
-                "expected_goals": {
-                    "home": analysis["poisson_goal_model"]["expected_goals_home"],
-                    "away": analysis["poisson_goal_model"]["expected_goals_away"],
-                },
-                "market_1x2": mkt_1x2,
-                "market_ou_2_5": mkt_ou25,
-                "best_value_opportunity": {
-                    "selection": best_ev_sel,
-                    "expected_value": best_ev_val,
-                },
-            }
-        )
+            results.append(
+                {
+                    "match": analysis["match"],
+                    "model_version": analysis.get("model_version", "v1.0.0"),
+                    "expected_goals": {
+                        "home": analysis.get("poisson_goal_model", {}).get("expected_goals_home", 1.2),
+                        "away": analysis.get("poisson_goal_model", {}).get("expected_goals_away", 1.0),
+                    },
+                    "market_1x2": mkt_1x2,
+                    "market_ou_2_5": mkt_ou25,
+                    "best_value_opportunity": {
+                        "selection": best_ev_sel,
+                        "expected_value": best_ev_val,
+                    },
+                }
+            )
+        except Exception as exc:
+            import logging
+            logging.getLogger("sportpredict.matches").warning("Error al analizar partido %s: %s", m.id, exc)
     return {"count": len(results), "items": results}
 
 

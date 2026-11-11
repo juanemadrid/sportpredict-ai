@@ -21,7 +21,9 @@ def main() -> None:
     try:
         init_database(db)
         phase4_market_service.ensure_phase4_tables_and_triggers(db)
-        logger.info("Base de datos y catálogos inicializados exitosamente.")
+        from app.services.prediction_service import prediction_service
+        prediction_service.train_and_validate_all_models(db, version_tag="v1.0.0-prod")
+        logger.info("Base de datos, modelos IA y catálogos inicializados exitosamente.")
     except Exception as exc:
         logger.error("Error durante ensure_db: %s", exc, exc_info=True)
         sys.exit(1)
