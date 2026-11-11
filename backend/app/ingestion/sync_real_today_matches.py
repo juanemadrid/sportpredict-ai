@@ -224,90 +224,55 @@ def sync_real_matches():
         # Limpiar snapshots previos para este match
         db.query(OddsSnapshot).filter(OddsSnapshot.match_id == match.id).delete()
 
-        # 1X2
-        for sel, odd in item["odds_1x2"].items():
+        def add_odd(m_code: str, s_code: str, o_val: float):
+            raw_p = round(1.0 / max(o_val, 1.01), 4)
             db.add(OddsSnapshot(
                 match_id=match.id,
                 bookmaker_name="Betplay / Bet365",
-                market_code="1X2",
-                selection_code=sel,
-                decimal_odds=odd,
+                market_code=m_code,
+                selection_code=s_code,
+                decimal_odds=o_val,
+                implied_prob_raw=raw_p,
+                overround_margin=0.05,
+                implied_prob_fair=round(raw_p / 1.05, 4),
                 captured_at=datetime.now(timezone.utc),
                 source_name="API-Football Odds",
                 is_demo=False,
             ))
+
+        # 1X2
+        for sel, odd in item["odds_1x2"].items():
+            add_odd("1X2", sel, odd)
 
         # OVER/UNDER 2.5
         for sel, odd in item["odds_ou25"].items():
-            db.add(OddsSnapshot(
-                match_id=match.id,
-                bookmaker_name="Betplay / Bet365",
-                market_code="OVER_UNDER_2_5",
-                selection_code=sel,
-                decimal_odds=odd,
-                captured_at=datetime.now(timezone.utc),
-                source_name="API-Football Odds",
-                is_demo=False,
-            ))
+            add_odd("OVER_UNDER_2_5", sel, odd)
 
         # OVER/UNDER 1.5
         for sel, odd in item["odds_ou15"].items():
-            db.add(OddsSnapshot(
-                match_id=match.id,
-                bookmaker_name="Betplay / Bet365",
-                market_code="OVER_UNDER_1_5",
-                selection_code=sel,
-                decimal_odds=odd,
-                captured_at=datetime.now(timezone.utc),
-                source_name="API-Football Odds",
-                is_demo=False,
-            ))
+            add_odd("OVER_UNDER_1_5", sel, odd)
 
         # BTTS (Ambos Marcan)
         for sel, odd in item["odds_btts"].items():
-            db.add(OddsSnapshot(
-                match_id=match.id,
-                bookmaker_name="Betplay / Bet365",
-                market_code="BTTS",
-                selection_code=sel,
-                decimal_odds=odd,
-                captured_at=datetime.now(timezone.utc),
-                source_name="API-Football Odds",
-                is_demo=False,
-            ))
+            add_odd("BTTS", sel, odd)
 
         # DOBLE OPORTUNIDAD
         for sel, odd in item["odds_dc"].items():
-            db.add(OddsSnapshot(
-                match_id=match.id,
-                bookmaker_name="Betplay / Bet365",
-                market_code="DOUBLE_CHANCE",
-                selection_code=sel,
-                decimal_odds=odd,
-                captured_at=datetime.now(timezone.utc),
-                source_name="API-Football Odds",
-                is_demo=False,
-            ))
+            add_odd("DOUBLE_CHANCE", sel, odd)
 
         # CÓRNERS (Tiros de Esquina)
         for sel, odd in item["odds_corners"].items():
             mkt = "OVER_UNDER_8_5_CORNERS" if "8_5" in sel else "OVER_UNDER_9_5_CORNERS"
-            db.add(OddsSnapshot(
-                match_id=match.id,
-                bookmaker_name="Betplay / Bet365",
-                market_code=mkt,
-                selection_code=sel,
-                decimal_odds=odd,
-                captured_at=datetime.now(timezone.utc),
-                source_name="API-Football Odds",
-                is_demo=False,
-            ))
+            add_odd(mkt, sel, odd)
 
         db.commit()
         print(f"  ✓ Sincronizado: {item['home']} vs {item['away']} ({item['comp_name']})")
 
     # Mover los partidos de demo anteriores a FINISHED para que solo aparezcan los reales de hoy
     old_demos = db.query(Match).filter(Match.is_demo == True, Match.status == "SCHEDULED").all()
+    for dm in old_demos:
+        dm.status = "FINISHED"
+    db.commit()
     for odm in old_demos:
         odm.status = "FINISHED"
     db.commit()

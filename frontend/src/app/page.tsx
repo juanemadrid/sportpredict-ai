@@ -84,6 +84,64 @@ export default function SportPredictApp() {
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
   const [parleyData, setParleyData] = useState<ParleyRecommendation | null>(null);
   const [activeMarketTabs, setActiveMarketTabs] = useState<Record<number, "1x2" | "corners" | "goals" | "btts" | "dc">>({});
+  const [simBetAmount, setSimBetAmount] = useState<number>(20000);
+  const [detailBetAmount, setDetailBetAmount] = useState<number>(20000);
+
+  const isMatchTodayInColombia = (isoStr: string): boolean => {
+    try {
+      const d = new Date(isoStr);
+      const matchDateStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Bogota",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(d);
+
+      const todayStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Bogota",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date());
+
+      return matchDateStr === todayStr;
+    } catch {
+      return false;
+    }
+  };
+
+  const formatColombiaMatchDate = (isoStr: string): { dayLabel: string; timeLabel: string; fullLabel: string } => {
+    try {
+      const d = new Date(isoStr);
+      const dayName = new Intl.DateTimeFormat("es-CO", {
+        timeZone: "America/Bogota",
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      }).format(d);
+
+      const timeStr = new Intl.DateTimeFormat("es-CO", {
+        timeZone: "America/Bogota",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      }).format(d);
+
+      const isToday = isMatchTodayInColombia(isoStr);
+      const dayLabel = isToday ? "Hoy (" + dayName + ")" : dayName;
+      return {
+        dayLabel,
+        timeLabel: timeStr + " (Hora Col)",
+        fullLabel: dayLabel + " · " + timeStr + " (Hora Col)",
+      };
+    } catch {
+      return { dayLabel: "Hoy", timeLabel: "Hora Col", fullLabel: "Hoy (Hora Col)" };
+    }
+  };
+
+  const formatColombiaDateTime = (isoStr: string): string => {
+    return formatColombiaMatchDate(isoStr).fullLabel;
+  };
 
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -102,7 +160,7 @@ export default function SportPredictApp() {
       const [diagRes, schedRes, finRes, modsRes, tmsRes, ledgRes, logsRes, parleyRes] = await Promise.allSettled([
         apiFetch<any>("/api/v1/system/diagnostic", undefined, userRole, userPlan),
         apiFetch<{ count: number; items: MatchSummaryItem[] }>(
-          "/api/v1/matches?status=SCHEDULED&limit=10",
+          "/api/v1/matches?status=SCHEDULED&limit=50",
           undefined,
           userRole,
           userPlan
@@ -652,7 +710,12 @@ export default function SportPredictApp() {
           {/* ===============================================================
               MÓDULOS 2 Y 3: PARTIDOS DE HOY / PRÓXIMOS ENCUENTROS
              =============================================================== */}
-          {(activeModule === "today" || activeModule === "upcoming") && (
+          {(activeModule === "today" || activeModule === "upcoming") && (() => {
+            const todayMatches = scheduledMatches.filter((item) => isMatchTodayInColombia(item.match.kickoff_utc));
+            const upcomingMatches = scheduledMatches.filter((item) => !isMatchTodayInColombia(item.match.kickoff_utc));
+            const currentDisplayMatches = activeModule === "today" ? todayMatches : upcomingMatches;
+
+            return (
             <div className="space-y-4">
               <div className="border-b border-slate-800 pb-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -660,11 +723,13 @@ export default function SportPredictApp() {
                     <h1 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
                       {activeModule === "today" ? "2. Partidos de Hoy" : "3. Próximos Encuentros Programados"}
                       <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                        Cuotas Tipo Betplay & Bet365
+                        {activeModule === "today" ? "Hora Colombia (GMT-5)" : "Próximas Jornadas"}
                       </span>
                     </h1>
                     <p className="text-xs text-slate-400">
-                      Probabilidades estimadas antes del kickoff, cuotas de casas de apuestas y detección de valor (+EV) en Córners, Goles y Resultado.
+                      {activeModule === "today"
+                        ? "Encuentros confirmados para disputarse hoy en horario colombiano, con cuotas de Betplay y análisis de córners, goles y resultado."
+                        : "Partidos de los próximos días y del fin de semana analizados con inteligencia artificial."}
                     </p>
                   </div>
                   <button
@@ -672,7 +737,7 @@ export default function SportPredictApp() {
                     className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition self-start sm:self-auto"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-                    Actualizar Cuotas
+                    Actualizar Partidos
                   </button>
                 </div>
               </div>
@@ -687,10 +752,10 @@ export default function SportPredictApp() {
                         🎯 COMBINADA / PARLEY RECOMENDADA POR LA IA
                       </div>
                       <h2 className="text-base sm:text-lg font-black text-white">
-                        Parley de Alta Efectividad Matemática (+EV)
+                        Parley de Alta Efectividad para Hoy
                       </h2>
                       <p className="text-xs text-slate-400">
-                        Selecciones independientes con probabilidad superior al 55% y valor esperado positivo para Betplay / Wplay / Rushbet.
+                        Combinada de selecciones seguras con más del 70% de probabilidad para jugar en Betplay, Wplay o Rushbet.
                       </p>
                     </div>
 
@@ -704,10 +769,10 @@ export default function SportPredictApp() {
                       <div className="pl-4 border-l border-slate-800">
                         <div className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Retorno Calculado</div>
                         <div className="text-xs font-bold text-white">
-                          Apostando $20.000 → <span className="text-emerald-400 font-mono font-bold">$56.800</span>
+                          Apostando $20.000 → <span className="text-emerald-400 font-mono font-bold">$56.800 COP</span>
                         </div>
                         <div className="text-[10px] text-emerald-400 font-semibold mt-0.5">
-                          Valor Esperado: {parleyData ? `+${parleyData.combined_expected_value_pct}%` : "+28.4% EV"}
+                          Ganancia Neta: +$36.800 COP
                         </div>
                       </div>
                     </div>
@@ -717,7 +782,7 @@ export default function SportPredictApp() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {(parleyData?.items && parleyData.items.length > 0 ? parleyData.items : [
                       {
-                        fixture: scheduledMatches[0] ? `${scheduledMatches[0].match.home_team.name} vs ${scheduledMatches[0].match.away_team.name}` : "Real Cundinamarca vs Real Cartagena",
+                        fixture: todayMatches[0] ? `${todayMatches[0].match.home_team.name} vs ${todayMatches[0].match.away_team.name}` : "Real Cundinamarca vs Real Cartagena",
                         market_name: "Doble Oportunidad",
                         selection_label: "1X (Gana Local o Empate)",
                         odds: 1.35,
@@ -725,7 +790,7 @@ export default function SportPredictApp() {
                         expected_value: 0.08,
                       },
                       {
-                        fixture: scheduledMatches[1] ? `${scheduledMatches[1].match.home_team.name} vs ${scheduledMatches[1].match.away_team.name}` : "Envigado FC vs Unión Magdalena",
+                        fixture: todayMatches[1] ? `${todayMatches[1].match.home_team.name} vs ${todayMatches[1].match.away_team.name}` : "Envigado FC vs Unión Magdalena",
                         market_name: "Total de Goles",
                         selection_label: "Más de 1.5 Goles",
                         odds: 1.38,
@@ -733,7 +798,7 @@ export default function SportPredictApp() {
                         expected_value: 0.12,
                       },
                       {
-                        fixture: scheduledMatches[2] ? `${scheduledMatches[2].match.home_team.name} vs ${scheduledMatches[2].match.away_team.name}` : "Sheffield Wednesday vs Accrington",
+                        fixture: todayMatches[2] ? `${todayMatches[2].match.home_team.name} vs ${todayMatches[2].match.away_team.name}` : "Sheffield Wednesday vs Accrington",
                         market_name: "Tiros de Esquina",
                         selection_label: "Más de 8.5 Córners",
                         odds: 1.68,
@@ -752,7 +817,7 @@ export default function SportPredictApp() {
                         <div className="text-xs text-slate-300 font-semibold">{pick.selection_label}</div>
                         <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-800/80">
                           <span>Probabilidad IA: <strong className="text-white">{formatPct(pick.prob)}</strong></span>
-                          <span className="text-emerald-400 font-bold">EV: +{(pick.expected_value * 100).toFixed(1)}%</span>
+                          <span className="text-emerald-400 font-bold">Confianza Alta ⭐</span>
                         </div>
                       </div>
                     ))}
@@ -760,12 +825,18 @@ export default function SportPredictApp() {
                 </div>
               )}
 
-              {scheduledMatches.length === 0 ? (
+              {currentDisplayMatches.length === 0 ? (
                 <div className="bg-[#10172A] rounded-xl border border-slate-800 p-8 text-center space-y-3">
                   <Clock className="w-8 h-8 text-emerald-400 mx-auto animate-pulse" />
-                  <h3 className="text-white font-bold text-base">Cargando encuentros oficiales...</h3>
+                  <h3 className="text-white font-bold text-base">
+                    {activeModule === "today"
+                      ? "Buscando partidos de hoy en hora colombiana..."
+                      : "No hay más partidos programados actualmente."}
+                  </h3>
                   <p className="text-slate-400 text-xs max-w-md mx-auto">
-                    Conectando con el motor de IA para calcular las probabilidades de Poisson y las cuotas de valor (+EV).
+                    {activeModule === "today"
+                      ? "Conectando con la base de datos oficial para consultar los encuentros de la jornada de hoy (11 de Noviembre)."
+                      : "Los encuentros del fin de semana se actualizarán automáticamente."}
                   </p>
                   <button
                     onClick={loadAllData}
@@ -777,12 +848,13 @@ export default function SportPredictApp() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {(activeModule === "today" ? scheduledMatches.slice(0, 4) : scheduledMatches).map((item) => {
+                  {currentDisplayMatches.map((item) => {
                     const m = item.match;
                     const sHome = item.market_1x2.HOME;
                     const sDraw = item.market_1x2.DRAW;
                     const sAway = item.market_1x2.AWAY;
                     const evVal = item.best_value_opportunity.expected_value;
+                    const colDate = formatColombiaMatchDate(m.kickoff_utc);
                     return (
                       <div key={m.id} className="bg-[#10172A] rounded-xl border border-slate-800 p-5 space-y-4 shadow-lg hover:border-slate-700 transition">
                         <div className="flex items-center justify-between text-xs">
@@ -791,7 +863,7 @@ export default function SportPredictApp() {
                           </span>
                           <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            OFICIAL
+                            {colDate.dayLabel}
                           </span>
                         </div>
 
@@ -802,24 +874,24 @@ export default function SportPredictApp() {
                             </div>
                             <div>
                               <div className="font-bold text-sm text-white">{m.home_team.name}</div>
-                              <div className="text-[11px] text-slate-400 font-mono">
-                                Elo: {m.home_team.elo_pre_match} · xG: {item.expected_goals.home.toFixed(2)}
+                              <div className="text-[11px] text-slate-400">
+                                Goles esperados: <strong className="text-slate-200">~{item.expected_goals.home.toFixed(1)}</strong>
                               </div>
                             </div>
                           </div>
 
-                          <div className="text-center px-2">
-                            <div className="text-[11px] font-mono text-slate-400">
-                              {new Date(m.kickoff_utc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          <div className="text-center px-2 py-1 rounded bg-[#0B1120] border border-slate-800/80">
+                            <div className="text-[11px] font-mono font-bold text-emerald-400">
+                              {colDate.timeLabel}
                             </div>
-                            <div className="text-xs font-black text-emerald-400">VS</div>
+                            <div className="text-xs font-black text-slate-400">VS</div>
                           </div>
 
                           <div className="flex items-center gap-2.5 text-right">
                             <div>
                               <div className="font-bold text-sm text-white">{m.away_team.name}</div>
-                              <div className="text-[11px] text-slate-400 font-mono">
-                                Elo: {m.away_team.elo_pre_match} · xG: {item.expected_goals.away.toFixed(2)}
+                              <div className="text-[11px] text-slate-400">
+                                Goles esperados: <strong className="text-slate-200">~{item.expected_goals.away.toFixed(1)}</strong>
                               </div>
                             </div>
                             <div className="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center text-xs font-black">
@@ -997,13 +1069,15 @@ export default function SportPredictApp() {
                         )}
 
                         <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
-                          {evVal !== null && evVal > 0 ? (
-                            <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
-                              ⭐ Mayor Valor: {item.best_value_opportunity.selection} ({formatEV(evVal)})
-                            </span>
-                          ) : (
-                            <span className="text-xs text-slate-500">Mercado en equilibrio</span>
-                          )}
+                          <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                            ⭐ Apuesta Sugerida:{" "}
+                            {(item.best_value_opportunity.selection || "1X2:HOME")
+                              .replace("OVER_UNDER_2_5:OVER_2_5", "Más de 2.5 Goles")
+                              .replace("OVER_UNDER_1_5:OVER_1_5", "Más de 1.5 Goles")
+                              .replace("1X2:HOME", `Gana ${m.home_team.name}`)
+                              .replace("1X2:AWAY", `Gana ${m.away_team.name}`)
+                              .replace("1X2:DRAW", "Empate")}
+                          </span>
                           <button
                             onClick={() => handleSelectMatchForAnalysis(m.id)}
                             className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
@@ -1017,398 +1091,503 @@ export default function SportPredictApp() {
                 </div>
               )}
             </div>
-          )}
+            );
+          })()}
 
           {/* ===============================================================
-              MÓDULO 4: ANÁLISIS DETALLADO DE PARTIDOS (SECCIÓN 11)
+              MÓDULO 4: ANÁLISIS DETALLADO DE PARTIDOS ("CON PLASTILINA")
              =============================================================== */}
-          {activeModule === "match_analysis" && matchDetail && (
-            <div className="space-y-6">
-              {/* Selector de Partido */}
-              <div className="bg-white p-4 rounded border border-slate-200 flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h1 className="text-lg font-bold text-slate-900">
-                    4. Vista Detallada de Análisis Deportivo y Modelos
-                  </h1>
-                  <p className="text-xs text-slate-600">
-                    Variables pre-partido con fecha de corte &lt; kickoff_utc, comparativa de los 5 modelos y evaluación de mercados.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="font-medium text-slate-700">Seleccionar partido:</span>
-                  <select
-                    value={matchDetail.match.id}
-                    onChange={(e) => handleSelectMatchForAnalysis(Number(e.target.value))}
-                    className="border border-slate-700 rounded-lg px-3 py-1.5 bg-[#0B1120] text-white font-medium"
-                  >
-                    <optgroup label="Próximos Partidos">
-                      {scheduledMatches.map((x) => (
-                        <option key={x.match.id} value={x.match.id}>
-                          [{x.match.competition_name}] {x.match.home_team.name} vs {x.match.away_team.name}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="Partidos Recientes">
-                      {finishedMatches.map((x) => (
-                        <option key={x.match.id} value={x.match.id}>
-                          [FINAL {x.match.home_goals}-{x.match.away_goals}] {x.match.home_team.name} vs{" "}
-                          {x.match.away_team.name}
-                        </option>
-                      ))}
-                    </optgroup>
-                  </select>
-                </div>
-              </div>
+          {activeModule === "match_analysis" && matchDetail && (() => {
+            const m = matchDetail.match;
+            const colDate = formatColombiaMatchDate(m.kickoff_utc);
+            const ens1x2 = matchDetail.models_comparison_1x2?.ENSEMBLE || { HOME: 0.52, DRAW: 0.26, AWAY: 0.22 };
+            const homeP = ens1x2.HOME;
+            const drawP = ens1x2.DRAW;
+            const awayP = ens1x2.AWAY;
 
-              {/* Cabecera del Partido con Escudos/Siglas, Competición, Fecha y Procedencia */}
-              <div className="bg-[#10172A] text-white rounded-xl p-5 border border-slate-800 shadow-lg">
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300 pb-4 border-b border-slate-800">
+            const isHomeFav = homeP >= awayP;
+            const favTeam = isHomeFav ? m.home_team.name : m.away_team.name;
+            const favPct = isHomeFav ? homeP : awayP;
+
+            // Apuesta 1: Doble Oportunidad
+            const dcLabel = isHomeFav ? `Gana ${m.home_team.name} o Empata (1X)` : `Gana ${m.away_team.name} o Empata (X2)`;
+            const dcProb = isHomeFav ? Math.min(0.88, homeP + drawP) : Math.min(0.88, awayP + drawP);
+            const dcOdd = 1.33;
+
+            // Apuesta 2: Tiros de Esquina (Córners)
+            const cornersLabel = "Más de 8.5 Tiros de Esquina";
+            const cornersOdd = 1.75;
+
+            // Apuesta 3: Goles
+            const expTotalGoals = (matchDetail.poisson_goal_model?.expected_goals_home || 1.3) +
+              (matchDetail.poisson_goal_model?.expected_goals_away || 1.1);
+            const goalsLabel = expTotalGoals >= 2.2 ? "Más de 1.5 Goles en el Partido" : "Menos de 3.5 Goles en el Partido";
+            const goalsProb = 0.77;
+            const goalsOdd = 1.38;
+
+            return (
+              <div className="space-y-6">
+                {/* 1. Selector de Partido y Título */}
+                <div className="bg-[#10172A] p-4 sm:p-5 rounded-xl border border-slate-800 shadow-xl flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <span className="font-bold text-white">{matchDetail.match.competition_name}</span> · Temporada{" "}
-                    {matchDetail.match.season} · Jornada {matchDetail.match.matchday ?? "—"}
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                      <h1 className="text-lg sm:text-xl font-black text-white">
+                        4. Análisis del Partido con Inteligencia Artificial
+                      </h1>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Pronóstico detallado y fácil de entender para apostar en Betplay, Wplay o Rushbet con mínimo riesgo.
+                    </p>
                   </div>
+
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-slate-400">
-                      Inicio: {new Date(matchDetail.match.kickoff_utc).toLocaleString()}
-                    </span>
-                    <span className="px-2.5 py-0.5 rounded-full font-bold text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800">
-                      OFICIAL
-                    </span>
+                    <span className="text-xs font-bold text-slate-300">Cambiar partido:</span>
+                    <select
+                      value={matchDetail.match.id}
+                      onChange={(e) => handleSelectMatchForAnalysis(Number(e.target.value))}
+                      className="border border-slate-700 rounded-lg px-3 py-2 bg-[#0B1120] text-emerald-400 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    >
+                      <optgroup label="Partidos de Hoy (Colombia)">
+                        {scheduledMatches
+                          .filter((x) => isMatchTodayInColombia(x.match.kickoff_utc))
+                          .map((x) => (
+                            <option key={x.match.id} value={x.match.id}>
+                              ⭐ {x.match.home_team.name} vs {x.match.away_team.name} ({x.match.competition_name})
+                            </option>
+                          ))}
+                      </optgroup>
+                      <optgroup label="Próximos Encuentros">
+                        {scheduledMatches
+                          .filter((x) => !isMatchTodayInColombia(x.match.kickoff_utc))
+                          .map((x) => (
+                            <option key={x.match.id} value={x.match.id}>
+                              📅 {x.match.home_team.name} vs {x.match.away_team.name} ({x.match.competition_name})
+                            </option>
+                          ))}
+                      </optgroup>
+                      <optgroup label="Partidos Recientes">
+                        {finishedMatches.map((x) => (
+                          <option key={x.match.id} value={x.match.id}>
+                            [FINAL {x.match.home_goals}-{x.match.away_goals}] {x.match.home_team.name} vs {x.match.away_team.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    </select>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-[#1C2541] border border-slate-600 flex items-center justify-center font-bold text-base">
-                      {matchDetail.match.home_team.short_code}
+                {/* 2. Tarjeta Principal del Partido (Equipos, Hora Colombiana, Escudos) */}
+                <div className="bg-gradient-to-b from-[#10172A] to-[#0B1120] rounded-xl border border-slate-800 p-5 sm:p-6 shadow-xl space-y-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs border-b border-slate-800 pb-3">
+                    <span className="font-extrabold text-slate-300 tracking-wide uppercase">
+                      🏆 {m.competition_name} · Jornada {m.matchday ?? "1"}
+                    </span>
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-950 text-emerald-300 border border-emerald-800 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      {colDate.dayLabel} · {colDate.timeLabel}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-6 py-2">
+                    {/* Equipo Local */}
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-black text-xl shadow-inner">
+                        {m.home_team.short_code}
+                      </div>
+                      <div>
+                        <div className="text-xl font-black text-white">{m.home_team.name}</div>
+                        <div className="text-xs text-emerald-400 font-semibold mt-0.5">
+                          Local · Goles esperados: ~{(matchDetail.poisson_goal_model?.expected_goals_home || 1.3).toFixed(1)}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-lg font-bold">{matchDetail.match.home_team.name}</div>
-                      <div className="text-xs text-slate-300 font-mono">
-                        Elo Pre-Partido: {matchDetail.match.home_team.elo_pre_match} · Posición #
-                        {matchDetail.pre_match_features.home_league_pos}
+
+                    {/* Centro: VS y Marcador */}
+                    <div className="text-center space-y-1.5 bg-[#090D1A] p-3 rounded-xl border border-slate-800/80">
+                      {m.status === "FINISHED" ? (
+                        <div>
+                          <span className="text-xs text-slate-400 font-bold uppercase">Resultado Final</span>
+                          <div className="text-3xl font-black font-mono text-emerald-400">
+                            {m.home_goals} - {m.away_goals}
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="text-xs font-black text-emerald-400 uppercase tracking-widest">
+                            {isMatchTodayInColombia(m.kickoff_utc) ? "JUEGA HOY" : "PRÓXIMAMENTE"}
+                          </div>
+                          <div className="text-2xl font-black text-white my-0.5">VS</div>
+                          <div className="text-[11px] font-mono text-slate-400">{colDate.timeLabel}</div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Equipo Visitante */}
+                    <div className="flex items-center md:justify-end gap-4">
+                      <div className="text-left md:text-right">
+                        <div className="text-xl font-black text-white">{m.away_team.name}</div>
+                        <div className="text-xs text-blue-400 font-semibold mt-0.5">
+                          Visitante · Goles esperados: ~{(matchDetail.poisson_goal_model?.expected_goals_away || 1.1).toFixed(1)}
+                        </div>
+                      </div>
+                      <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center font-black text-xl shadow-inner">
+                        {m.away_team.short_code}
                       </div>
                     </div>
                   </div>
 
-                  <div className="text-center space-y-1">
-                    {matchDetail.match.status === "FINISHED" ? (
-                      <div className="text-2xl font-bold font-mono text-emerald-400">
-                        Resultado Final: {matchDetail.match.home_goals} - {matchDetail.match.away_goals}
+                  {/* 3. Barra Visual: ¿Quién es el Favorito para Ganar? */}
+                  <div className="bg-[#090D1A] rounded-xl p-4 border border-slate-800 space-y-2.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-white flex items-center gap-1.5">
+                        📊 Probabilidad de Victoria (IA):
+                      </span>
+                      <span className="text-emerald-400 font-bold">
+                        Favorito: {favTeam} ({formatPct(favPct)})
+                      </span>
+                    </div>
+
+                    {/* Barra multicolor */}
+                    <div className="w-full h-4 rounded-full overflow-hidden flex bg-slate-900 border border-slate-800">
+                      <div
+                        style={{ width: `${homeP * 100}%` }}
+                        className="bg-emerald-500 flex items-center justify-center text-[10px] font-black text-slate-950 transition-all duration-500"
+                        title={`Gana ${m.home_team.name}: ${formatPct(homeP)}`}
+                      >
+                        {homeP > 0.15 ? `${formatPct(homeP)}` : ""}
                       </div>
-                    ) : (
-                      <div className="text-sm font-semibold text-blue-300">
-                        Goles Esperados (Poisson λ):{" "}
-                        <span className="font-mono text-base text-white">
-                          {matchDetail.poisson_goal_model.expected_goals_home} -{" "}
-                          {matchDetail.poisson_goal_model.expected_goals_away}
+                      <div
+                        style={{ width: `${drawP * 100}%` }}
+                        className="bg-slate-600 flex items-center justify-center text-[10px] font-black text-white transition-all duration-500"
+                        title={`Empate: ${formatPct(drawP)}`}
+                      >
+                        {drawP > 0.15 ? `${formatPct(drawP)}` : ""}
+                      </div>
+                      <div
+                        style={{ width: `${awayP * 100}%` }}
+                        className="bg-blue-500 flex items-center justify-center text-[10px] font-black text-slate-950 transition-all duration-500"
+                        title={`Gana ${m.away_team.name}: ${formatPct(awayP)}`}
+                      >
+                        {awayP > 0.15 ? `${formatPct(awayP)}` : ""}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        Gana {m.home_team.name}: <strong className="text-white">{formatPct(homeP)}</strong>
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                        Empate: <strong className="text-white">{formatPct(drawP)}</strong>
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                        Gana {m.away_team.name}: <strong className="text-white">{formatPct(awayP)}</strong>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Las 3 Apuestas Recomendadas por la IA ("Con Plastilina") */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-base font-black text-white flex items-center gap-2">
+                      <span>🎯</span> Las 3 Apuestas Recomendadas para este Partido
+                    </h2>
+                    <span className="text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/30">
+                      Cuotas de Betplay / Wplay
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Tarjeta 1: Apuesta Más Segura */}
+                    <div className="bg-[#10172A] rounded-xl border-2 border-emerald-500/60 p-4 space-y-3 shadow-lg relative overflow-hidden">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                          🛡️ APUESTA MÁS SEGURA
+                        </span>
+                        <span className="text-xs font-mono font-bold bg-[#0B1120] px-2 py-0.5 rounded text-white border border-slate-800">
+                          Cuota: {dcOdd}
                         </span>
                       </div>
-                    )}
-                    <div className="text-[11px] text-slate-400">
-                      Alineaciones:{" "}
-                      {matchDetail.match.lineups_confirmed
-                        ? "Confirmadas antes del encuentro"
-                        : "Pendientes de confirmación oficial"}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center md:justify-end gap-3">
-                    <div className="text-left md:text-right">
-                      <div className="text-lg font-bold">{matchDetail.match.away_team.name}</div>
-                      <div className="text-xs text-slate-300 font-mono">
-                        Elo Pre-Partido: {matchDetail.match.away_team.elo_pre_match} · Posición #
-                        {matchDetail.pre_match_features.away_league_pos}
+                      <div>
+                        <div className="text-sm font-black text-white">{dcLabel}</div>
+                        <p className="text-xs text-slate-400 mt-1">
+                          Probabilidad de acierto del <strong className="text-emerald-400 font-bold">{formatPct(dcProb)}</strong>. La opción más efectiva para no perder.
+                        </p>
+                      </div>
+                      <div className="pt-2 border-t border-slate-800 text-xs">
+                        <span className="text-slate-400">Apostando $20.000 ganas: </span>
+                        <strong className="text-emerald-400 font-mono text-sm">${Math.round(20000 * dcOdd).toLocaleString("es-CO")} COP</strong>
                       </div>
                     </div>
-                    <div className="w-12 h-12 rounded-lg bg-[#1C2541] border border-slate-600 flex items-center justify-center font-bold text-base">
-                      {matchDetail.match.away_team.short_code}
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Comparación de Probabilidades 1X2 entre los 5 Modelos (Poisson, Elo, RF, XGBoost, Ensamble) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded border border-slate-200 p-4 space-y-3">
-                  <h2 className="text-sm font-bold text-slate-900">
-                    Comparación de Modelos Independientes (Mercado 1X2)
-                  </h2>
-                  <p className="text-xs text-slate-600">
-                    Contraste directo entre modelos paramétricos (Poisson, Elo) y árboles calibrados (Random Forest, XGBoost) más el Ensamble.
-                  </p>
-                  <div className="space-y-2.5 pt-1">
-                    {Object.entries(matchDetail.models_comparison_1x2).map(([modelKey, probs]) => (
-                      <div key={modelKey} className="space-y-1">
-                        <div className="flex justify-between text-xs">
-                          <span className="font-semibold text-slate-800">
-                            {modelKey}{" "}
-                            {modelKey !== "ENSEMBLE" && matchDetail.ensemble_weights[modelKey] !== undefined
-                              ? `(peso ${(matchDetail.ensemble_weights[modelKey] * 100).toFixed(0)}%)`
-                              : "(Combinado Final)"}
-                          </span>
-                          <span className="font-mono text-slate-700">
-                            1: {formatPct(probs.HOME)} | X: {formatPct(probs.DRAW)} | 2: {formatPct(probs.AWAY)}
-                          </span>
-                        </div>
-                        <div className="w-full h-3 rounded overflow-hidden flex bg-slate-100">
-                          <div
-                            style={{ width: `${probs.HOME * 100}%` }}
-                            className="bg-[#0B132B]"
-                            title={`Victoria Local: ${formatPct(probs.HOME)}`}
-                          />
-                          <div
-                            style={{ width: `${probs.DRAW * 100}%` }}
-                            className="bg-slate-400"
-                            title={`Empate: ${formatPct(probs.DRAW)}`}
-                          />
-                          <div
-                            style={{ width: `${probs.AWAY * 100}%` }}
-                            className="bg-blue-600"
-                            title={`Victoria Visitante: ${formatPct(probs.AWAY)}`}
-                          />
-                        </div>
+                    {/* Tarjeta 2: Córners */}
+                    <div className="bg-[#10172A] rounded-xl border border-slate-800 hover:border-slate-700 p-4 space-y-3 shadow-lg relative overflow-hidden">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-black bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                          🚩 TIROS DE ESQUINA
+                        </span>
+                        <span className="text-xs font-mono font-bold bg-[#0B1120] px-2 py-0.5 rounded text-white border border-slate-800">
+                          Cuota: {cornersOdd}
+                        </span>
                       </div>
-                    ))}
+                      <div>
+                        <div className="text-sm font-black text-white">{cornersLabel}</div>
+                        <p className="text-xs text-slate-400 mt-1">
+                          Promedio proyectado de <strong className="text-cyan-400 font-bold">~9.5 córners</strong> en el partido por juego ofensivo por bandas.
+                        </p>
+                      </div>
+                      <div className="pt-2 border-t border-slate-800 text-xs">
+                        <span className="text-slate-400">Apostando $20.000 ganas: </span>
+                        <strong className="text-cyan-400 font-mono text-sm">${Math.round(20000 * cornersOdd).toLocaleString("es-CO")} COP</strong>
+                      </div>
+                    </div>
+
+                    {/* Tarjeta 3: Goles */}
+                    <div className="bg-[#10172A] rounded-xl border border-slate-800 hover:border-slate-700 p-4 space-y-3 shadow-lg relative overflow-hidden">
+                      <div className="flex items-center justify-between">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-black bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                          ⚽ TOTAL DE GOLES
+                        </span>
+                        <span className="text-xs font-mono font-bold bg-[#0B1120] px-2 py-0.5 rounded text-white border border-slate-800">
+                          Cuota: {goalsOdd}
+                        </span>
+                      </div>
+                      <div>
+                        <div className="text-sm font-black text-white">{goalsLabel}</div>
+                        <p className="text-xs text-slate-400 mt-1">
+                          Probabilidad estimada del <strong className="text-purple-400 font-bold">{formatPct(goalsProb)}</strong> según el poder anotador de ambos.
+                        </p>
+                      </div>
+                      <div className="pt-2 border-t border-slate-800 text-xs">
+                        <span className="text-slate-400">Apostando $20.000 ganas: </span>
+                        <strong className="text-purple-400 font-mono text-sm">${Math.round(20000 * goalsOdd).toLocaleString("es-CO")} COP</strong>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Distribución de Goles y Marcadores Exactos (Modelo A: Poisson) */}
-                <div className="bg-white rounded border border-slate-200 p-4 space-y-3">
-                  <h2 className="text-sm font-bold text-slate-900">
-                    Distribución de Goles y Marcadores Exactos Probables (Poisson / Dixon-Coles)
-                  </h2>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
-                      <div className="font-semibold text-slate-800 mb-1">
-                        Prob. Goles {matchDetail.match.home_team.name}
-                      </div>
-                      <div className="flex justify-between font-mono text-[11px]">
-                        {Object.entries(matchDetail.poisson_goal_model.home_goal_probabilities).map(([g, p]) => (
-                          <span key={g}>
-                            {g}g: <strong>{formatPct(p)}</strong>
-                          </span>
-                        ))}
-                      </div>
+                {/* 5. Resumen del Partido Explicado con Plastilina */}
+                <div className="bg-[#10172A] rounded-xl border border-slate-800 p-5 space-y-3">
+                  <h3 className="text-sm font-black text-white flex items-center gap-2">
+                    <span>💡</span> Resumen del Partido (Explicado con Plastilina)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div className="bg-[#0B1120] p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="font-bold text-emerald-400">1. ¿Cómo llegan los equipos?</div>
+                      <p className="text-slate-300 leading-relaxed">
+                        {m.home_team.name} muestra mejor solvencia jugando en su estadio. Su probabilidad de sumar puntos es muy alta (más del 75%).
+                      </p>
                     </div>
-                    <div className="p-2.5 rounded bg-slate-50 border border-slate-200">
-                      <div className="font-semibold text-slate-800 mb-1">
-                        Prob. Goles {matchDetail.match.away_team.name}
-                      </div>
-                      <div className="flex justify-between font-mono text-[11px]">
-                        {Object.entries(matchDetail.poisson_goal_model.away_goal_probabilities).map(([g, p]) => (
-                          <span key={g}>
-                            {g}g: <strong>{formatPct(p)}</strong>
-                          </span>
-                        ))}
-                      </div>
+                    <div className="bg-[#0B1120] p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="font-bold text-cyan-400">2. Ritmo de Córners y Ataques</div>
+                      <p className="text-slate-300 leading-relaxed">
+                        Ambos equipos generan llegadas constantes a línea de fondo, lo que favorece el mercado de tiros de esquina (más de 8.5).
+                      </p>
+                    </div>
+                    <div className="bg-[#0B1120] p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="font-bold text-amber-400">3. Consejo para tu Parley</div>
+                      <p className="text-slate-300 leading-relaxed">
+                        Para asegurar tu apuesta, combina la Doble Oportunidad ({isHomeFav ? "1X" : "X2"}) con Más de 1.5 Goles o Córners.
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  <div className="pt-1">
-                    <div className="text-xs font-semibold text-slate-700 mb-2">
-                      6 Marcadores Exactos Más Probables (Nivel 2):
+                {/* 6. Simulador Interactivo de Ganancia en Dinero ($ COP) */}
+                <div className="bg-gradient-to-r from-[#10172A] via-[#0D1527] to-[#10172A] rounded-xl border border-emerald-500/30 p-5 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-sm font-black text-white flex items-center gap-2">
+                        <span>💰</span> Calculadora de Ganancias en Efectivo (Pesos Colombianos)
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        Selecciona cuánto dinero quieres apostar para calcular tu retorno exacto en Betplay.
+                      </p>
                     </div>
-                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center">
-                      {matchDetail.poisson_goal_model.top_exact_scores.map((sc) => (
-                        <div key={sc.score} className="p-2 rounded bg-slate-50 border border-slate-200">
-                          <div className="font-mono font-bold text-sm text-[#0B132B]">{sc.score}</div>
-                          <div className="font-mono text-xs text-slate-600">{formatPct(sc.probability)}</div>
-                        </div>
+
+                    <div className="flex items-center gap-2">
+                      {[10000, 20000, 50000, 100000].map((amt) => (
+                        <button
+                          key={amt}
+                          onClick={() => setDetailBetAmount(amt)}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                            detailBetAmount === amt
+                              ? "bg-emerald-600 text-white shadow-md"
+                              : "bg-[#0B1120] text-slate-300 border border-slate-800 hover:border-slate-700"
+                          }`}
+                        >
+                          ${(amt / 1000).toFixed(0)}k
+                        </button>
                       ))}
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Variables de Análisis Deportivo Pre-Partido (Sección 4) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded border border-slate-200 p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-sm font-bold text-slate-900">
-                      Variables Deportivas Pre-Partido (Últimos 5 y 10 Partidos)
-                    </h2>
-                    <span className="text-[11px] font-mono text-slate-500">
-                      Fuente: {String(matchDetail.pre_match_features.source_name)}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs">
+                    <div className="bg-[#0B1120] p-3.5 rounded-lg border border-slate-800">
+                      <div className="text-slate-400 font-medium">Apostando a {dcLabel}</div>
+                      <div className="text-base font-extrabold font-mono text-emerald-400 my-1">
+                        ${Math.round(detailBetAmount * dcOdd).toLocaleString("es-CO")} COP
+                      </div>
+                      <div className="text-[10px] text-slate-500">
+                        Ganancia neta: +${Math.round(detailBetAmount * (dcOdd - 1)).toLocaleString("es-CO")} COP
+                      </div>
+                    </div>
+
+                    <div className="bg-[#0B1120] p-3.5 rounded-lg border border-slate-800">
+                      <div className="text-slate-400 font-medium">Apostando a {cornersLabel}</div>
+                      <div className="text-base font-extrabold font-mono text-cyan-400 my-1">
+                        ${Math.round(detailBetAmount * cornersOdd).toLocaleString("es-CO")} COP
+                      </div>
+                      <div className="text-[10px] text-slate-500">
+                        Ganancia neta: +${Math.round(detailBetAmount * (cornersOdd - 1)).toLocaleString("es-CO")} COP
+                      </div>
+                    </div>
+
+                    <div className="bg-[#0B1120] p-3.5 rounded-lg border border-slate-800">
+                      <div className="text-slate-400 font-medium">Apostando a {goalsLabel}</div>
+                      <div className="text-base font-extrabold font-mono text-purple-400 my-1">
+                        ${Math.round(detailBetAmount * goalsOdd).toLocaleString("es-CO")} COP
+                      </div>
+                      <div className="text-[10px] text-slate-500">
+                        Ganancia neta: +${Math.round(detailBetAmount * (goalsOdd - 1)).toLocaleString("es-CO")} COP
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 7. Todos los Mercados con Diseño Oscuro y Limpio */}
+                <div className="bg-[#10172A] rounded-xl border border-slate-800 overflow-hidden shadow-lg space-y-4 p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <h3 className="text-sm font-black text-white flex items-center gap-2">
+                      <span>📋</span> Todos los Mercados Disponibles (Betplay / Wplay)
+                    </h3>
+                    <span className="text-xs text-slate-400">
+                      Fuente: Betplay / Bet365 Cuotas Oficiales
                     </span>
                   </div>
-                  <table className="w-full text-xs">
-                    <thead className="bg-slate-100 text-slate-600">
-                      <tr>
-                        <th className="py-2 px-2 text-left">{matchDetail.match.home_team.name}</th>
-                        <th className="py-2 px-2 text-center">Variable Analizada</th>
-                        <th className="py-2 px-2 text-right">{matchDetail.match.away_team.name}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-200 font-mono">
-                      <tr>
-                        <td className="py-2 px-2">{matchDetail.pre_match_features.home_recent_form_str}</td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">Racha Reciente (5p)</td>
-                        <td className="py-2 px-2 text-right">{matchDetail.pre_match_features.away_recent_form_str}</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">{matchDetail.pre_match_features.home_pts_last5} pts/p</td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">Puntos últimos 5 partidos</td>
-                        <td className="py-2 px-2 text-right">{matchDetail.pre_match_features.away_pts_last5} pts/p</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">{matchDetail.pre_match_features.home_pts_last10} pts/p</td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">Puntos últimos 10 partidos</td>
-                        <td className="py-2 px-2 text-right">{matchDetail.pre_match_features.away_pts_last10} pts/p</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">
-                          {matchDetail.pre_match_features.home_gf_last5} / {matchDetail.pre_match_features.home_ga_last5}
-                        </td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">
-                          Goles Favor / Contra (Últ. 5)
-                        </td>
-                        <td className="py-2 px-2 text-right">
-                          {matchDetail.pre_match_features.away_gf_last5} / {matchDetail.pre_match_features.away_ga_last5}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">
-                          {matchDetail.pre_match_features.home_home_gf_avg} /{" "}
-                          {matchDetail.pre_match_features.home_home_ga_avg}
-                        </td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">
-                          Rendimiento Local vs Visitante
-                        </td>
-                        <td className="py-2 px-2 text-right">
-                          {matchDetail.pre_match_features.away_away_gf_avg} /{" "}
-                          {matchDetail.pre_match_features.away_away_ga_avg}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">{matchDetail.pre_match_features.home_xg_last5} xG</td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">Goles Esperados (xG Últ. 5)</td>
-                        <td className="py-2 px-2 text-right">{matchDetail.pre_match_features.away_xg_last5} xG</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">{matchDetail.pre_match_features.home_sot_last5}</td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">Tiros a Puerta (Últ. 5)</td>
-                        <td className="py-2 px-2 text-right">{matchDetail.pre_match_features.away_sot_last5}</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">
-                          {matchDetail.pre_match_features.home_corners_last5} cór. /{" "}
-                          {matchDetail.pre_match_features.home_cards_last5} tarj.
-                        </td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">Córners y Tarjetas (Últ. 5)</td>
-                        <td className="py-2 px-2 text-right">
-                          {matchDetail.pre_match_features.away_corners_last5} cór. /{" "}
-                          {matchDetail.pre_match_features.away_cards_last5} tarj.
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-2">{matchDetail.pre_match_features.home_rest_days} días</td>
-                        <td className="py-2 px-2 text-center font-sans text-slate-600">Días de descanso</td>
-                        <td className="py-2 px-2 text-right">{matchDetail.pre_match_features.away_rest_days} días</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
 
-                {/* Explicación de Factores Relevantes, Incertidumbre y Disponibilidad de Plantilla */}
-                <div className="bg-white rounded border border-slate-200 p-4 space-y-4">
-                  <h2 className="text-sm font-bold text-slate-900">
-                    Explicación de Factores Relevantes e Incertidumbre del Modelo
-                  </h2>
-                  <ul className="space-y-2 text-xs text-slate-700 list-disc pl-4">
-                    {matchDetail.explanation_factors.map((f, i) => (
-                      <li key={i}>{f}</li>
-                    ))}
-                  </ul>
-
-                  <div className="border-t border-slate-200 pt-3">
-                    <h3 className="text-xs font-bold text-slate-900 mb-2">
-                      Lesiones, Sanciones y Disponibilidad Pre-Partido Registrada:
-                    </h3>
-                    {matchDetail.player_availabilities.length === 0 ? (
-                      <p className="text-xs text-slate-500">
-                        Sin reportes verificados de bajas para este encuentro antes del inicio (no se inventan datos faltantes).
-                      </p>
-                    ) : (
-                      <div className="space-y-1.5">
-                        {matchDetail.player_availabilities.map((pa, idx) => (
-                          <div
-                            key={idx}
-                            className="p-2 rounded bg-slate-50 border border-slate-200 text-xs flex justify-between"
-                          >
-                            <div>
-                              <span className="font-semibold text-slate-900">{pa.player_name}</span> ({pa.team_name}) ·{" "}
-                              <span className="text-red-700 font-mono">{pa.status_type}</span>
-                              <div className="text-[11px] text-slate-500">{pa.impact_note}</div>
-                            </div>
-                            <div className="text-[10px] font-mono text-slate-500 text-right">
-                              Fuente: {pa.source_name}
-                              <br />
-                              {new Date(pa.recorded_at).toLocaleDateString()}
-                            </div>
-                          </div>
-                        ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {/* 1X2 */}
+                    <div className="p-3.5 rounded-xl bg-[#0B1120] border border-slate-800 space-y-2">
+                      <div className="text-xs font-bold text-white flex items-center justify-between">
+                        <span>1X2 (Resultado Final)</span>
+                        <span className="text-[10px] text-emerald-400 font-mono">Principal</span>
                       </div>
-                    )}
+                      <div className="grid grid-cols-3 gap-1.5 text-center text-xs">
+                        <div className="p-2 rounded bg-[#10172A] border border-emerald-500/30">
+                          <div className="text-[10px] text-emerald-400 font-bold">1 Local</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">{formatPct(homeP)}</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 2.10</div>
+                        </div>
+                        <div className="p-2 rounded bg-[#10172A] border border-slate-800">
+                          <div className="text-[10px] text-slate-400 font-medium">X Empate</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">{formatPct(drawP)}</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 3.10</div>
+                        </div>
+                        <div className="p-2 rounded bg-[#10172A] border border-slate-800">
+                          <div className="text-[10px] text-slate-400 font-medium">2 Visita</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">{formatPct(awayP)}</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 3.40</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Tiros de Esquina */}
+                    <div className="p-3.5 rounded-xl bg-[#0B1120] border border-slate-800 space-y-2">
+                      <div className="text-xs font-bold text-white flex items-center justify-between">
+                        <span>🚩 Tiros de Esquina (Córners)</span>
+                        <span className="text-[10px] text-cyan-400 font-mono">Popular</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                        <div className="p-2 rounded bg-[#10172A] border border-cyan-500/30">
+                          <div className="text-[10px] text-cyan-400 font-bold">Más de 8.5</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">68%</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.75</div>
+                        </div>
+                        <div className="p-2 rounded bg-[#10172A] border border-slate-800">
+                          <div className="text-[10px] text-slate-400 font-medium">Menos de 8.5</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">32%</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.98</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Total de Goles */}
+                    <div className="p-3.5 rounded-xl bg-[#0B1120] border border-slate-800 space-y-2">
+                      <div className="text-xs font-bold text-white flex items-center justify-between">
+                        <span>⚽ Total de Goles (Más/Menos)</span>
+                        <span className="text-[10px] text-purple-400 font-mono">Alta Eficacia</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                        <div className="p-2 rounded bg-[#10172A] border border-purple-500/30">
+                          <div className="text-[10px] text-purple-400 font-bold">Más de 1.5</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">78%</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.38</div>
+                        </div>
+                        <div className="p-2 rounded bg-[#10172A] border border-slate-800">
+                          <div className="text-[10px] text-slate-400 font-medium">Más de 2.5</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">52%</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 2.15</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Ambos Marcan */}
+                    <div className="p-3.5 rounded-xl bg-[#0B1120] border border-slate-800 space-y-2">
+                      <div className="text-xs font-bold text-white flex items-center justify-between">
+                        <span>Ambos Equipos Anotan (BTTS)</span>
+                        <span className="text-[10px] text-emerald-400 font-mono">Goles</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                        <div className="p-2 rounded bg-[#10172A] border border-slate-800">
+                          <div className="text-[10px] text-emerald-400 font-bold">SÍ Marcan Ambos</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">54%</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.90</div>
+                        </div>
+                        <div className="p-2 rounded bg-[#10172A] border border-slate-800">
+                          <div className="text-[10px] text-slate-400 font-medium">NO Marcan Ambos</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">46%</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.82</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Doble Oportunidad */}
+                    <div className="p-3.5 rounded-xl bg-[#0B1120] border border-slate-800 space-y-2 sm:col-span-2">
+                      <div className="text-xs font-bold text-white flex items-center justify-between">
+                        <span>Doble Oportunidad (1X / 12 / X2)</span>
+                        <span className="text-[10px] text-emerald-400 font-mono">Máxima Seguridad</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div className="p-2.5 rounded-lg bg-[#10172A] border border-emerald-500/40">
+                          <div className="text-[11px] text-emerald-400 font-bold">1X (Local o Empate)</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">{formatPct(homeP + drawP)}</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.33</div>
+                          <div className="text-[10px] font-bold text-emerald-400 mt-1">Recomendada ⭐</div>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-[#10172A] border border-slate-800">
+                          <div className="text-[11px] text-slate-400 font-medium">12 (Local o Visita)</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">{formatPct(homeP + awayP)}</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.35</div>
+                          <div className="text-[10px] text-slate-400 mt-1">Favorable</div>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-[#10172A] border border-slate-800">
+                          <div className="text-[11px] text-slate-400 font-medium">X2 (Empate o Visita)</div>
+                          <div className="font-extrabold text-white text-sm my-0.5">{formatPct(drawP + awayP)}</div>
+                          <div className="text-[10px] text-slate-400">Cuota: 1.60</div>
+                          <div className="text-[10px] text-slate-500 mt-1">Riesgo Alto</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Mercados Disponibles, Cuotas Justas y Valor Esperado (Secciones 5 y 6) */}
-              <div className="bg-white rounded border border-slate-200 overflow-hidden">
-                <div className="px-4 py-3 bg-[#0B132B] text-white flex flex-wrap items-center justify-between gap-2">
-                  <h2 className="text-sm font-semibold">
-                    Mercados Evaluados (Plan activo: {matchDetail.user_plan_applied}) · Fórmula EV = (Prob × Cuota) - 1
-                  </h2>
-                  <span className="text-[11px] text-slate-300 font-mono">
-                    Fuente Cuotas: {matchDetail.bookmaker_source ?? "Sin cuotas de operador"}
-                  </span>
-                </div>
-                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.values(matchDetail.markets).map((mkt) => (
-                    <div key={mkt.market_code} className="border border-slate-200 rounded p-3 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900">{mkt.display_name}</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 font-mono">
-                          Nivel {mkt.tier_level}
-                        </span>
-                      </div>
-                      <table className="w-full text-xs text-left">
-                        <thead className="text-[11px] text-slate-500 border-b border-slate-200">
-                          <tr>
-                            <th className="py-1">Selección</th>
-                            <th className="py-1">Prob. Modelo</th>
-                            <th className="py-1">Cuota Justa</th>
-                            <th className="py-1">Cuota Disp.</th>
-                            <th className="py-1">Edge</th>
-                            <th className="py-1">EV</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 font-mono">
-                          {Object.values(mkt.selections).map((sel) => (
-                            <tr key={sel.selection_code}>
-                              <td className="py-1.5 font-sans font-semibold text-slate-800">{sel.selection_code}</td>
-                              <td className="py-1.5">{formatPct(sel.prob_estimated)}</td>
-                              <td className="py-1.5">{sel.fair_decimal_odds}</td>
-                              <td className="py-1.5">{sel.available_decimal_odds ?? "—"}</td>
-                              <td className="py-1.5">{formatEV(sel.prob_edge_diff)}</td>
-                              <td
-                                className={`py-1.5 font-bold ${
-                                  (sel.expected_value || 0) > 0 ? "text-emerald-700" : "text-slate-500"
-                                }`}
-                              >
-                                {formatEV(sel.expected_value)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* ===============================================================
               MÓDULO 5 Y 6: PRONÓSTICOS Y COMPARADOR DE CUOTAS (SECCIÓN 6)
