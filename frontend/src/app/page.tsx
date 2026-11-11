@@ -96,50 +96,60 @@ export default function SportPredictApp() {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const [diag, sched, fin, mods, tms, ledg, logs] = await Promise.all([
+      const [diagRes, schedRes, finRes, modsRes, tmsRes, ledgRes, logsRes] = await Promise.allSettled([
         apiFetch<any>("/api/v1/system/diagnostic", undefined, userRole, userPlan),
         apiFetch<{ count: number; items: MatchSummaryItem[] }>(
-          "/api/v1/matches?status=SCHEDULED&limit=20",
+          "/api/v1/matches?status=SCHEDULED&limit=10",
           undefined,
           userRole,
           userPlan
         ),
         apiFetch<{ count: number; items: MatchSummaryItem[] }>(
-          "/api/v1/matches?status=FINISHED&limit=20",
+          "/api/v1/matches?status=FINISHED&limit=6",
           undefined,
           userRole,
           userPlan
         ),
         apiFetch<any>("/api/v1/models/comparison", undefined, userRole, userPlan),
         apiFetch<{ count: number; items: any[] }>("/api/v1/teams", undefined, userRole, userPlan),
-        apiFetch<any>("/api/v1/predictions/ledger?limit=60", undefined, userRole, userPlan),
+        apiFetch<any>("/api/v1/predictions/ledger?limit=30", undefined, userRole, userPlan),
         apiFetch<{ count: number; items: any[] }>("/api/v1/ingestion/logs", undefined, userRole, userPlan),
       ]);
 
-      setDiagnostic(diag);
-      setScheduledMatches(sched.items);
-      setFinishedMatches(fin.items);
-      setModelsData(mods);
-      setTeamsList(tms.items);
-      setLedgerData(ledg);
-      setSyncLogs(logs.items);
+      if (diagRes.status === "fulfilled") setDiagnostic(diagRes.value);
+      if (schedRes.status === "fulfilled") setScheduledMatches(schedRes.value.items);
+      if (finRes.status === "fulfilled") setFinishedMatches(finRes.value.items);
+      if (modsRes.status === "fulfilled") setModelsData(modsRes.value);
+      if (tmsRes.status === "fulfilled") setTeamsList(tmsRes.value.items);
+      if (ledgRes.status === "fulfilled") setLedgerData(ledgRes.value);
+      if (logsRes.status === "fulfilled") setSyncLogs(logsRes.value.items);
 
+      if (diagRes.status === "rejected" && schedRes.status === "rejected") {
+        setErrorMsg("El servidor backend en Render está respondiendo lentamente o iniciando. Por favor reintenta.");
+      }
+
+      const schedItems = schedRes.status === "fulfilled" ? schedRes.value.items : [];
+      const finItems = finRes.status === "fulfilled" ? finRes.value.items : [];
       const defaultId =
         selectedMatchId ||
-        (sched.items.length > 0 ? sched.items[0].match.id : fin.items[0]?.match.id || null);
+        (schedItems.length > 0 ? schedItems[0].match.id : finItems[0]?.match.id || null);
       if (defaultId) {
         setSelectedMatchId(defaultId);
-        const det = await apiFetch<DetailedMatchAnalysis>(
-          `/api/v1/matches/${defaultId}/analysis`,
-          undefined,
-          userRole,
-          userPlan
-        );
-        setMatchDetail(det);
+        try {
+          const det = await apiFetch<DetailedMatchAnalysis>(
+            `/api/v1/matches/${defaultId}/analysis`,
+            undefined,
+            userRole,
+            userPlan
+          );
+          setMatchDetail(det);
+        } catch {
+          // Si el detalle tarda un poco, no bloquea el dashboard
+        }
       }
     } catch (err: any) {
       setErrorMsg(
-        `No se pudo conectar con el motor FastAPI (${err.message}). Verifica que el servidor backend esté activo en el puerto 8000.`
+        `No se pudo conectar con el motor FastAPI (${err.message}). Verifica que el servidor backend esté activo.`
       );
     } finally {
       setLoading(false);

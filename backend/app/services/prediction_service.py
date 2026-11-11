@@ -480,6 +480,8 @@ class PredictionAndTrainingService:
                 home_elo=h_elo_pre,
                 away_elo=a_elo_pre,
             )
+            self._cached_features_by_match_id[match.id] = features
+            self._cached_elo_probs_by_match_id[match.id] = probs_elo_1x2
 
         poisson_dist = self.poisson.predict_full_distribution(match.home_team_id, match.away_team_id, features)
         probs_poisson_1x2 = poisson_dist["1X2"]
