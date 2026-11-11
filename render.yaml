@@ -33,6 +33,8 @@ services:
         sync: false
       - key: AUTH_ALLOW_DEV_HEADERS
         value: "false"
+      - key: ALLOW_GUEST_ACCESS
+        value: "true"
       - key: SEED_DEMO_DATA
         value: "false"
       - key: LOG_JSON

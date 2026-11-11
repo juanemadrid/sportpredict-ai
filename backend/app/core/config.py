@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     # Correos que reciben rol ADMIN automáticamente al primer inicio de sesión (separados por coma).
     ADMIN_EMAILS: str = ""
 
+    # Permite acceso personal directo como PRO/ADMIN para uso y pruebas personales sin fricción de login.
+    ALLOW_GUEST_ACCESS: bool = False
+
     # Solo desarrollo/pruebas: permite simular rol/plan con cabeceras X-User-Role / X-User-Plan.
     # Se ignora SIEMPRE cuando ENVIRONMENT=production.
     AUTH_ALLOW_DEV_HEADERS: bool = False

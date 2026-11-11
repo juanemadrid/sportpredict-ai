@@ -218,6 +218,18 @@ def get_request_context(
             ) from exc
         return _resolve_profile_from_claims(claims)
 
+    if settings.ALLOW_GUEST_ACCESS:
+        raw_role = x_user_role.upper() if isinstance(x_user_role, str) and x_user_role in VALID_ROLES else "ADMIN"
+        plan_key = x_user_plan.upper() if isinstance(x_user_plan, str) and x_user_plan in PLAN_CATALOG else "PRO"
+        caps = PLAN_CATALOG.get(plan_key, PLAN_CATALOG["PRO"])
+        return RequestContext(
+            role=raw_role,
+            plan_code=caps.plan_code,
+            capabilities=caps,
+            user_id="owner-personal",
+            auth_method="guest_direct",
+        )
+
     if settings.dev_headers_enabled:
         raw_role = x_user_role.upper() if isinstance(x_user_role, str) and x_user_role else "ANONYMOUS"
         if raw_role not in VALID_ROLES:
@@ -240,6 +252,15 @@ def require_authenticated_context(ctx: RequestContext) -> RequestContext:
     Rechaza usuarios no autenticados (sin header o anónimos) con HTTP 401 UNAUTHORIZED.
     """
     if ctx.role == "ANONYMOUS":
+        if getattr(settings, "ALLOW_GUEST_ACCESS", False):
+            caps = PLAN_CATALOG["PRO"]
+            return RequestContext(
+                role="ADMIN",
+                plan_code="PRO",
+                capabilities=caps,
+                user_id="owner-personal",
+                auth_method="guest_direct",
+            )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Autenticación requerida: debe incluir credenciales válidas o cabecera de autenticación.",
