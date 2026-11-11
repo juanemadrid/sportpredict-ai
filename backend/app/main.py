@@ -72,12 +72,11 @@ install_observability(app)
 app.add_middleware(GZipMiddleware, minimum_size=1024)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins_list,
-    allow_credentials=False,  # La sesión viaja en Authorization: Bearer, no en cookies.
-    allow_methods=["GET", "POST", "PATCH", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "X-Request-ID"]
-    + (["X-User-Role", "X-User-Plan"] if settings.dev_headers_enabled else []),
-    max_age=600,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    max_age=86400,
 )
 
 # Rutas públicas (sin autenticación)
