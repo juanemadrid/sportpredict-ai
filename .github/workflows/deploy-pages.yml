@@ -46,7 +46,9 @@ jobs:
           NEXT_PUBLIC_API_URL: https://sportpredict-backend.onrender.com
           NEXT_PUBLIC_SUPABASE_URL: https://rukwcqxsaaebyzzyqmrj.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || secrets.SUPABASE_ANON_KEY }}
-        run: npm run build
+        run: |
+          npm run build
+          touch out/.nojekyll
 
       - name: Subir artefacto de Pages
         uses: actions/upload-pages-artifact@v3
