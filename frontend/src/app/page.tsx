@@ -102,6 +102,7 @@ export default function SportPredictApp() {
   const [activeMarketTabs, setActiveMarketTabs] = useState<Record<number, "1x2" | "corners" | "goals" | "btts" | "dc">>({});
   const [simBetAmount, setSimBetAmount] = useState<number>(20000);
   const [detailBetAmount, setDetailBetAmount] = useState<number>(20000);
+  const [selectedDayFilter, setSelectedDayFilter] = useState<"today" | "tomorrow" | "all">("today");
 
   const isMatchTodayInColombia = (isoStr: string): boolean => {
     try {
@@ -121,6 +122,31 @@ export default function SportPredictApp() {
       }).format(new Date());
 
       return matchDateStr === todayStr;
+    } catch {
+      return false;
+    }
+  };
+
+  const isMatchTomorrowInColombia = (isoStr: string): boolean => {
+    try {
+      const d = new Date(isoStr);
+      const matchDateStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Bogota",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(d);
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Bogota",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(tomorrow);
+
+      return matchDateStr === tomorrowStr;
     } catch {
       return false;
     }
@@ -493,8 +519,18 @@ export default function SportPredictApp() {
              =============================================================== */}
           {activeModule === "parleys_today" && (() => {
             const todayMatches = scheduledMatches.filter((item) => isMatchTodayInColombia(item.match.kickoff_utc));
-            const displayMatches = todayMatches.length > 0 ? todayMatches : scheduledMatches;
-            const isShowingToday = todayMatches.length > 0;
+            const tomorrowMatches = scheduledMatches.filter((item) => isMatchTomorrowInColombia(item.match.kickoff_utc));
+
+            let displayMatches = scheduledMatches;
+            if (selectedDayFilter === "today") {
+              displayMatches = todayMatches.length > 0 ? todayMatches : scheduledMatches;
+            } else if (selectedDayFilter === "tomorrow") {
+              displayMatches = tomorrowMatches;
+            } else {
+              displayMatches = scheduledMatches;
+            }
+
+            const isShowingToday = selectedDayFilter === "today" && todayMatches.length > 0;
 
             // Custom Parlay Multiplier
             const customOddsProduct = customParlayPicks.reduce((acc, p) => acc * p.odds, 1);
@@ -777,24 +813,86 @@ export default function SportPredictApp() {
                   )}
                 </div>
 
-                {/* 5. LISTA DE PARTIDOS DISPONIBLES PARA HOY */}
+                {/* 5. LISTA DE PARTIDOS DISPONIBLES PARA APOSTAR */}
                 <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                     <div>
                       <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
-                        ⚽ Partidos Disponibles para Parley
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                          {isShowingToday ? "Partidos de Hoy en Colombia" : "Próximos Encuentros Oficiales"}
+                        ⚽ Partidos Disponibles para Apostar
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold font-mono">
+                          Hora Colombia (GMT-5)
                         </span>
                       </h2>
                       <p className="text-xs text-slate-400">
-                        {isShowingToday
-                          ? "Encuentros oficiales con inicio programado para el día de hoy (hora colombiana)."
-                          : "No quedan más partidos para la jornada de hoy. Mostrando los próximos encuentros oficiales programados con cuotas reales."}
+                        Selecciona el día que quieres apostar para ver los partidos oficiales y estado de alineaciones confirmadas.
                       </p>
+                    </div>
+
+                    {/* SELECTOR DE DÍAS: HOY, MAÑANA, TODOS */}
+                    <div className="flex items-center gap-1.5 bg-[#0B1120] p-1 rounded-xl border border-slate-800">
+                      <button
+                        onClick={() => setSelectedDayFilter("today")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                          selectedDayFilter === "today"
+                            ? "bg-emerald-600 text-white shadow-sm"
+                            : "text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        <span>📅 Hoy</span>
+                        <span className="px-1.5 py-0.2 rounded text-[10px] bg-slate-900/80 font-mono text-emerald-300">
+                          {todayMatches.length}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setSelectedDayFilter("tomorrow")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                          selectedDayFilter === "tomorrow"
+                            ? "bg-emerald-600 text-white shadow-sm"
+                            : "text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        <span>📅 Mañana</span>
+                        <span className="px-1.5 py-0.2 rounded text-[10px] bg-slate-900/80 font-mono text-cyan-300">
+                          {tomorrowMatches.length}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setSelectedDayFilter("all")}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                          selectedDayFilter === "all"
+                            ? "bg-emerald-600 text-white shadow-sm"
+                            : "text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        <span>📅 Todos</span>
+                        <span className="px-1.5 py-0.2 rounded text-[10px] bg-slate-900/80 font-mono text-slate-300">
+                          {scheduledMatches.length}
+                        </span>
+                      </button>
                     </div>
                   </div>
 
+                  {displayMatches.length === 0 ? (
+                    <div className="p-8 rounded-xl bg-[#10172A] border border-slate-800 text-center space-y-3">
+                      <Clock className="w-8 h-8 text-emerald-400 mx-auto animate-pulse" />
+                      <h3 className="text-white font-bold text-base">
+                        {selectedDayFilter === "tomorrow"
+                          ? "No hay encuentros programados para mañana en estas ligas"
+                          : "No hay partidos registrados para esta fecha"}
+                      </h3>
+                      <p className="text-xs text-slate-400 max-w-md mx-auto">
+                        Haz clic en «Hoy» o «Todos» para consultar los partidos oficiales disponibles con cuotas y probabilidades.
+                      </p>
+                      <button
+                        onClick={() => setSelectedDayFilter("all")}
+                        className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs inline-flex items-center gap-2 transition"
+                      >
+                        Ver Todos los Partidos Programados
+                      </button>
+                    </div>
+                  ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {displayMatches.map((item) => {
                       const m = item.match;
@@ -813,10 +911,18 @@ export default function SportPredictApp() {
                             <span className="font-bold text-slate-200">
                               {m.competition_name} · Jornada {m.matchday ?? "—"}
                             </span>
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                              {colDate.dayLabel}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                m.lineups_confirmed
+                                  ? "bg-emerald-950 text-emerald-300 border border-emerald-800"
+                                  : "bg-amber-950/60 text-amber-300 border border-amber-800"
+                              }`}>
+                                {m.lineups_confirmed ? "🟢 Titulares Confirmados" : "⏳ Alineación 45m antes"}
+                              </span>
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                                {colDate.dayLabel}
+                              </span>
+                            </div>
                           </div>
 
                           <div className="flex items-center justify-between py-3 border-y border-slate-800/80">
@@ -1170,6 +1276,7 @@ export default function SportPredictApp() {
                       );
                     })}
                   </div>
+                  )}
                 </div>
               </div>
             );
@@ -1486,6 +1593,78 @@ export default function SportPredictApp() {
                       </p>
                     </div>
                   </div>
+                </div>
+
+                {/* 6. Alineación Oficial y Bajas Médicas Pre-Partido */}
+                <div className="bg-[#10172A] rounded-xl border border-slate-800 p-5 space-y-4 shadow-lg">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                    <div>
+                      <h3 className="text-sm font-black text-white flex items-center gap-2">
+                        <span>📋</span> Alineación Oficial y Reporte Médico de Bajas
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        Datos 100% reales de la federación. Cero alineaciones falsas o inventadas.
+                      </p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold self-start sm:self-auto ${
+                      m.lineups_confirmed
+                        ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                        : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                    }`}>
+                      {m.lineups_confirmed ? "🟢 Titulares Confirmados por Clubes" : "⏳ Por confirmar (45-60 min antes)"}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3.5 rounded-lg bg-[#0B1120] border border-slate-800 space-y-2">
+                      <div className="font-bold text-emerald-400 flex items-center justify-between">
+                        <span className="text-sm">{m.home_team.name} (Local)</span>
+                        <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                          Bajas: {matchDetail.pre_match_features?.home_missing_players ?? 0}
+                        </span>
+                      </div>
+                      {m.lineups_confirmed ? (
+                        <p className="text-slate-300 leading-relaxed text-[11px]">
+                          ✓ Titulares confirmados oficialmente en planilla federativa. El equipo juega con su esquema táctico principal.
+                        </p>
+                      ) : (
+                        <p className="text-slate-400 leading-relaxed text-[11px]">
+                          ⏳ La alineación oficial aún no ha sido emitida por el club. Se publica entre 45 y 60 minutos antes del inicio. No mostramos nombres inventados para proteger tu dinero.
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="p-3.5 rounded-lg bg-[#0B1120] border border-slate-800 space-y-2">
+                      <div className="font-bold text-blue-400 flex items-center justify-between">
+                        <span className="text-sm">{m.away_team.name} (Visitante)</span>
+                        <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                          Bajas: {matchDetail.pre_match_features?.away_missing_players ?? 0}
+                        </span>
+                      </div>
+                      {m.lineups_confirmed ? (
+                        <p className="text-slate-300 leading-relaxed text-[11px]">
+                          ✓ Titulares confirmados oficialmente en planilla federativa. El equipo juega con su esquema táctico principal.
+                        </p>
+                      ) : (
+                        <p className="text-slate-400 leading-relaxed text-[11px]">
+                          ⏳ La alineación oficial aún no ha sido emitida por el club. Se publica entre 45 y 60 minutos antes del inicio. No mostramos nombres inventados para proteger tu dinero.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {matchDetail.player_availabilities && matchDetail.player_availabilities.length > 0 && (
+                    <div className="p-3.5 rounded-lg bg-[#090D1A] border border-amber-900/40 text-[11px] text-amber-200">
+                      <strong className="text-amber-400 font-bold block mb-1">⚠️ Reporte Oficial de Bajas y Lesiones:</strong>
+                      <ul className="list-disc list-inside space-y-0.5 text-slate-300">
+                        {matchDetail.player_availabilities.map((p, idx) => (
+                          <li key={idx}>
+                            <strong className="text-white">{p.player_name || "Jugador"}</strong> ({p.team_name}): {p.status_type} {p.impact_note ? `- ${p.impact_note}` : ""}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
                 {/* 6. Simulador Interactivo de Ganancia en Dinero ($ COP) */}
